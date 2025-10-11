@@ -1,0 +1,187 @@
+<style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: black; /* Set background to black */
+            color: white; /* Change text to white for better contrast */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto; /* Enable scrolling */
+        }
+        .navbar {
+            width: 250px;
+            background-color: #444;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            position: fixed; /* Make the navbar static in place */
+            top: 200px;  /* Align right below the banner */
+            height: calc(100vh - 200px);
+            z-index: 10;
+        }
+        .navbar a {
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            text-align: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            width: 100%;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar a:hover {
+            color: black;
+        }
+        .navbar a:hover:nth-child(1) { background-color: #39FF14; } /* Neon Green on Home */
+        .navbar a:hover:nth-child(2) { background-color: #00FFFF; } /* Teal Blue on About */
+        .navbar a:hover:nth-child(3) { background-color: #FFFF00; } /* Yellow on Services */
+        .navbar a:hover:nth-child(4) { background-color: #FF00FF; } /* Neon Pink on Contact */
+
+        .hamburger {
+            display: none;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            z-index: 11;
+        }
+        .hamburger:focus {
+            outline: none;
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 0;
+            width: calc(100% - 250px);
+        }
+        .banner-placeholder {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+    position: fixed; /* This ensures the header stays fixed */
+    top: 0; /* This keeps the header at the top of the page */
+    z-index: 20; /* Ensures it's above other elements */
+}
+        .slideshow-container {
+            width: 100%;
+            height: 33vh; /* Take 1/3rd of the viewport height */
+            max-height: 400px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 200px;
+            z-index: 1;
+        }
+        .slideshow-wrapper {
+            display: flex;
+            transition: transform 0.8s ease;
+        }
+        .slides {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            user-select: none;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+        .next {
+            right: 10px;
+        }
+        .prev {
+            left: 10px;
+        }
+        .slideshow-container:hover .prev, .slideshow-container:hover .next {
+            opacity: 1;
+        }
+        .prev, .next {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .video-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        iframe {
+            width: 80%;
+            height: 400px;
+            border: none;
+        }
+        .dialogue-box {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        @media screen and (max-width: 800px) {
+            .navbar {
+                width: 100%;
+                display: none;
+                position: static;
+            }
+            .hamburger {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .slideshow-container {
+                width: 100%;
+            }
+            .prev, .next {
+                opacity: 1;
+            }
+        }
+
+        @media screen and (min-width: 801px) {
+            .navbar {
+                display: block !important; /* Ensure navbar is always visible on desktop */
+            }
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+  
