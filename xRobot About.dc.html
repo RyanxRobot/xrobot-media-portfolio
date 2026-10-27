@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #5B8DEF; }
+    a:hover { color: #fff; }
+    @media (max-width: 680px) { [data-back-cue] { display: none; } }
+    @keyframes backChevFade {
+      0%, 4%   { opacity:0; }
+      9%, 45%  { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backLabel {
+      0%, 8%   { opacity:0; }
+      11%, 45% { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backLabelGlitch {
+      0%, 10%, 12%, 14%, 16%, 18%, 100% { opacity:0; transform:translate(0,0); }
+      11%   { opacity:1; transform:translate(-4px,1px); }
+      13%   { opacity:1; transform:translate(4px,-1px); }
+      15%   { opacity:1; transform:translate(-3px,1px); }
+      17%   { opacity:1; transform:translate(3px,-1px); }
+    }
+  </style>
+  <script src="./xr-transition.js"></script>
+  <script src="./xr-edit.js"></script>
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c;">
+    <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+      <div style="position:relative; display:inline-flex; align-items:center;">
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; right:100%; margin-right:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; text-decoration:none; pointer-events:none;"><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0s;">›</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">›</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">›</span></span></span>
+        <a href="xRobot Media.dc.html" aria-label="Back to xrobot.media home" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#5B8DEF;">.</span>MEDIA</a>
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; left:100%; margin-left:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; text-decoration:none; pointer-events:none;"><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0s;">‹</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">‹</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">‹</span></span><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span></span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="height:4px; flex-shrink:0; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#a51cff,#FF7A18,#ff1436,#8A94A6,#1F3A93,#fff200);"></div>
+  </header>
+  <div style="height:76px;"></div>
+
+  <!-- HERO -->
+  <section style="max-width:760px; margin:0 auto; padding:clamp(56px,8vw,92px) clamp(20px,6vw,64px) clamp(32px,4vw,48px); text-align:center;">
+    <img src="assets/ryan-headshot.png" alt="Ryan Wilson" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid #1F3A93; margin-bottom:24px;">
+    <div style="font-weight:800; font-size:clamp(30px,4vw,42px); letter-spacing:-0.01em; color:#fff; margin-bottom:6px;">Ryan Wilson</div>
+    <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; color:#5B8DEF; margin-bottom:22px;">{{ versionTitle }}</div>
+    <p style="font-size:16px; line-height:1.75; color:#b8b8b4; max-width:600px; margin:0 auto 28px;">Broadcast automation, video production, and IT — all under one roof. Currently Master Control Operator at Nexstar Media Group in Denver, with production credits spanning a feature film, an educational series, and ad campaigns.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+      <a href="https://www.linkedin.com/in/xrobotproductions" target="_blank" rel="noopener" style="text-decoration:none; padding:13px 24px; background:#0A66C2; color:#fff; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">VIEW LINKEDIN PROFILE ↗</a>
+      <a href="{{ resumePdf }}" download style="text-decoration:none; padding:13px 24px; background:#5B8DEF; color:#0a0a0c; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">DOWNLOAD RESUME (PDF) ↓</a>
+    </div>
+  </section>
+
+  <!-- CAREER TIMELINE -->
+  <section style="max-width:900px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(48px,6vw,72px);">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative;">
+      <div aria-hidden="true" style="position:absolute; top:7px; left:calc(100%/6); right:calc(100%/6); height:2px; background:rgba(91,141,239,0.3); z-index:0;"></div>
+      <div style="position:relative; z-index:1; text-align:center; padding:0 8px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:#5B8DEF; margin:0 auto 14px;"></div>
+        <div style="font-size:12px; font-weight:700; color:#8a8a87; margin-bottom:4px;">2019 – PRESENT</div>
+        <div style="font-weight:700; font-size:14px; margin-bottom:2px; color:#f2f2f0;">Customer Experience Specialist</div>
+        <div style="font-size:13px; color:#999;">Best Buy · Lone Tree, CO</div>
+      </div>
+      <div style="position:relative; z-index:1; text-align:center; padding:0 8px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:#5B8DEF; margin:0 auto 14px;"></div>
+        <div style="font-size:12px; font-weight:700; color:#8a8a87; margin-bottom:4px;">2021 – 2024</div>
+        <div style="font-weight:700; font-size:14px; margin-bottom:2px; color:#f2f2f0;">Studio Engineer</div>
+        <div style="font-size:13px; color:#999;">JMP Studios, MSU Denver</div>
+      </div>
+      <div style="position:relative; z-index:1; text-align:center; padding:0 8px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:#5B8DEF; margin:0 auto 14px; box-shadow:0 0 0 4px rgba(91,141,239,0.2);"></div>
+        <div style="font-size:12px; font-weight:700; color:#8a8a87; margin-bottom:4px;">2025 – PRESENT</div>
+        <div style="font-weight:700; font-size:14px; margin-bottom:2px; color:#f2f2f0;">Master Control Operator</div>
+        <div style="font-size:13px; color:#999;">Nexstar Media Group</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME CARD -->
+  <section style="max-width:800px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(40px,5vw,56px);">
+    <div style="background:#141416; border:1px solid rgba(255,255,255,0.08); text-align:left; border-radius:8px; border-top:4px solid #5B8DEF; padding:clamp(24px,3.5vw,40px); box-shadow:0 20px 50px rgba(0,0,0,0.4);">
+
+      <div style="display:flex; gap:8px; margin-bottom:24px;">
+        <button onClick="{{ setProducer }}" style="{{ producerTabStyle }}">PRODUCER</button>
+        <button onClick="{{ setIT }}" style="{{ itTabStyle }}">IT / TECH OPS</button>
+      </div>
+
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a8a87; margin-bottom:10px;">CURRENT ROLE</div>
+        <div style="font-weight:700; font-size:15px; margin-bottom:2px; color:#f2f2f0;">{{ roleTitle }}</div>
+        <div style="font-size:13px; color:#999; margin-bottom:10px;">Nexstar Media Group · Denver, CO · 2025–Present</div>
+        <ul style="margin:0 0 24px; padding-left:18px; font-size:13px; line-height:1.65; color:#c8c8c4;">
+          <sc-for list="{{ roleBullets }}" as="b" hint-placeholder-count="2">
+            <li>{{ b }}</li>
+          </sc-for>
+        </ul>
+
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a8a87; margin-bottom:10px;">SKILLS &amp; TOOLS</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <sc-for list="{{ skills }}" as="s" hint-placeholder-count="6">
+            <span style="font-size:12px; font-weight:600; padding:6px 12px; background:rgba(91,141,239,0.12); color:#dfe6ff; border-radius:20px;">{{ s }}</span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); font-size:13px; color:#999;">
+        Full experience, education &amp; references are in the PDF. Questions? <a href="xRobot Media.dc.html#contact" style="color:#5B8DEF; font-weight:700;">Get in touch →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTABLE PROJECTS -->
+  <section style="max-width:900px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(40px,5vw,56px);">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a8a87; margin-bottom:16px;">NOTABLE PROJECTS</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+      <a href="xRobot Photography.dc.html#onset/jmp-studios" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><img src="assets/jmp-studios-team.jpg" alt="JMP Studios team" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="padding:16px 18px;">
+          <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">JMP Studios</div>
+          <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">Studio Engineer, 2021–2024 — filmed, produced, and edited content for academic and promotional projects at MSU Denver.</div>
+          <div style="font-size:12px; font-weight:700; color:#5B8DEF;">See the JMP Studios Photo Gallery →</div>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#onset/duffle-bag-boy" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-dbb" shape="rect" role="img" aria-label="Duffle Bag Boy" placeholder="Duffle Bag Boy" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="padding:16px 18px;">
+          <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">Duffle Bag Boy — Feature Film</div>
+          <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">2nd Assistant Camera, 1st AD, Sound Recordist, Production Assistant.</div>
+          <div style="font-size:12px; font-weight:700; color:#5B8DEF;">See the Duffle Bag Boy Photo Gallery →</div>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#onset/jmp-studios" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-tss" shape="rect" role="img" aria-label="The Solution Studio" placeholder="The Solution Studio" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="padding:16px 18px;">
+          <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">The Solution Studio — Educational Series</div>
+          <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">1st AC, 1st AD, Master Control Operator, Post-Production Editor.</div>
+          <div style="font-size:12px; font-weight:700; color:#5B8DEF;">See the Solution Studio Photo Gallery →</div>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#onset/pillowfight" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-pf" shape="rect" role="img" aria-label="PillowFight" placeholder="PillowFight" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="padding:16px 18px;">
+          <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">PillowFight — Ad Campaign</div>
+          <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">1st Assistant Director of Photography.</div>
+          <div style="font-size:12px; font-weight:700; color:#5B8DEF;">See the PillowFight Photo Gallery →</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section style="max-width:800px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(40px,5vw,56px);">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a8a87; margin-bottom:16px;">EDUCATION</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;">
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:20px 22px; background:#141416;">
+        <div style="font-weight:700; font-size:14px; margin-bottom:4px; color:#f2f2f0;">B.A., Visual Multimedia Production</div>
+        <div style="font-size:13px; color:#999;">Metropolitan State University of Denver</div>
+      </div>
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:20px 22px; background:#141416;">
+        <div style="font-weight:700; font-size:14px; margin-bottom:4px; color:#f2f2f0;">A.A., Multimedia Graphic Design</div>
+        <div style="font-size:13px; color:#999;">Pikes Peak State College</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEHIND THE RESUME -->
+  <section style="max-width:900px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(40px,5vw,56px);">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a8a87; margin-bottom:16px;">BEHIND THE RESUME</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px;">
+      <image-slot id="about-bts-1" shape="rect" role="img" aria-label="On-set photo" placeholder="On set — Duffle Bag Boy" style="width:100%; aspect-ratio:4/3; border-radius:6px; overflow:hidden;"></image-slot>
+      <image-slot id="about-bts-2" shape="rect" role="img" aria-label="Studio photo" placeholder="Studio / Master Control" style="width:100%; aspect-ratio:4/3; border-radius:6px; overflow:hidden;"></image-slot>
+      <image-slot id="about-bts-3" shape="rect" role="img" aria-label="Broadcast desk photo" placeholder="Broadcast desk" style="width:100%; aspect-ratio:4/3; border-radius:6px; overflow:hidden;"></image-slot>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section style="max-width:700px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(40px,5vw,56px); text-align:center;">
+    <div style="font-size:34px; color:#5B8DEF; line-height:1; margin-bottom:6px;">"</div>
+    <p style="font-size:18px; line-height:1.6; font-style:italic; color:#c8c8c4; margin:0 0 14px;">Add a quote from a director, colleague, or supervisor here.</p>
+    <div style="font-size:13px; font-weight:700; color:#8a8a87;">— Name, Title</div>
+  </section>
+
+  <!-- CTA -->
+  <section style="max-width:700px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(56px,7vw,80px); text-align:center;">
+    <div style="border:1px dashed rgba(91,141,239,0.4); border-radius:8px; padding:clamp(24px,3vw,36px);">
+      <div style="font-weight:700; font-size:16px; margin-bottom:8px; color:#f2f2f0;">Open to new opportunities</div>
+      <p style="font-size:14px; color:#999; margin:0 0 18px;">Broadcast, production, or IT roles — reach out directly.</p>
+      <a href="mailto:hello@xrobot.media" style="text-decoration:none; padding:12px 22px; background:#5B8DEF; color:#0a0a0c; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">hello@xrobot.media</a>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:clamp(32px,4vw,52px) clamp(20px,6vw,64px); max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;">
+    <div style="font-size:12px; color:#8a8a87; letter-spacing:0.06em;">© 2026 xROBOT.MEDIA · RYAN WILSON</div>
+    <a href="xRobot Media.dc.html" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#8a8a87;">← BACK TO THE HUB</a>
+    <a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const VERSIONS = {
+  producer: {
+    title: 'VISUAL MULTIMEDIA PRODUCER',
+    pdf: 'assets/Ryan-Wilson-Resume.pdf',
+    roleTitle: 'Master Control Operator',
+    roleBullets: [
+      'Operate broadcast automation for live and scheduled programs across U.S. channels',
+      'Monitor signal, audio and video quality to maintain consistent broadcast integrity'
+    ],
+    skills: ['Blackmagic Design','TriCaster','DaVinci Resolve','Adobe Premiere','After Effects','OBS Studio','Broadcast Automation']
+  },
+  it: {
+    title: 'TECHNICAL OPERATIONS SPECIALIST',
+    pdf: 'assets/Ryan-Wilson-Resume-IT.pdf',
+    roleTitle: 'Master Control Operator',
+    roleBullets: [
+      'Monitor broadcast automation and content delivery systems supporting multiple stations nationwide',
+      'Diagnose and correct automation and server failures, documenting incidents while maintaining FCC compliance'
+    ],
+    skills: ['Windows & macOS','Microsoft 365','Google Workspace','Network Troubleshooting','ITIL Fundamentals','Blackmagic Design','Adobe Creative Cloud']
+  }
+};
+
+class Component extends DCLogic {
+  state = { version: 'producer' };
+  componentDidMount() {
+    try {
+      const v = new URLSearchParams(window.location.search).get('v');
+      if (v === 'it' || v === 'producer') this.setState({ version: v });
+    } catch (e) {}
+  }
+  setProducer = () => this.setState({ version: 'producer' });
+  setIT = () => this.setState({ version: 'it' });
+  tabStyle(active) {
+    return `flex:1; padding:10px 16px; font-size:12px; font-weight:700; letter-spacing:0.06em; border-radius:4px; border:1px solid ${active ? '#5B8DEF' : 'rgba(255,255,255,0.15)'}; background:${active ? '#5B8DEF' : 'transparent'}; color:${active ? '#0a0a0c' : '#aaa'}; cursor:pointer;`;
+  }
+  renderVals() {
+    const v = VERSIONS[this.state.version];
+    return {
+      versionTitle: v.title,
+      resumePdf: v.pdf,
+      roleTitle: v.roleTitle,
+      roleBullets: v.roleBullets,
+      skills: v.skills,
+      setProducer: this.setProducer,
+      setIT: this.setIT,
+      producerTabStyle: this.tabStyle(this.state.version === 'producer'),
+      itTabStyle: this.tabStyle(this.state.version === 'it')
+    };
+  }
+}
+</script>
+</body>
+</html>

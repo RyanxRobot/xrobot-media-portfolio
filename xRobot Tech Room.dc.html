@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #ff2ec4; }
+    a:hover { color: #6E86FF; }
+    @media (max-width: 680px) { [data-back-cue] { display: none; } }
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,46,196,0.35), 0 0 30px rgba(43,70,255,0.34); }
+      50%      { text-shadow: 0 0 16px rgba(255,46,196,0.5), 0 0 48px rgba(43,70,255,0.46); }
+    }
+    @keyframes titleGlitch {
+      0%, 89%, 100% { opacity:0; transform:translate(0,0); }
+      90%   { opacity:0.85; transform:translate(-3px,1px); }
+      91.5% { opacity:0.85; transform:translate(3px,-1px); }
+      93%   { opacity:0; transform:translate(0,0); }
+      94.5% { opacity:0.7; transform:translate(-2px,1px); }
+      96%   { opacity:0; transform:translate(0,0); }
+    }
+    @keyframes backChevFade {
+      0%, 4%   { opacity:0; }
+      9%, 45%  { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backHint {
+      0%   { opacity:0; transform:translateX(22px); }
+      3%   { opacity:1; transform:translateX(-12px); }
+      5%   { opacity:1; transform:translateX(5px); }
+      7%   { opacity:1; transform:translateX(-4px); }
+      9%   { opacity:1; transform:translateX(0); }
+      46%  { opacity:1; transform:translateX(0); }
+      50%  { opacity:0; transform:translateX(-16px); }
+      100% { opacity:0; transform:translateX(22px); }
+    }
+    @keyframes backLabel {
+      0%, 8%   { opacity:0; }
+      11%, 45% { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backLabelGlitch {
+      0%, 10%, 12%, 14%, 16%, 18%, 100% { opacity:0; transform:translate(0,0); }
+      11%   { opacity:1; transform:translate(-4px,1px); }
+      13%   { opacity:1; transform:translate(4px,-1px); }
+      15%   { opacity:1; transform:translate(-3px,1px); }
+      17%   { opacity:1; transform:translate(3px,-1px); }
+    }
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,46,196,0.35), 0 0 30px rgba(43,70,255,0.34); }
+      50%      { text-shadow: 0 0 16px rgba(255,46,196,0.5), 0 0 48px rgba(43,70,255,0.46); }
+    }
+    @keyframes titleGlitch {
+      0%, 89%, 100% { opacity:0; transform:translate(0,0); }
+      90%   { opacity:0.85; transform:translate(-3px,1px); }
+      91.5% { opacity:0.85; transform:translate(3px,-1px); }
+      93%   { opacity:0; transform:translate(0,0); }
+      94.5% { opacity:0.7; transform:translate(-2px,1px); }
+      96%   { opacity:0; transform:translate(0,0); }
+    }
+    @keyframes backChevFade {
+      0%, 4%   { opacity:0; }
+      9%, 45%  { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backHint {
+      0%   { opacity:0; transform:translateX(26px); }
+      2%   { opacity:1; transform:translateX(-14px); }
+      4%   { opacity:1; transform:translateX(6px); }
+      6%   { opacity:1; transform:translateX(-5px); }
+      7.5% { opacity:1; transform:translateX(2px); }
+      9%   { opacity:1; transform:translateX(0); }
+      10%  { opacity:0; transform:translateX(-18px); }
+      100% { opacity:0; transform:translateX(26px); }
+    }
+      @keyframes driftA { 0% { transform: scale(1.04) translate(0, 0); } 100% { transform: scale(1.1) translate(-1.5%, -1%); } }
+    @keyframes driftB { 0% { transform: scale(1.1) translate(1.5%, 0.5%); } 100% { transform: scale(1.03) translate(0, 0); } }
+    @keyframes driftC { 0% { transform: scale(1.05) translate(1%, -1%); } 100% { transform: scale(1.09) translate(-1%, 1%); } }
+    @keyframes driftD { 0% { transform: scale(1.06) translate(0, 1.2%); } 100% { transform: scale(1.06) translate(0, -1.2%); } }
+  </style>
+  <script src="./xr-transition.js"></script>
+  <script src="./xr-edit.js"></script>
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c;">
+    <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+      <div style="position:relative; display:inline-flex; align-items:center;">
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; right:100%; margin-right:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#ff2ec4; text-decoration:none; pointer-events:none;"><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0s; will-change:transform;">›</span><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0.35s; will-change:transform;">›</span><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0.7s; will-change:transform;">›</span></span></span>
+        <a href="xRobot Media.dc.html" aria-label="Back to xrobot.media home" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</a>
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; left:100%; margin-left:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#ff2ec4; text-decoration:none; pointer-events:none;"><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0s; will-change:transform;">‹</span><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0.35s; will-change:transform;">‹</span><span style="display:inline-block; color:#ff2ec4; animation:backChevFade 15s linear infinite; animation-delay:0.7s; will-change:transform;">‹</span></span><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span></span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="height:4px; flex-shrink:0; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#a51cff,#FF7A18,#ff1436,#8A94A6,#1F3A93,#fff200);"></div>
+  </header>
+  <div style="height:76px;"></div>
+
+  <nav aria-label="Productions" style="position:sticky; top:76px; z-index:50; background:rgba(10,10,12,0.28); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); border-bottom:1px solid rgba(0,0,0,0.7);">
+    <div style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px); display:flex; align-items:center; gap:clamp(14px,2.4vw,28px); overflow-x:auto; scrollbar-width:none;">
+      <a href="xRobot Media.dc.html#productions" style="flex-shrink:0; font-size:10px; font-weight:800; letter-spacing:0.16em; color:#6e6e6b; text-decoration:none; padding:14px 0 13px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);" style-hover="color:#fff;">PRODUCTIONS</a>
+      <div aria-hidden="true" style="flex-shrink:0; width:1px; height:16px; background:rgba(255,255,255,0.14);"></div>
+      <a href="xRobot Tech Room.dc.html" aria-current="page" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#fff;">Tech Room</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#ff2ec4,#2b46ff); opacity:1;"></span>
+      </a>
+      <a href="xRobot Video.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Video Production</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#a51cff,#FF7A18); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Design.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Web, UI &amp; Apps</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#2b46ff,#5B8DEF); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Print.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Static &amp; Print</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#FF7A18,#fff200); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Ravers.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Colorado Ravers</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#39FF14,#8A2BFF,#ff2ec4); opacity:0.3;"></span>
+      </a>
+    </div>
+  </nav>
+
+
+  <section style="position:relative; overflow:hidden; min-height:clamp(360px,54vh,560px); display:flex; align-items:flex-end;">
+    <img src="assets/rtr-still.jpg" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%; z-index:0; transform-origin:70% 60%; animation:driftD 43s ease-in-out -3s infinite alternate; will-change:transform;">
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse at 50% 40%, transparent 10%, rgba(10,10,12,0.86) 78%), linear-gradient(to bottom, rgba(10,10,12,0.7) 0%, transparent 30%, rgba(10,10,12,0.97) 100%); z-index:1;"></div>
+    <div style="position:relative; z-index:2; width:100%; max-width:1280px; margin:0 auto; padding:clamp(40px,6vw,72px) clamp(20px,6vw,64px); box-sizing:border-box; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:clamp(28px,4vw,56px); align-items:end;">
+      <div style="min-width:0;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.14em; color:#ff2ec4; margin-bottom:14px;">EST. 2020 · TECH DIFFERENTLY, TECHNICALLY SPEAKING</div>
+      <h1 style="font-family:'Anton',sans-serif; font-size:clamp(40px,7vw,96px); line-height:0.9; text-transform:uppercase; color:#fff; margin:0 0 18px; animation:titleGlow 5.5s ease-in-out infinite;">
+        <span data-text="Robot's" style="display:block; position:relative;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#ff2ec4; clip-path:inset(0 0 56% 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#2b46ff; clip-path:inset(56% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite; animation-delay:0.14s;">Robot's</span>
+        <span data-text="Tech Room" style="display:block; position:relative;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#ff2ec4; clip-path:inset(0 0 56% 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite; animation-delay:0.05s;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#2b46ff; clip-path:inset(56% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite; animation-delay:0.14s;">Tech Room</span>
+      </h1>
+      <p style="max-width:600px; font-size:16px; line-height:1.7; color:#d6d6d3; margin:0 0 26px;">Where I dig into the gear I grew up with — animated histories, unboxings, and stories from my own tech past.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px;">
+        <a href="https://youtube.com/@robotstechroom" target="_blank" rel="noopener" style="text-decoration:none; padding:13px 24px; background:#ff2ec4; color:#0a0a0c; font-weight:700; font-size:13px; letter-spacing:0.05em; border-radius:2px;">SUBSCRIBE ON YOUTUBE</a>
+        <a href="https://www.facebook.com/RobotsTechRoom" target="_blank" rel="noopener" style="text-decoration:none; padding:13px 24px; border:1px solid rgba(255,255,255,0.35); color:#fff; font-weight:700; font-size:13px; letter-spacing:0.05em; border-radius:2px;">FACEBOOK PAGE</a>
+      </div>
+      </div>
+      <div style="min-width:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <div style="display:flex; align-items:center; gap:10px; font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.12em; color:#ff2ec4;"><span aria-hidden="true" style="width:8px; height:8px; border-radius:50%; background:#ff2ec4; box-shadow:0 0 10px #ff2ec4;"></span>LATEST UPLOAD</div>
+          <a href="https://www.youtube.com/@robotstechroom/videos" target="_blank" rel="noopener" style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#c7c7c4;">ALL VIDEOS ↗</a>
+        </div>
+        <div style="aspect-ratio:16/9; background:#000; border:1px solid rgba(255,46,196,0.35); border-top:3px solid #ff2ec4; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+          <iframe src="{{ latestSrc }}" title="Robot's Tech Room — latest upload" loading="lazy" allow="encrypted-media; fullscreen; picture-in-picture" allowFullScreen="{{ true }}" referrerPolicy="strict-origin-when-cross-origin" style="width:100%; height:100%; border:0; display:block;"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(20px,6vw,64px);">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:clamp(24px,3vw,36px); flex-wrap:wrap;">
+      <div aria-hidden="true" style="width:48px; height:4px; background:linear-gradient(90deg,#ff2ec4,#2b46ff);"></div>
+      <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,2.6vw,32px); text-transform:uppercase; color:#fff;">What's On The Bench</div>
+      <div style="font-size:13px; color:#8f8f8c;">Four formats the channel runs on</div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:clamp(16px,2vw,24px);">
+      <div style="border:1px solid rgba(255,46,196,0.28); padding:26px; background:linear-gradient(160deg, rgba(255,46,196,0.07), transparent 70%);">
+        <div style="font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.1em; color:#ff2ec4; margin-bottom:12px;">01 · REVIEWS</div>
+        <div style="font-size:15px; line-height:1.65; color:#c7c7c4;">Hands-on with the gear I actually use, not the gear that pays best.</div>
+      </div>
+      <div style="border:1px solid rgba(43,70,255,0.32); padding:26px; background:linear-gradient(160deg, rgba(43,70,255,0.09), transparent 70%);">
+        <div style="font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.1em; color:#6fa8ff; margin-bottom:12px;">02 · UNBOXINGS</div>
+        <div style="font-size:15px; line-height:1.65; color:#c7c7c4;">First contact, no script. What it looks and feels like out of the box.</div>
+      </div>
+      <div style="border:1px solid rgba(255,46,196,0.28); padding:26px; background:linear-gradient(160deg, rgba(255,46,196,0.07), transparent 70%);">
+        <div style="font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.1em; color:#ff2ec4; margin-bottom:12px;">03 · HISTORY</div>
+        <div style="font-size:15px; line-height:1.65; color:#c7c7c4;">Deep-dives on dead formats, doomed hardware, and the ideas that stuck.</div>
+      </div>
+      <div style="border:1px solid rgba(43,70,255,0.32); padding:26px; background:linear-gradient(160deg, rgba(43,70,255,0.09), transparent 70%);">
+        <div style="font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.1em; color:#6fa8ff; margin-bottom:12px;">04 · TECH BYTES</div>
+        <div style="font-size:15px; line-height:1.65; color:#c7c7c4;">Shorts series: this day in tech history, told through vintage computer news.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02);">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(20px,6vw,64px);">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:clamp(24px,3vw,36px); flex-wrap:wrap;">
+        <div aria-hidden="true" style="width:48px; height:4px; background:linear-gradient(90deg,#ff2ec4,#2b46ff);"></div>
+        <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,2.6vw,32px); text-transform:uppercase; color:#fff;">Episodes</div>
+
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:clamp(18px,2.4vw,28px);">
+        <sc-for list="{{ episodes }}" as="ep" hint-placeholder-count="6">
+          <div style="border:1px solid rgba(255,255,255,0.1); background:#0d0d10; display:flex; flex-direction:column; height:auto; align-self:start;">
+            <div style="position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; flex:0 0 auto; background:#000;">
+              <sc-if value="{{ ep.hasVideo }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ ep.play }}" aria-label="{{ ep.playLabel }}" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:#000; cursor:pointer; display:block;" style-hover="filter:brightness(1.12);">
+                  <img src="{{ ep.thumb }}" alt="" style="width:100%; height:100%; object-fit:cover; display:block;">
+                  <span style="position:absolute; left:14px; bottom:14px; display:flex; align-items:center; gap:10px; padding:8px 13px 8px 11px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border:1px solid rgba(255,46,196,0.6); color:#fff; font-family:'Inter',sans-serif; font-size:12px; font-weight:800; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); letter-spacing:0.1em;"><span style="color:#ff2ec4;">▶</span>PLAY</span>
+                </button>
+              </sc-if>
+              <sc-if value="{{ ep.isSoon }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; inset:0;">
+                  <img src="assets/rtr-banner.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; filter:saturate(0.7) brightness(0.45);">
+                  <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                    <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,2.6vw,30px); letter-spacing:0.12em; color:#fff; padding:8px 18px; border:1px solid rgba(255,46,196,0.7); background:rgba(10,10,12,0.3); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); text-shadow:0 0 14px rgba(255,46,196,0.5);">COMING SOON</div>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ ep.noVideo }}" hint-placeholder-val="{{ true }}">
+                <image-slot data-xr-ph="self" id="{{ ep.slotId }}" role="img" aria-label="{{ ep.alt }}" placeholder="Video thumbnail" style="width:100%; height:100%; display:block;"></image-slot>
+              </sc-if>
+            </div>
+            <div style="padding:18px 20px 20px;">
+              <div style="font-family:'Anton',sans-serif; font-size:12px; letter-spacing:0.1em; color:#ff2ec4; margin-bottom:8px;">{{ ep.tag }}</div>
+              <div style="font-size:15px; font-weight:600; color:#e8e8e6; line-height:1.4;">{{ ep.title }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" role="dialog" aria-modal="true" aria-label="{{ modalTitle }}" style="position:fixed; inset:0; z-index:100; background:rgba(5,5,8,0.93); display:flex; align-items:center; justify-content:center; padding:clamp(16px,4vw,48px); box-sizing:border-box; overflow-y:auto;">
+      <div onClick="{{ stopClick }}" style="width:min(1100px, 100%, calc((100vh - 200px) * 16 / 9)); min-width:min(280px,100%); display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:16px;">
+          <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+            <div style="font-family:'Anton',sans-serif; font-size:12px; letter-spacing:0.12em; color:#ff2ec4;">{{ modalTag }}</div>
+            <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,3vw,34px); line-height:1; text-transform:uppercase; color:#fff;">{{ modalTitle }}</div>
+          </div>
+          <button onClick="{{ closeModal }}" aria-label="Close video" style="flex-shrink:0; background:transparent; border:1px solid rgba(255,255,255,0.25); color:#fff; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.1em; padding:9px 14px; cursor:pointer;" style-hover="border-color:#ff2ec4; color:#ff2ec4;">CLOSE ✕</button>
+        </div>
+        <div style="aspect-ratio:16/9; background:#000; border-top:3px solid #ff2ec4;">
+          <iframe src="{{ modalSrc }}" title="{{ modalTitle }}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowFullScreen="{{ true }}" referrerPolicy="strict-origin-when-cross-origin" style="width:100%; height:100%; border:0; display:block;"></iframe>
+        </div>
+        <a href="{{ modalYtUrl }}" target="_blank" rel="noopener" style="align-self:flex-end; font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#ff2ec4;">WATCH ON YOUTUBE ↗</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <section style="max-width:1280px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(20px,6vw,64px); display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:clamp(24px,3vw,44px); align-items:center;">
+    <div style="border:1px solid rgba(255,255,255,0.1); overflow:hidden;">
+      <img src="assets/rtr-banner.jpg" alt="Robot's Tech Room" style="width:100%; display:block;">
+    </div>
+    <div>
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.14em; color:#6fa8ff; margin-bottom:12px;">CROSSOVER</div>
+      <div style="font-family:'Anton',sans-serif; font-size:clamp(26px,3.2vw,40px); line-height:1; text-transform:uppercase; color:#fff; margin-bottom:16px;">The Tech Room Stills</div>
+      <p style="font-size:15px; line-height:1.7; color:#c7c7c4; margin:0 0 22px;">Every product close-up shot for the channel lives on the Photography page under its own Tech Room category — one place for the frames, so nothing gets duplicated.</p>
+      <a href="xRobot Photography.dc.html" style="text-decoration:none; padding:13px 24px; border:1px solid #ff2ec4; color:#ff2ec4; font-weight:700; font-size:13px; letter-spacing:0.05em;">SEE THE STILLS →</a>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:clamp(32px,4vw,52px) clamp(20px,6vw,64px); max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;">
+    <div style="font-size:12px; color:#6e6e6b; letter-spacing:0.06em;">© 2026 xROBOT.MEDIA · RYAN WILSON</div>
+    <a href="xRobot Media.dc.html" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#9a9a97;">← BACK TO THE HUB</a>
+    <a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { video: null };
+  componentDidMount() {
+    this.onKey = e => { if (e.key === 'Escape' && this.state.video) this.setState({ video: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+  setVideo = (el) => {
+    if (!el) return;
+    el.muted = true; el.defaultMuted = true; el.volume = 0; el.loop = true; el.playbackRate = 0.6;
+    const staySilent = () => { el.muted = true; el.volume = 0; el.playbackRate = 0.6; };
+    el.addEventListener('loadedmetadata', staySilent);
+    el.addEventListener('play', staySilent);
+    el.play().catch(() => {});
+  };
+  renderVals() {
+    const eps = [
+      { tag: 'HISTORY', title: 'History of the iPod Classic', yt: 'VuC_rkLJJqY' },
+      { tag: 'PODCAST', title: 'About This Mac — A Robot\u2019s Tech Room Podcast', yt: 'BaReC2pDC-E' },
+      { tag: 'UNBOXING · CINEMATIC', title: 'MacBook Pro M1 Pro Series', yt: '8-PeKU6YDkc' },
+      { tag: 'UNBOXING · RETRO', title: 'Unboxing an Early 2000s-Era Mac', yt: 'KamjhZk26_E' },
+      { tag: 'TECH BYTES', title: 'Retro Computer News — Feb. 28, 1984', yt: '6pcAa9UE5WY' },
+      { tag: 'REVIEW', title: 'First review in the works', soon: true }
+    ];
+    const v = this.state.video;
+    return {
+      setVideo: this.setVideo,
+      latestSrc: 'https://www.youtube.com/embed/videoseries?list=UUI8bhEE7C6AtP-nhv8Zj8wQ&rel=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin),
+      episodes: eps.map((e, i) => ({ ...e, slotId: 'rtr-ep-' + i, alt: e.title + ' — Robot\u2019s Tech Room video thumbnail',
+        hasVideo: !!e.yt, noVideo: !e.yt && !e.soon, isSoon: !!e.soon,
+        thumb: e.yt ? 'https://i.ytimg.com/vi/' + e.yt + '/hqdefault.jpg' : '',
+        playLabel: 'Play ' + e.title,
+        play: () => this.setState({ video: e }) })),
+      modalOpen: !!v,
+      modalTag: v ? v.tag : '',
+      modalTitle: v ? v.title : '',
+      modalSrc: v ? 'https://www.youtube.com/embed/' + v.yt + '?autoplay=1&rel=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin) : '',
+      modalYtUrl: v ? 'https://www.youtube.com/watch?v=' + v.yt : '',
+      closeModal: () => this.setState({ video: null }),
+      stopClick: ev => ev.stopPropagation()
+    };
+  }
+}
+
+</script>
+</body>
+</html>

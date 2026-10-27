@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail" data-bg-color="#0a0a0c">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <text x="600" y="420" font-family="Arial" font-size="140" font-weight="900" fill="#39FF14" text-anchor="middle">xR</text>
+  </svg>
+</template>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #6fe8ff; }
+    a:hover { color: #ff5fd8; }
+    @keyframes glitchSlice {
+      0%, 39%, 46%, 89%, 100% { opacity:0; transform:translate(0,0) scaleX(1); }
+      40% { opacity:1; transform:translate(-6px,2px) scaleX(1.03); }
+      41% { opacity:1; transform:translate(5px,-2px) scaleX(0.97); }
+      42% { opacity:0; transform:translate(0,0) scaleX(1); }
+      43% { opacity:1; transform:translate(-4px,1px) scaleX(1.02); }
+      44% { opacity:0; transform:translate(0,0) scaleX(1); }
+      45% { opacity:1; transform:translate(4px,-1px) scaleX(0.98); }
+      90% { opacity:1; transform:translate(-6px,2px) scaleX(1.03); }
+      91% { opacity:1; transform:translate(6px,-2px) scaleX(0.97); }
+      92% { opacity:0; transform:translate(0,0) scaleX(1); }
+      93% { opacity:1; transform:translate(-5px,1px) scaleX(1.02); }
+      94% { opacity:1; transform:translate(4px,-1px) scaleX(0.99); }
+      95%, 100% { opacity:0; transform:translate(0,0) scaleX(1); }
+    }
+      @keyframes driftA { 0% { transform: scale(1.04) translate(0, 0); } 100% { transform: scale(1.1) translate(-1.5%, -1%); } }
+    @keyframes driftB { 0% { transform: scale(1.1) translate(1.5%, 0.5%); } 100% { transform: scale(1.03) translate(0, 0); } }
+    @keyframes driftC { 0% { transform: scale(1.05) translate(1%, -1%); } 100% { transform: scale(1.09) translate(-1%, 1%); } }
+    @keyframes driftD { 0% { transform: scale(1.06) translate(0, 1.2%); } 100% { transform: scale(1.06) translate(0, -1.2%); } }
+  </style>
+  <script src="./xr-transition.js"></script>
+  <script src="./xr-edit.js"></script>
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <!-- HEADER (always visible, fixed) -->
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c;">
+    <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+      <div style="position:relative; display:inline-flex; align-items:center;">
+        <a href="#hero" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</a>
+      </div>
+    </div>
+    <div aria-hidden="true" style="height:4px; flex-shrink:0; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#a51cff,#FF7A18,#ff1436,#8A94A6,#FF2D8F,#fff200);"></div>
+  </header>
+  <div style="height:76px;"></div>
+
+  <div data-xr-avoid="1" style="position:sticky; top:76px; z-index:55; padding:clamp(14px,2vw,20px) clamp(20px,4vw,48px); background:#0a0a0c; border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(10px,1.6vw,22px);">
+        <div style="display:inline-flex; flex-direction:column; align-items:center; flex-shrink:0;">
+          <a href="#productions" style="text-decoration:none; color:#e8e8e6; font-size:13px; font-weight:700; letter-spacing:0.05em; padding:4px 10px; text-align:center; white-space:nowrap; transition:background-color 0.25s ease, color 0.25s ease;" style-hover="background:linear-gradient(90deg,#a51cff,#FF7A18); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.6);">PRODUCTIONS</a>
+          <div style="height:3px; width:100%; background:linear-gradient(90deg,#a51cff,#FF7A18); margin-top:5px; border-radius:1px;"></div>
+        </div>
+        <div style="display:inline-flex; flex-direction:column; align-items:center; flex-shrink:0;">
+          <a href="xRobot Photography.dc.html" style="text-decoration:none; color:#e8e8e6; font-size:13px; font-weight:700; letter-spacing:0.05em; padding:4px 10px; text-align:center; white-space:nowrap; transition:background-color 0.25s ease, color 0.25s ease;" style-hover="background:linear-gradient(90deg,#ff1436,#8A94A6); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.6);">PHOTOGRAPHY</a>
+          <div style="height:3px; width:100%; background:linear-gradient(90deg,#ff1436,#8A94A6); margin-top:5px; border-radius:1px;"></div>
+        </div>
+        <div style="display:inline-flex; flex-direction:column; align-items:center; flex-shrink:0;">
+          <a href="xRobot About.dc.html" style="text-decoration:none; color:#e8e8e6; font-size:13px; font-weight:700; letter-spacing:0.05em; padding:4px 10px; text-align:center; white-space:nowrap; transition:background-color 0.25s ease, color 0.25s ease;" style-hover="background:linear-gradient(90deg,#ffffff,#1F3A93); color:#fff;">ABOUT</a>
+          <div style="height:3px; width:100%; background:linear-gradient(90deg,#ffffff,#1F3A93); margin-top:5px; border-radius:1px;"></div>
+        </div>
+        <div style="display:inline-flex; flex-direction:column; align-items:center; flex-shrink:0;">
+          <a href="#contact" style="text-decoration:none; color:#e8e8e6; font-size:13px; font-weight:700; letter-spacing:0.05em; padding:4px 10px; text-align:center; white-space:nowrap; transition:background-color 0.25s ease, color 0.25s ease;" style-hover="background:linear-gradient(90deg,#fff200,#000000); color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.9);">CONTACT</a>
+          <div style="height:3px; width:100%; background:linear-gradient(90deg,#fff200,#2b2b30); margin-top:5px; border-radius:1px;"></div>
+        </div>
+      </div>
+  </div>
+
+
+  <!-- PRODUCTIONS SHOWCASE -->
+  <section id="productions" onMouseEnter="{{ pause }}" onMouseLeave="{{ resume }}" aria-roledescription="carousel" aria-label="xRobot Productions" style="scroll-margin-top:140px; position:relative; overflow:hidden; padding:clamp(40px,6vw,72px) clamp(20px,6vw,64px) clamp(36px,5vw,56px);">
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; display:grid;">
+      <sc-for list="{{ slides }}" as="s" hint-placeholder-count="1">
+        <div style="{{ s.bgLayerStyle }}">
+          <sc-if value="{{ s.hasBg }}" hint-placeholder-val="{{ true }}">
+            <img src="{{ s.bg }}" alt="" style="{{ s.bgImgStyle }}">
+          </sc-if>
+          <sc-if value="{{ s.noBg }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ s.bgFallStyle }}"></div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center, transparent 24%, rgba(10,10,12,0.93) 100%), linear-gradient(to bottom, rgba(10,10,12,0.95) 0%, transparent 22%, transparent 78%, rgba(10,10,12,0.97) 100%);"></div>
+
+    <div style="position:relative; z-index:2; max-width:1200px; margin:0 auto; display:flex; flex-direction:column; gap:clamp(16px,2.4vw,24px);">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px;">
+        <div style="font-size:12px; font-weight:800; letter-spacing:0.16em; color:#e8e8e6; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">XROBOT PRODUCTIONS</div>
+        <div style="font-family:'Anton',sans-serif; font-size:14px; letter-spacing:0.12em; color:#c7c7c4; text-shadow:0 1px 2px rgba(0,0,0,0.9);">{{ counter }}</div>
+      </div>
+
+      <div style="position:relative;">
+        <div style="display:grid;">
+          <sc-for list="{{ slides }}" as="s" hint-placeholder-count="1">
+            <article aria-roledescription="slide" aria-label="{{ s.ariaLabel }}" aria-hidden="{{ s.hidden }}" style="{{ s.slideStyle }}">
+              <div style="{{ s.cardRowStyle }}">
+                <div style="position:relative; flex:1.1 1 320px; min-height:clamp(200px,28vw,360px); background:rgba(255,255,255,0.03);">
+                  <sc-if value="{{ s.hasCard }}" hint-placeholder-val="{{ true }}">
+                    <img src="{{ s.card }}" alt="{{ s.cardAlt }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
+                  </sc-if>
+                  <sc-if value="{{ s.noCard }}" hint-placeholder-val="{{ false }}">
+                    <image-slot data-xr-ph="self" id="{{ s.cardSlot }}" role="img" aria-label="{{ s.cardAlt }}" placeholder="{{ s.cardHint }}" style="position:absolute; inset:0; width:100%; height:100%; display:block;"></image-slot>
+                  </sc-if>
+                </div>
+                <div style="{{ s.panelStyle }}">
+                  <div style="{{ s.eyebrowStyle }}">{{ s.eyebrow }}</div>
+                  <div data-text="{{ s.title }}" style="{{ s.titleStyle }}" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:var(--c1); clip-path:inset(0 0 55% 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:var(--c2); clip-path:inset(55% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:0.12s;">{{ s.title }}</div>
+                  <p style="font-size:15px; font-weight:500; line-height:1.7; color:#ececea; margin:0 0 24px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); text-wrap:pretty;">{{ s.blurb }}</p>
+                  <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <a href="{{ s.href }}" tabIndex="{{ s.tab }}" style="{{ s.primaryStyle }}">{{ s.cta }}</a>
+                    <sc-if value="{{ s.hasAlt }}" hint-placeholder-val="{{ false }}">
+                      <a href="{{ s.altHref }}" target="{{ s.altTarget }}" rel="noopener" tabIndex="{{ s.tab }}" style="text-decoration:none; padding:12px 22px; border:1px solid rgba(255,255,255,0.35); color:#fff; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px; text-shadow:0 1px 2px rgba(0,0,0,0.9);">{{ s.altCta }}</a>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+        <button onClick="{{ prev }}" aria-label="Previous production" style="position:absolute; left:clamp(-22px,-1.6vw,-8px); top:50%; transform:translateY(-50%); z-index:3; width:44px; height:44px; border-radius:50%; background:rgba(10,10,12,0.3); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.7); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); color:#fff; font-size:22px; line-height:1; cursor:pointer;" style-hover="box-shadow:inset 0 0 0 1px rgba(255,255,255,0.4);">‹</button>
+        <button onClick="{{ next }}" aria-label="Next production" style="position:absolute; right:clamp(-22px,-1.6vw,-8px); top:50%; transform:translateY(-50%); z-index:3; width:44px; height:44px; border-radius:50%; background:rgba(10,10,12,0.3); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.7); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); color:#fff; font-size:22px; line-height:1; cursor:pointer;" style-hover="box-shadow:inset 0 0 0 1px rgba(255,255,255,0.4);">›</button>
+      </div>
+
+      <div role="tablist" aria-label="Choose a production" style="display:flex; gap:clamp(12px,2vw,24px); overflow-x:auto; scrollbar-width:none; padding:4px 2px 2px;">
+        <sc-for list="{{ slides }}" as="s" hint-placeholder-count="5">
+          <button role="tab" aria-selected="{{ s.selected }}" onClick="{{ s.go }}" style="flex:1 0 auto; min-width:120px; display:flex; flex-direction:column; align-items:stretch; gap:7px; padding:6px 0 0; background:none; border:0; cursor:pointer; white-space:nowrap; font-family:'Inter',sans-serif; text-align:left;">
+            <span style="{{ s.tabLabelStyle }}">{{ s.short }}</span>
+            <span aria-hidden="true" style="{{ s.tabBarStyle }}"></span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- XROBOT PHOTOGRAPHY -->
+  <section id="photography" style="position:relative; overflow:hidden; padding:clamp(60px,8vw,100px) clamp(20px,6vw,64px); background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06); border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); overflow:hidden; filter:grayscale(1) contrast(1.05);">
+      <div style="overflow:hidden; min-height:0;"><img src="assets/bg/bg6.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; transform-origin:70% 60%; animation:driftB 27s ease-in-out -14s infinite alternate; will-change:transform;"></div>
+      <div style="overflow:hidden; min-height:0;"><img src="assets/bg/bg7.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; transform-origin:40% 70%; animation:driftD 37s ease-in-out -21s infinite alternate; will-change:transform;"></div>
+      <div style="overflow:hidden; min-height:0;"><img src="assets/bg/bg8.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; transform-origin:60% 30%; animation:driftA 45s ease-in-out -5s infinite alternate; will-change:transform;"></div>
+      <div style="overflow:hidden; min-height:0;"><img src="assets/bg/bg9.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; transform-origin:50% 50%; animation:driftC 29s ease-in-out -12s infinite alternate; will-change:transform;"></div>
+      <div style="overflow:hidden; min-height:0;"><img src="assets/bg/bg10.jpg" alt="" style="width:100%; height:100%; object-fit:cover; display:block; transform-origin:30% 40%; animation:driftB 35s ease-in-out -19s infinite alternate; will-change:transform;"></div>
+    </div>
+    <div aria-hidden="true" style="position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,10,12,0.93), rgba(10,10,12,0.86) 45%, rgba(10,10,12,0.95));"></div>
+    <div style="position:relative; z-index:2; max-width:720px; margin:0 auto 40px; text-align:center;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.12em; color:#ff1436; margin-bottom:10px;">LIVE MUSIC · URBAN · TECHNOLOGY · NATURE</div>
+      <div data-text="xRobot Photography" style="position:relative; font-family:'Anton',sans-serif; font-size:clamp(32px,4vw,48px); line-height:1; text-transform:uppercase; color:#fff; text-shadow:0 0 14px rgba(255,20,54,0.5), 0 0 30px rgba(138,148,166,0.5); margin-bottom:16px;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#ff1436; clip-path:inset(0 0 55% 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-3s;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#8A94A6; clip-path:inset(55% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-2.88s;">xRobot Photography</div>
+      <p style="font-size:15px; line-height:1.7; color:#c7c7c4; margin:0 0 24px;">Live music, on-set production work, the city, tech close-ups and nature — each collection sorted by event, with every frame viewable full-size.</p>
+      <a href="xRobot Photography.dc.html" style="text-decoration:none; padding:12px 22px; background:#ff1436; color:#fff; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">VIEW COLLECTIONS →</a>
+    </div>
+    <div style="position:relative; z-index:2; max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px;">
+      <a href="xRobot Photography.dc.html#concerts" aria-label="Open the Live Music collection" style="position:relative; display:block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,0.1);" style-hover="border-color:#ff1436;">
+        <image-slot id="photo-teaser-1" shape="rect" role="img" aria-label="Photography sample: Live Music" placeholder="Live Music" style="width:100%; aspect-ratio:4/5; display:block;"></image-slot>
+        <div style="position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between; align-items:center; gap:8px; padding:11px 14px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); pointer-events:none;">
+          <span style="font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">Live Music</span>
+          <span style="font-size:13px; font-weight:700; color:#ff1436;">→</span>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#street" aria-label="Open the Urban collection" style="position:relative; display:block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,0.1);" style-hover="border-color:#ff1436;">
+        <image-slot id="photo-teaser-3" shape="rect" role="img" aria-label="Photography sample: Urban" placeholder="Urban" style="width:100%; aspect-ratio:4/5; display:block;"></image-slot>
+        <div style="position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between; align-items:center; gap:8px; padding:11px 14px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); pointer-events:none;">
+          <span style="font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">Urban</span>
+          <span style="font-size:13px; font-weight:700; color:#ff1436;">→</span>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#tech" aria-label="Open the Technology collection" style="position:relative; display:block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,0.1);" style-hover="border-color:#ff1436;">
+        <img src="assets/photos/tech/mixer-ddr-t.jpg" alt="Photography sample: Technology, a mixing console channel strip" loading="lazy" decoding="async" style="width:100%; aspect-ratio:4/5; display:block; object-fit:cover; object-position:58% 50%;">
+        <div style="position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between; align-items:center; gap:8px; padding:11px 14px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); pointer-events:none;">
+          <span style="font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">Technology</span>
+          <span style="font-size:13px; font-weight:700; color:#ff1436;">→</span>
+        </div>
+      </a>
+      <a href="xRobot Photography.dc.html#land" aria-label="Open the Nature collection" style="position:relative; display:block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,0.1);" style-hover="border-color:#ff1436;">
+        <image-slot id="photo-teaser-4" shape="rect" role="img" aria-label="Photography sample: Nature" placeholder="Nature" style="width:100%; aspect-ratio:4/5; display:block;"></image-slot>
+        <div style="position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between; align-items:center; gap:8px; padding:11px 14px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); pointer-events:none;">
+          <span style="font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">Nature</span>
+          <span style="font-size:13px; font-weight:700; color:#ff1436;">→</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" style="padding:clamp(60px,8vw,100px) clamp(20px,6vw,64px); max-width:800px; margin:0 auto; text-align:center;">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.12em; color:#ffffff; margin-bottom:10px;">ABOUT</div>
+    <div data-text="Ryan Wilson" style="position:relative; font-family:'Anton',sans-serif; font-size:clamp(30px,4vw,44px); line-height:1; text-transform:uppercase; color:#fff; text-shadow:0 0 14px rgba(255,255,255,0.3), 0 0 30px rgba(31,58,147,0.55); margin-bottom:28px;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#ffffff; clip-path:inset(0 0 55% 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-4s;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#1F3A93; clip-path:inset(55% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-3.88s;">Ryan Wilson</div>
+
+    <div style="background:#0a0a0c; border:1px solid rgba(255,255,255,0.14); border-top:4px solid #1F3A93; border-radius:8px; padding:clamp(28px,4vw,44px); display:flex; flex-direction:column; align-items:center; gap:18px; max-width:480px; margin:0 auto;">
+      <img src="assets/ryan-headshot.png" alt="Ryan Wilson" style="width:88px; height:88px; border-radius:50%; object-fit:cover; border:2px solid #1F3A93;">
+      <p style="font-size:15px; line-height:1.75; color:#c7c7c4; margin:0;">Visual Multimedia Producer based in Denver — currently running broadcast automation as Master Control Operator at Nexstar Media Group, with production credits including the feature film <em>Duffle Bag Boy</em>. Everything above grew out of the same instinct: video, broadcast, IT — build things, put them somewhere I control, and keep going.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:6px;">
+        <a href="https://www.linkedin.com/in/xrobotproductions" target="_blank" rel="noopener" style="text-decoration:none; padding:12px 22px; border:1px solid rgba(255,255,255,0.35); color:#fff; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">LINKEDIN ↗</a>
+        <a href="xRobot About.dc.html" style="text-decoration:none; padding:12px 22px; background:#1F3A93; color:#fff; font-weight:700; font-size:13px; letter-spacing:0.04em; border-radius:2px;">LEARN MORE ABOUT ME →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding:clamp(60px,8vw,100px) clamp(20px,6vw,64px); background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06);">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div style="text-align:center; margin-bottom:44px;">
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.12em; color:#fff200; margin-bottom:10px;">CONTACT</div>
+        <div data-text="Find It All, In One Place" style="position:relative; font-family:'Anton',sans-serif; font-size:clamp(30px,4vw,44px); line-height:1; text-transform:uppercase; color:#fff; text-shadow:0 0 14px rgba(255,242,0,0.45), 3px 3px 0 rgba(0,0,0,0.85);" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#fff200; clip-path:inset(0 0 55% 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-5s;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; color:#000000; clip-path:inset(55% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:glitchSlice 6s steps(1) infinite; animation-delay:-4.88s;">Find It All, In One Place</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;">
+        <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:24px;">
+          <div style="font-weight:700; font-size:15px; color:#ff2ec4; margin-bottom:12px;">Robot's Tech Room</div>
+          <a href="https://youtube.com/@robotstechroom" target="_blank" rel="noopener" style="display:block; font-size:13px; margin-bottom:8px; text-decoration:none;">YouTube →</a>
+          <a href="https://www.facebook.com/RobotsTechRoom" target="_blank" rel="noopener" style="display:block; font-size:13px; text-decoration:none;">Facebook →</a>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:24px;">
+          <div style="font-weight:700; font-size:15px; color:#39FF14; margin-bottom:12px;">Colorado Ravers</div>
+          <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="display:block; font-size:13px; margin-bottom:8px; text-decoration:none;">Facebook Group →</a>
+          <a href="https://www.facebook.com/ColoradoRavers/" target="_blank" rel="noopener" style="display:block; font-size:13px; text-decoration:none;">Facebook Page →</a>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:24px;">
+          <div style="font-weight:700; font-size:15px; color:#a51cff; margin-bottom:12px;">xRobot Media</div>
+          <a href="https://www.youtube.com/@xrobotproductions" target="_blank" rel="noopener" style="display:block; font-size:13px; text-decoration:none;">YouTube Productions →</a>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:24px;">
+          <div style="font-weight:700; font-size:15px; color:#1F3A93; margin-bottom:12px;">Professional</div>
+          <a href="https://www.linkedin.com/in/xrobotproductions" target="_blank" rel="noopener" style="display:block; font-size:13px; margin-bottom:8px; text-decoration:none;">LinkedIn →</a>
+          <a href="xRobot About.dc.html" style="display:block; font-size:13px; text-decoration:none;">Resume &amp; About →</a>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:24px;">
+          <div style="font-weight:700; font-size:15px; color:#fff; margin-bottom:12px;">Direct</div>
+          <a href="mailto:hello@xrobot.media" style="display:block; font-size:13px; text-decoration:none;">hello@xrobot.media</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:28px clamp(20px,6vw,64px); text-align:center; border-top:1px solid rgba(255,255,255,0.08);">
+    <div style="font-size:12px; color:#8a8a87;">© 2026 xRobot Media — Ryan Wilson. Site in progress.</div>
+    <div style="display:flex; justify-content:center; margin-top:10px;"><a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a></div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { idx: 0, hover: false, prev: null, dir: 1, pending: null };
+  /* BACKGROUND IMAGES: add  bg: 'assets/your-file.jpg',  to any production
+     below to replace its colour-glow placeholder with a drifting photo
+     (Tech Room already has one). Card images (left side of each card)
+     can be dropped straight onto the card in the preview. */
+  SLIDES = [
+    { key: 'techroom', short: 'Tech Room', title: "Robot's Tech Room", eyebrow: 'EST. 2020 · TECH DIFFERENTLY, TECHNICALLY SPEAKING', c1: '#ff2ec4', c2: '#2b46ff',
+      blurb: 'Where I dig into the gear I grew up with — animated histories, unboxings, and stories from my own tech past.',
+      card: './techroomvortex2-mvdakeje-h2fi.png', bg: 'assets/rtr-still.jpg',
+      href: 'xRobot Tech Room.dc.html', cta: 'ENTER THE TECH ROOM →', altHref: 'https://youtube.com/@robotstechroom', altCta: 'YOUTUBE ↗', ext: true, ctaInk: '#0a0a0c' },
+    { key: 'video', short: 'Video', title: 'Video Production & Post', eyebrow: 'DOCS · COMMERCIALS · STUDIO · BTS', c1: '#a51cff', c2: '#FF7A18',
+      blurb: 'On set and in the edit — documentaries, commercials, broadcast studio work and behind-the-scenes.',
+      href: 'xRobot Video.dc.html', cta: 'VIEW THE WORK →', altHref: 'https://www.youtube.com/@xrobotproductions', altCta: 'WATCH THE REEL ↗', ext: true, ctaInk: '#fff' },
+    { key: 'design', short: 'Web, UI & Apps', title: 'Web, UI & Application Design', eyebrow: 'UI · WEB · APPLICATIONS', c1: '#5B8DEF', c2: '#2b46ff',
+      blurb: 'Broadcast software, applications and websites — from a live control-room tool to client sites.',
+      href: 'xRobot Design.dc.html', cta: 'VIEW DESIGN →', altHref: 'Tracker Suite Tour.html', altCta: 'TRACKER SUITE DEMO →', ctaInk: '#0a0a0c' },
+    { key: 'print', short: 'Static & Print', title: 'Static & Print Design', eyebrow: 'POSTERS · FLYERS · BRANDING', c1: '#FF7A18', c2: '#fff200',
+      blurb: 'Posters, flyers and identity work made to be held or hung.',
+      href: 'xRobot Print.dc.html', cta: 'VIEW DESIGN →', ctaInk: '#0a0a0c' },
+    { key: 'ravers', short: 'Colorado Ravers', title: 'Colorado Ravers', eyebrow: 'COMMUNITY BRAND', c1: '#39FF14', c2: '#8A2BFF',
+      blurb: 'A Colorado rave community brand — aftermovies, events and the people on the floor.',
+      card: 'assets/ravers-square.png',
+      href: 'xRobot Ravers.dc.html', cta: 'ENTER COLORADO RAVERS →', altHref: 'https://www.youtube.com/@coloradoravers', altCta: 'YOUTUBE ↗', ext: true, ctaInk: '#0a0a0c' }
+  ];
+  componentDidMount() {
+    this.reduced = document.documentElement.getAttribute('data-xr-motion') === 'reduced';
+    this.onHash = () => {
+      const m = /^#productions-([a-z]+)$/.exec(location.hash);
+      if (!m) return;
+      const i = this.SLIDES.findIndex(s => s.key === m[1]);
+      if (i < 0) return;
+      this.setState({ idx: i, prev: null, pending: null });
+      const el = document.getElementById('productions');
+      if (el) setTimeout(() => window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140 }), 60);
+      this.restart();
+    };
+    this.onHash();
+    window.addEventListener('hashchange', this.onHash);
+    this.restart();
+  }
+  componentWillUnmount() { clearInterval(this.t); window.removeEventListener('hashchange', this.onHash); }
+  restart() {
+    clearInterval(this.t);
+    if (this.reduced) return;
+    this.t = setInterval(() => { if (!this.state.hover) this.move((this.state.idx + 1) % this.SLIDES.length, 1); }, 8000);
+  }
+  move(to, dir) {
+    if (to === this.state.idx || this.state.pending !== null) return;
+    if (this.reduced) { this.setState(s => ({ prev: s.idx, dir, idx: to })); return; }
+    this.setState({ pending: to, dir }, () => {
+      requestAnimationFrame(() => requestAnimationFrame(() => this.setState(s => ({ prev: s.idx, idx: to, pending: null }))));
+    });
+  }
+  go(i, dir) {
+    const n = this.SLIDES.length, to = (i + n) % n;
+    this.move(to, dir || (to > this.state.idx ? 1 : -1));
+    this.restart();
+  }
+  renderVals() {
+    const cur = this.state.idx, n = this.SLIDES.length;
+    const fade = 'opacity 0.9s ease, visibility 0s linear ';
+    const S = '0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6)';
+    return {
+      pause: () => this.setState({ hover: true }),
+      resume: () => this.setState({ hover: false }),
+      prev: () => this.go(cur - 1, -1),
+      next: () => this.go(cur + 1, 1),
+      counter: String(cur + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+      slides: this.SLIDES.map((d, i) => {
+        const on = i === cur;
+        const vis = { opacity: on ? 1 : 0, visibility: on ? 'visible' : 'hidden', transition: fade + (on ? '0s' : '0.9s') };
+        return {
+          ...d,
+          ariaLabel: (i + 1) + ' of ' + n + ': ' + d.title,
+          hidden: on ? 'false' : 'true',
+          tab: on ? 0 : -1,
+          selected: on ? 'true' : 'false',
+          go: () => this.go(i),
+          hasCard: !!d.card, noCard: !d.card, cardSlot: 'prod-card-' + d.key, cardHint: d.title + ' — key image', cardAlt: d.title,
+          hasBg: !!d.bg, noBg: !d.bg,
+          bgFallStyle: { position: 'absolute', inset: 0, background: 'radial-gradient(60% 70% at 25% 35%, ' + d.c1 + '38, transparent 70%), radial-gradient(55% 65% at 78% 70%, ' + d.c2 + '30, transparent 70%), #0a0a0c' },
+          hasAlt: !!d.altHref, altTarget: d.ext ? '_blank' : '_self',
+          bgLayerStyle: { gridArea: '1 / 1', position: 'relative', overflow: 'hidden', ...vis },
+          bgImgStyle: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+            transformOrigin: ['50% 50%', '30% 40%', '70% 60%', '40% 70%', '60% 30%'][i], animation: ['driftA', 'driftC', 'driftB', 'driftD', 'driftA'][i] + ' ' + [32, 41, 27, 37, 45][i] + 's ease-in-out ' + (-i * 7) + 's infinite alternate' },
+          cardRowStyle: { display: 'flex', flexWrap: 'wrap', flexDirection: i % 2 ? 'row-reverse' : 'row', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', overflow: 'hidden' },
+          panelStyle: { flex: '0.9 1 300px', minWidth: 0, background: 'rgba(10,10,12,0.55)', WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)',
+            [i % 2 ? 'borderRight' : 'borderLeft']: '1px solid rgba(0,0,0,0.7)', padding: 'clamp(24px,3vw,40px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' },
+          slideStyle: this.reduced ? { gridArea: '1 / 1', ...vis } : (() => {
+            const isPrev = i === this.state.prev && this.state.pending === null;
+            const shown = on || isPrev;
+            const off = (isPrev ? -1 : 1) * this.state.dir * 110;
+            return { gridArea: '1 / 1', opacity: 1,
+              visibility: shown ? 'visible' : 'hidden',
+              transform: on ? 'translateX(0)' : 'translateX(' + off + 'vw)',
+              transition: shown ? 'transform 0.9s cubic-bezier(0.65,0,0.35,1), visibility 0s linear ' + (on ? '0s' : '0.9s') : 'none' };
+          })(),
+          eyebrowStyle: { fontSize: '12px', fontWeight: 800, letterSpacing: '0.12em', color: d.c1, marginBottom: '10px', textShadow: S },
+          titleStyle: { '--c1': d.c1, '--c2': d.c2, position: 'relative', fontFamily: "'Anton',sans-serif", fontSize: 'clamp(30px,4vw,48px)', lineHeight: 1, textTransform: 'uppercase', color: '#fff',
+            textShadow: '-2px 0 ' + d.c1 + 'aa, 2px 0 ' + d.c2 + 'bb', marginBottom: '16px' },
+          primaryStyle: { textDecoration: 'none', padding: '12px 22px', background: d.c1, color: d.ctaInk, fontWeight: 700, fontSize: '13px', letterSpacing: '0.04em', borderRadius: '2px' },
+          tabLabelStyle: { fontSize: '12px', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: on ? '#fff' : '#9a9a97', textShadow: S, transition: 'color 0.3s ease' },
+          tabBarStyle: { height: '3px', background: 'linear-gradient(90deg,' + d.c1 + ',' + d.c2 + ')', opacity: on ? 1 : 0.5, transition: 'opacity 0.3s ease' }
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

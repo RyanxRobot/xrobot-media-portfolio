@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Admin · xRobot Media</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #6fe8ff; }
+    a:hover { color: #fff; }
+  </style>
+  <script src="./xr-edit.js"></script>
+</helmet>
+
+<div style="position:relative; min-height:100vh; background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; display:flex; flex-direction:column; overflow:hidden;">
+  <div aria-hidden="true" style="position:absolute; inset:0; background:radial-gradient(60% 50% at 20% 20%, rgba(255,46,196,0.22), transparent 70%), radial-gradient(55% 50% at 85% 80%, rgba(43,70,255,0.25), transparent 70%);"></div>
+
+  <header style="position:relative; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px clamp(20px,4vw,48px);">
+    <a href="xRobot Media.dc.html" style="font-family:'Anton',sans-serif; font-size:20px; letter-spacing:0.06em; text-decoration:none; color:#fff;">xROBOT.MEDIA</a>
+    <a href="xRobot Media.dc.html" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#9a9a97;" style-hover="color:#fff;">← BACK TO THE HUB</a>
+  </header>
+
+  <main style="position:relative; flex:1; display:flex; align-items:center; justify-content:center; padding:24px clamp(16px,4vw,48px) 64px;">
+    <div style="width:100%; max-width:440px; display:flex; flex-direction:column; gap:22px; padding:clamp(24px,4vw,36px); border-radius:10px; background:rgba(10,10,12,0.35); -webkit-backdrop-filter:blur(18px) saturate(1.3); backdrop-filter:blur(18px) saturate(1.3); border:1px solid rgba(255,255,255,0.16); box-shadow:0 30px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.1);">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="height:3px; width:56px; background:linear-gradient(90deg,#ff2ec4,#2b46ff);"></div>
+        <h1 style="font-family:'Anton',sans-serif; font-weight:400; font-size:clamp(34px,6vw,44px); line-height:1; letter-spacing:0.02em; text-transform:uppercase; margin:6px 0 0; color:#fff;">Admin</h1>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="{{ dotStyle }}"></span>
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.14em; color:#d6d6d3;">{{ statusLabel }}</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <button type="button" onClick="{{ unlock }}" style="padding:15px 18px; border:none; border-radius:4px; background:#fff; color:#0a0a0c; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:0.08em; cursor:pointer;" style-hover="background:#6fe8ff;">UNLOCK WITH PASSKEY</button>
+          <button type="button" onClick="{{ register }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:rgba(255,255,255,0.5);">REGISTER THIS DEVICE</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <p style="margin:0; font-size:14px; line-height:1.6; color:#c7c7c4;">Edit mode is on for this browser. Empty image boxes and placeholders are visible across the site.</p>
+          <a href="xRobot Media.dc.html" style="padding:15px 18px; border-radius:4px; background:#fff; color:#0a0a0c; text-align:center; text-decoration:none; font-size:13px; font-weight:800; letter-spacing:0.08em;" style-hover="background:#6fe8ff; color:#0a0a0c;">GO TO THE SITE →</a>
+          <button type="button" onClick="{{ lock }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:#ff2ec4;">TURN OFF EDIT MODE</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasMsg }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="{{ msgStyle }}">{{ msg }}</div>
+      </sc-if>
+
+      <sc-if value="{{ hasNewCred }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:8px; padding:14px; border-radius:6px; background:rgba(111,232,255,0.08); border:1px solid rgba(111,232,255,0.35);">
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; color:#6fe8ff;">DEVICE ID · SEND THIS TO ADD IT</span>
+          <code style="font-family:ui-monospace,Menlo,monospace; font-size:12px; line-height:1.5; color:#fff; word-break:break-all;">{{ newCred }}</code>
+          <button type="button" onClick="{{ copyCred }}" style="align-self:flex-start; padding:8px 12px; border:none; border-radius:3px; background:#6fe8ff; color:#0a0a0c; font-family:inherit; font-size:11px; font-weight:800; letter-spacing:0.1em; cursor:pointer;">{{ copyLabel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+        <details style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+          <summary style="font-size:11px; font-weight:700; letter-spacing:0.12em; color:#9a9a97; cursor:pointer;">USE BACKUP KEY</summary>
+          <form onSubmit="{{ submitKey }}" style="display:flex; gap:8px; margin-top:12px;">
+            <input type="password" name="key" autocomplete="current-password" aria-label="Backup key" placeholder="Backup key" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
+            <button type="submit" style="padding:11px 14px; border-radius:4px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">ENTER</button>
+          </form>
+        </details>
+      </sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false, msg: '', tone: 'info', newCred: '', copied: false };
+  componentDidMount() {
+    this.cfg = window.XR_ADMIN || { hash: '', creds: [], storageKey: 'xr-edit' };
+    const sync = () => this.setState({ on: this.cfg.isOn ? this.cfg.isOn() : document.documentElement.hasAttribute('data-xr-edit') });
+    this.onChange = (e) => this.setState({ on: e.detail.on });
+    window.addEventListener('xr-edit-change', this.onChange);
+    sync();
+  }
+  componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onChange); }
+  rand(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }
+  b64u(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
+  say(msg, tone) { this.setState({ msg, tone: tone || 'info' }); }
+  setOn(on) {
+    if (this.cfg.setEdit) this.cfg.setEdit(on);
+    else { try { localStorage.setItem(this.cfg.storageKey, on ? '1' : '0'); } catch (e) {} document.documentElement.toggleAttribute('data-xr-edit', on); }
+    this.setState({ on, msg: on ? '' : 'Edit mode is off. The site shows the published view.', tone: 'info' });
+  }
+  supported() {
+    if (!window.PublicKeyCredential || !navigator.credentials) { this.say('This browser doesn’t support passkeys. Use the backup key.', 'err'); return false; }
+    return true;
+  }
+  async unlock() {
+    if (!this.supported()) return;
+    const creds = this.cfg.creds || [];
+    if (!creds.length) { this.say('No passkeys are registered yet. Register this device first, then send the ID to be added.', 'err'); return; }
+    try {
+      this.say('Waiting for your passkey…');
+      await navigator.credentials.get({ publicKey: {
+        challenge: this.rand(32), timeout: 60000, userVerification: 'required',
+        allowCredentials: creds.map(id => ({ type: 'public-key', id: this.unb64u(id) }))
+      } });
+      this.setOn(true);
+    } catch (e) { this.say(this.why(e), 'err'); }
+  }
+  async register() {
+    if (!this.supported()) return;
+    try {
+      this.say('Follow your device’s prompt…');
+      const c = await navigator.credentials.create({ publicKey: {
+        challenge: this.rand(32), timeout: 60000,
+        rp: { name: 'xRobot Media' },
+        user: { id: this.rand(16), name: 'admin@xrobot.media', displayName: 'xRobot Admin' },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: { residentKey: 'preferred', userVerification: 'required' }
+      } });
+      this.setState({ newCred: this.b64u(c.rawId), copied: false, msg: 'Passkey created. It unlocks once this ID is added to the site.', tone: 'ok' });
+    } catch (e) { this.say(this.why(e), 'err'); }
+  }
+  why(e) {
+    if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no registered passkey for this site.';
+    if (e && (e.name === 'SecurityError' || /permission|feature/i.test(e.message || ''))) return 'Passkeys only work on the live site (https://xrobot.media), not in this preview.';
+    return 'Passkey failed: ' + ((e && e.message) || 'unknown error');
+  }
+  async submitKey(ev) {
+    ev.preventDefault();
+    const k = ev.currentTarget.elements.key.value;
+    if (!k) return;
+    try {
+      const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(k));
+      const h = Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
+      if (h === this.cfg.hash) { ev.target.reset && ev.target.reset(); this.setOn(true); }
+      else this.say('That key didn’t match.', 'err');
+    } catch (e) { this.say('Backup key needs a secure (https) page.', 'err'); }
+  }
+  renderVals() {
+    const { on, msg, tone, newCred, copied } = this.state;
+    const tc = { info: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.16)', '#d6d6d3'], ok: ['rgba(57,255,20,0.08)', 'rgba(57,255,20,0.35)', '#b9ffa8'], err: ['rgba(255,46,196,0.1)', 'rgba(255,46,196,0.4)', '#ffc2ec'] }[tone];
+    return {
+      locked: !on, unlocked: on,
+      statusLabel: on ? 'EDIT MODE · ON' : 'LOCKED · PUBLISHED VIEW',
+      dotStyle: { width: '8px', height: '8px', borderRadius: '50%', background: on ? '#ff2ec4' : '#6a6a68', boxShadow: on ? '0 0 10px #ff2ec4' : 'none' },
+      hasMsg: !!msg, msg,
+      msgStyle: { padding: '11px 13px', borderRadius: '6px', background: tc[0], border: '1px solid ' + tc[1], color: tc[2], fontSize: '13px', lineHeight: 1.5 },
+      hasNewCred: !!newCred, newCred, copyLabel: copied ? 'COPIED ✓' : 'COPY ID',
+      copyCred: () => { navigator.clipboard && navigator.clipboard.writeText(newCred).then(() => this.setState({ copied: true })); },
+      unlock: () => this.unlock(), register: () => this.register(),
+      lock: () => this.setOn(false), submitKey: (e) => this.submitKey(e)
+    };
+  }
+}
+</script>
+</body>
+</html>

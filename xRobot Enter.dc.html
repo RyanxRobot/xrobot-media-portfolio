@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #6fe8ff; }
+    a:hover { color: #ff5fd8; }
+    @keyframes gateFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</helmet>
+
+<div style="{{ shellStyle }}">
+  <div style="width:100%; max-width:680px; padding:clamp(24px,5vw,48px); box-sizing:border-box; animation:gateFade 0.6s ease-out both;">
+
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:clamp(28px,4vw,44px);">
+      <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,3vw,30px); letter-spacing:0.04em; color:#fff;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</div>
+      <div style="flex:1; height:4px; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#a51cff,#FF7A18,#ff1436,#8A94A6,#1F3A93,#fff200);"></div>
+    </div>
+
+    <div style="font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.14em; color:#ffe94d; margin-bottom:14px;">CHOOSE YOUR ENTRANCE</div>
+
+    <p style="font-family:'Inter',sans-serif; font-size:clamp(15px,1.7vw,18px); line-height:1.7; color:#e8e8e6; margin:0 0 16px;">xRobot.Media uses heavy motion graphics, flickering images, and sudden flashes of light.</p>
+    <p style="font-family:'Inter',sans-serif; font-size:clamp(14px,1.5vw,16px); line-height:1.7; color:#a8a8a5; margin:0 0 clamp(26px,3.5vw,38px);">If you're sensitive to any of that — photosensitive epilepsy, migraine, vestibular disorders — switch on reduced motion below. The site loses the animation, not the content.</p>
+
+    <button onClick="{{ toggle }}" style="{{ toggleRowStyle }}">
+      <span style="{{ switchStyle }}"><span style="{{ knobStyle }}"></span></span>
+      <span style="text-align:left;">
+        <span style="display:block; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.06em; color:#fff;">REDUCED MOTION</span>
+        <span style="display:block; font-family:'Inter',sans-serif; font-size:12px; color:#8f8f8c; margin-top:4px;">{{ toggleHint }}</span>
+      </span>
+    </button>
+
+    <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:clamp(26px,3.5vw,38px);">
+      <button onClick="{{ enter }}" style="{{ enterStyle }}">{{ enterLabel }}</button>
+      <span style="font-family:'Inter',sans-serif; font-size:12px; color:#6e6e6b;">You can change this later — the setting is remembered.</span>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:14px; margin:clamp(30px,4vw,44px) 0 clamp(18px,2.4vw,24px);">
+      <div style="flex:1; height:1px; background:rgba(255,255,255,0.12);"></div>
+      <div style="font-family:'Inter',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.16em; color:#6e6e6b;">OR</div>
+      <div style="flex:1; height:1px; background:rgba(255,255,255,0.12);"></div>
+    </div>
+
+    <button onClick="{{ toResume }}" style="display:flex; align-items:center; justify-content:space-between; gap:20px; width:100%; text-align:left; background:rgba(111,232,255,0.04); border:1px solid rgba(111,232,255,0.35); padding:18px 20px; cursor:pointer; font-family:'Inter',sans-serif;" style-hover="background:rgba(111,232,255,0.1); border-color:#6fe8ff;">
+      <span style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:0.06em; color:#fff;">HIRING? GO STRAIGHT TO MY RÉSUMÉ</span>
+        <span style="font-size:12px; color:#8f8f8c;">Experience, skills and contact — opens in reduced motion.</span>
+      </span>
+      <span style="flex-shrink:0; font-size:13px; font-weight:700; letter-spacing:0.08em; color:#6fe8ff;">RÉSUMÉ →</span>
+    </button>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { reduced: false, leaving: false };
+
+  componentDidMount() {
+    let r = false;
+    try { r = localStorage.getItem('xr-motion') === 'reduced'; } catch (e) {}
+    if (!r && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) r = true;
+    if (r) this.setState({ reduced: true });
+  }
+
+  toggle = () => {
+    this.setState(s => {
+      const next = !s.reduced;
+      try { localStorage.setItem('xr-motion', next ? 'reduced' : 'full'); } catch (e) {}
+      return { reduced: next };
+    });
+  };
+
+  enter = () => {
+    const reduced = this.state.reduced;
+    try { localStorage.setItem('xr-motion', reduced ? 'reduced' : 'full'); } catch (e) {}
+    if (!reduced) { window.location.href = encodeURI('xRobot Media Intro.dc.html'); return; }
+    this.setState({ leaving: true });
+    setTimeout(() => { window.location.href = encodeURI('xRobot Media.dc.html'); }, 620);
+  };
+
+  toResume = () => {
+    try { localStorage.setItem('xr-motion', 'reduced'); } catch (e) {}
+    this.setState({ reduced: true, leaving: true });
+    setTimeout(() => { window.location.href = encodeURI('xRobot About.dc.html'); }, 450);
+  };
+
+  renderVals() {
+    const on = this.state.reduced;
+    return {
+      toggle: this.toggle,
+      toResume: this.toResume,
+      enter: this.enter,
+      enterLabel: on ? 'ENTER SITE — REDUCED MOTION' : 'ENTER SITE',
+      toggleHint: on ? 'On — no glitch effects, still images, static navigation.' : 'Off — full motion, glitch effects, video backgrounds.',
+      shellStyle: {
+        minHeight: '100vh', background: '#0a0a0c', color: '#f2f2f0', display: 'flex',
+        fontFamily: "'Inter',sans-serif",
+        alignItems: 'center', justifyContent: 'center',
+        opacity: this.state.leaving ? 0 : 1,
+        transition: 'opacity 0.55s ease'
+      },
+      toggleRowStyle: {
+        display: 'flex', alignItems: 'center', gap: '16px', width: '100%', textAlign: 'left',
+        background: on ? 'rgba(57,255,20,0.06)' : 'rgba(255,255,255,0.03)',
+        border: '1px solid ' + (on ? 'rgba(57,255,20,0.45)' : 'rgba(255,255,255,0.14)'),
+        padding: '18px 20px', cursor: 'pointer', transition: 'background 0.3s ease, border-color 0.3s ease'
+      },
+      switchStyle: {
+        flex: '0 0 auto', width: '52px', height: '28px', borderRadius: '999px', position: 'relative',
+        background: on ? '#39FF14' : 'rgba(255,255,255,0.16)', transition: 'background 0.3s ease'
+      },
+      knobStyle: {
+        position: 'absolute', top: '3px', left: on ? '27px' : '3px', width: '22px', height: '22px',
+        borderRadius: '50%', background: on ? '#0a0a0c' : '#e8e8e6',
+        transition: 'left 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease'
+      },
+      enterStyle: {
+        background: on ? 'transparent' : '#39FF14', color: on ? '#39FF14' : '#0a0a0c',
+        border: '1px solid #39FF14', fontFamily: "'Inter',sans-serif", fontSize: '13px', fontWeight: 700,
+        letterSpacing: '0.08em', padding: '15px 30px', cursor: 'pointer', transition: 'all 0.3s ease'
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

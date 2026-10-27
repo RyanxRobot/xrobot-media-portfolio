@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #5B8DEF; }
+    a:hover { color: #8fd6ff; }
+    @media (max-width: 680px) { [data-back-cue] { display: none; } }
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(91,141,239,0.35), 0 0 30px rgba(143,214,255,0.30); }
+      50% { text-shadow: 0 0 16px rgba(91,141,239,0.5), 0 0 48px rgba(143,214,255,0.42); }
+    }
+    @keyframes titleGlitch {
+      0%, 89%, 100% { opacity:0; transform:translate(0,0); }
+      90% { opacity:0.85; transform:translate(-3px,1px); }
+      91.5% { opacity:0.85; transform:translate(3px,-1px); }
+      93% { opacity:0; transform:translate(0,0); }
+      94.5% { opacity:0.7; transform:translate(-2px,1px); }
+      96% { opacity:0; transform:translate(0,0); }
+    }
+    @keyframes backChevFade { 0%, 4% { opacity:0; } 9%, 45% { opacity:1; } 49%, 100% { opacity:0; } }
+    @keyframes backLabel { 0%, 8% { opacity:0; } 11%, 45% { opacity:1; } 49%, 100% { opacity:0; } }
+    @keyframes backLabelGlitch {
+      0%, 10%, 12%, 14%, 16%, 18%, 100% { opacity:0; transform:translate(0,0); }
+      11% { opacity:1; transform:translate(-4px,1px); }
+      13% { opacity:1; transform:translate(4px,-1px); }
+      15% { opacity:1; transform:translate(-3px,1px); }
+      17% { opacity:1; transform:translate(3px,-1px); }
+    }
+  </style>
+  <script src="./xr-transition.js"></script>
+  <script src="./xr-edit.js"></script>
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c;">
+    <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+      <div style="position:relative; display:inline-flex; align-items:center;">
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; right:100%; margin-right:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; pointer-events:none;"><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; animation:backChevFade 15s linear infinite;">›</span><span style="display:inline-block; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">›</span><span style="display:inline-block; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">›</span></span></span>
+        <a href="xRobot Media.dc.html#productions" aria-label="Back to xrobot.media home" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</a>
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; left:100%; margin-left:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; pointer-events:none;"><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; animation:backChevFade 15s linear infinite;">‹</span><span style="display:inline-block; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">‹</span><span style="display:inline-block; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">‹</span></span><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span></span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="height:4px; flex-shrink:0; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#5B8DEF,#8fd6ff,#ff1436,#8A94A6,#1F3A93,#fff200);"></div>
+  </header>
+  <div style="height:76px;"></div>
+  <nav aria-label="Productions" style="position:sticky; top:76px; z-index:50; background:rgba(10,10,12,0.28); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); border-bottom:1px solid rgba(0,0,0,0.7);">
+    <div style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px); display:flex; align-items:center; gap:clamp(14px,2.4vw,28px); overflow-x:auto; scrollbar-width:none;">
+      <a href="xRobot Media.dc.html#productions" style="flex-shrink:0; font-size:10px; font-weight:800; letter-spacing:0.16em; color:#6e6e6b; text-decoration:none; padding:14px 0 13px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);" style-hover="color:#fff;">PRODUCTIONS</a>
+      <div aria-hidden="true" style="flex-shrink:0; width:1px; height:16px; background:rgba(255,255,255,0.14);"></div>
+      <a href="xRobot Tech Room.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Tech Room</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#ff2ec4,#2b46ff); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Video.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Video Production</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#a51cff,#FF7A18); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Design.dc.html" aria-current="page" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#fff;">Web, UI &amp; Apps</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#2b46ff,#5B8DEF); opacity:1;"></span>
+      </a>
+      <a href="xRobot Print.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Static &amp; Print</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#FF7A18,#fff200); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Ravers.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Colorado Ravers</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#39FF14,#8A2BFF,#ff2ec4); opacity:0.3;"></span>
+      </a>
+    </div>
+  </nav>
+
+  <section style="max-width:1280px; margin:0 auto; padding:clamp(48px,7vw,88px) clamp(20px,6vw,64px) clamp(24px,3vw,36px);">
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:20px;">
+      <div>
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.14em; color:#5B8DEF; margin-bottom:12px;">UI · WEB · APPLICATIONS</div>
+        <h1 data-text="Web, UI &amp; App Design" style="position:relative; font-family:'Anton',sans-serif; font-size:clamp(38px,6.5vw,80px); line-height:0.92; text-transform:uppercase; color:#fff; margin:0; animation:titleGlow 5.5s ease-in-out infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#5B8DEF; clip-path:inset(0 0 56% 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#8fd6ff; clip-path:inset(56% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite; animation-delay:0.14s;">Web, UI &amp; App Design</h1>
+      </div>
+      <a href="xRobot Case Study - Tracker Suite.dc.html" style="text-decoration:none; padding:13px 24px; background:#5B8DEF; color:#fff; font-weight:700; font-size:13px; letter-spacing:0.05em; white-space:nowrap;">TRACKER SUITE →</a>
+    </div>
+    <p style="max-width:640px; font-size:15px; line-height:1.75; color:#c7c7c4; margin:22px 0 0; text-wrap:pretty;">Broadcast software, applications and websites. Professional and college work sit together; filter by format or context.</p>
+  </section>
+
+  <section style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(24px,3vw,32px); display:flex; flex-direction:column; gap:12px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; color:#6e6e6b; width:72px;">FORMAT</div>
+      <sc-for list="{{ formatChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; color:#6e6e6b; width:72px;">CONTEXT</div>
+      <sc-for list="{{ contextChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(70px,9vw,120px);">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr)); gap:clamp(18px,2.4vw,28px);">
+      <sc-for list="{{ items }}" as="item" hint-placeholder-count="6">
+        <article style="{{ item.cardStyle }}">
+          <div style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);">
+            <sc-if value="{{ item.hasVideo }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
+                <video src="{{ item.video }}" autoPlay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="metadata" aria-label="{{ item.title }}" style="position:absolute; left:0; top:-21.43%; width:100%; height:142.86%; display:block;"></video>
+              </div>
+            </sc-if>
+            <sc-if value="{{ item.hasImage }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ item.link }}" aria-label="Open the {{ item.title }} guided demo" style="display:block; position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
+                <img src="{{ item.image }}" alt="{{ item.title }} interface" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
+              </a>
+            </sc-if>
+            <sc-if value="{{ item.noVideo }}" hint-placeholder-val="{{ true }}">
+              <div style="aspect-ratio:4/3;">
+                <image-slot id="{{ item.slotId }}" role="img" aria-label="{{ item.title }}" placeholder="{{ item.slotHint }}" style="width:100%; height:100%; display:block;"></image-slot>
+              </div>
+            </sc-if>
+          </div>
+          <div style="padding:clamp(16px,2vw,22px); display:flex; flex-direction:column; gap:12px; flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; color:#8fd6ff;">{{ item.eyebrow }}</div>
+              <div style="{{ item.contextStyle }}">{{ item.context }}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div style="font-family:'Anton',sans-serif; font-size:clamp(22px,2.4vw,28px); line-height:1.05; text-transform:uppercase; color:#fff;">{{ item.title }}</div>
+              <sc-if value="{{ item.hasSubtitle }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:14px; font-weight:600; line-height:1.4; color:#e8e8e6;">{{ item.subtitle }}</div>
+              </sc-if>
+            </div>
+            <div style="font-size:13px; line-height:1.65; color:#b8b8b5; text-wrap:pretty;">{{ item.blurb }}</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:4px;">
+              <sc-for list="{{ item.roles }}" as="r" hint-placeholder-count="3">
+                <span style="font-size:11px; font-weight:600; letter-spacing:0.06em; color:#d8d8d5; border:1px solid rgba(255,255,255,0.18); padding:4px 9px; border-radius:2px;">{{ r }}</span>
+              </sc-for>
+            </div>
+            <sc-if value="{{ item.hasLink }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ item.link }}" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#5B8DEF;">{{ item.linkLabel }}</a>
+            </sc-if>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 0; text-align:center; font-size:14px; color:#8a8a87;">Nothing in that combination yet.</div>
+    </sc-if>
+  </section>
+
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:clamp(32px,4vw,52px) clamp(20px,6vw,64px); max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;">
+    <a href="xRobot Media.dc.html#productions" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none; color:#5B8DEF;">← BACK TO PRODUCTIONS</a>
+    <div style="font-size:12px; color:#6e6e6b; letter-spacing:0.06em;">© 2026 xROBOT.MEDIA · RYAN WILSON</div>
+    <a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { format: 'All', context: 'All' };
+
+  data() {
+    return [
+      { title: 'Tracker Suite', format: 'UI / App', context: 'Professional', year: '',
+        blurb: 'A four-app shift-operations suite for broadcast master control — break scheduling, live tracking and discrepancy reporting. Try the guided demo.',
+        roles: ['UI Design', 'Front-end', 'Workflow'], wide: true,
+        link: 'Tracker Suite Tour.html', linkLabel: 'TRY THE GUIDED DEMO →', image: 'assets/tracker-suite-card.png' },
+      { title: 'Denver Hard Dance', subtitle: 'DHD.com', format: 'Web', context: 'Client', year: '2012',
+        blurb: 'Site for a Denver DJ collective — animated intro and navigation, a booking calendar and a profile page for each DJ. Mostly complete before the group dissolved.',
+        roles: ['Web Design', 'Animation', 'Adobe Animate', 'Dreamweaver', 'Fireworks'], video: 'assets/dhd-home-nav.mp4' },
+      { title: 'College Web Project', format: 'Web', context: 'College', year: '',
+        blurb: 'Placeholder — site build. Add course, brief and what you built.',
+        roles: ['Web Design', 'HTML / CSS'] }
+    ];
+  }
+
+  chip(label, active, onClick) {
+    return {
+      label, onClick,
+      style: {
+        background: active ? '#5B8DEF' : 'transparent',
+        color: active ? '#fff' : '#c7c7c4',
+        border: '1px solid ' + (active ? '#5B8DEF' : 'rgba(255,255,255,0.2)'),
+        fontFamily: "'Inter',sans-serif", fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em',
+        padding: '7px 14px', borderRadius: '2px', cursor: 'pointer', textTransform: 'uppercase',
+        transition: 'background 0.2s ease, color 0.2s ease, border-color 0.2s ease'
+      }
+    };
+  }
+
+  renderVals() {
+    const all = this.data();
+    const formats = ['All', 'UI / App', 'Web'];
+    const contexts = ['All', 'Professional', 'Client', 'College', 'Independent'];
+    const { format, context } = this.state;
+    const filtered = all.filter(d => (format === 'All' || d.format === format) && (context === 'All' || d.context === context));
+    const unfiltered = format === 'All' && context === 'All';
+    const items = filtered.map((d, i) => ({
+      ...d,
+      slotId: 'des-' + d.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      slotHint: d.title + ' — screenshot or flat export',
+      eyebrow: d.format.toUpperCase() + (d.year ? ' · ' + d.year : ''),
+      hasLink: !!d.link,
+      hasVideo: !!d.video,
+      hasSubtitle: !!d.subtitle,
+      noVideo: !d.video && !d.image,
+      hasImage: !d.video && !!d.image,
+      cardStyle: {
+        gridColumn: d.wide && unfiltered ? '1 / -1' : 'auto',
+        display: 'flex', flexDirection: 'column',
+        border: '1px solid rgba(255,255,255,0.1)', borderTop: '3px solid ' + (d.context === 'College' ? '#6fe8ff' : '#5B8DEF'),
+        background: 'rgba(255,255,255,0.02)', borderRadius: '4px', overflow: 'hidden', minWidth: 0
+      },
+      contextStyle: {
+        fontSize: '10px', fontWeight: 800, letterSpacing: '0.14em', padding: '3px 8px', borderRadius: '2px',
+        color: d.context === 'College' ? '#0a0a0c' : '#c7c7c4',
+        background: d.context === 'College' ? '#6fe8ff' : 'rgba(255,255,255,0.08)',
+        textTransform: 'uppercase', whiteSpace: 'nowrap'
+      }
+    }));
+    return {
+      formatChips: formats.map(f => this.chip(f, format === f, () => this.setState({ format: f }))),
+      contextChips: contexts.map(c => this.chip(c, context === c, () => this.setState({ context: c }))),
+      items,
+      empty: items.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

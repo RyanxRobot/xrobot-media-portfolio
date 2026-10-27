@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #5B8DEF; }
+    a:hover { color: #fff; }
+    @media (max-width: 680px) { [data-back-cue] { display: none; } }
+    @keyframes backChevFade {
+      0%, 4%   { opacity:0; }
+      9%, 45%  { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backLabel {
+      0%, 8%   { opacity:0; }
+      11%, 45% { opacity:1; }
+      49%, 100% { opacity:0; }
+    }
+    @keyframes backLabelGlitch {
+      0%, 10%, 12%, 14%, 16%, 18%, 100% { opacity:0; transform:translate(0,0); }
+      11%   { opacity:1; transform:translate(-4px,1px); }
+      13%   { opacity:1; transform:translate(4px,-1px); }
+      15%   { opacity:1; transform:translate(-3px,1px); }
+      17%   { opacity:1; transform:translate(3px,-1px); }
+    }
+  </style>
+  <script src="./xr-transition.js"></script>
+  <script src="./xr-edit.js"></script>
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c; border-bottom:1px solid rgba(255,255,255,0.08);">
+    <div style="position:relative; display:inline-flex; align-items:center;">
+      <span aria-hidden="true" data-back-cue="1" style="position:absolute; right:100%; margin-right:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; text-decoration:none; pointer-events:none;"><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0s;">›</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">›</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">›</span></span></span>
+      <a href="xRobot Media.dc.html" aria-label="Back to xrobot.media home" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</a>
+      <span aria-hidden="true" data-back-cue="1" style="position:absolute; left:100%; margin-left:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#5B8DEF; text-decoration:none; pointer-events:none;"><span style="display:inline-flex; gap:2px;"><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0s;">‹</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">‹</span><span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">‹</span></span><span data-text="BACK TO THE HUB" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO THE HUB</span></span>
+    </div>
+  </header>
+  <div style="height:76px;"></div>
+  <nav aria-label="Productions" style="position:sticky; top:76px; z-index:50; background:rgba(10,10,12,0.28); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); border-bottom:1px solid rgba(0,0,0,0.7);">
+    <div style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px); display:flex; align-items:center; gap:clamp(14px,2.4vw,28px); overflow-x:auto; scrollbar-width:none;">
+      <a href="xRobot Media.dc.html#productions" style="flex-shrink:0; font-size:10px; font-weight:800; letter-spacing:0.16em; color:#6e6e6b; text-decoration:none; padding:14px 0 13px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);" style-hover="color:#fff;">PRODUCTIONS</a>
+      <div aria-hidden="true" style="flex-shrink:0; width:1px; height:16px; background:rgba(255,255,255,0.14);"></div>
+      <a href="xRobot Tech Room.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Tech Room</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#ff2ec4,#2b46ff); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Video.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Video Production</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#a51cff,#FF7A18); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Design.dc.html" aria-current="page" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#fff;">Web, UI &amp; Apps</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#2b46ff,#5B8DEF); opacity:1;"></span>
+      </a>
+      <a href="xRobot Print.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Static &amp; Print</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#FF7A18,#fff200); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Ravers.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Colorado Ravers</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#39FF14,#8A2BFF,#ff2ec4); opacity:0.3;"></span>
+      </a>
+    </div>
+  </nav>
+  <dc-import name="xRobot Scroll For More" label="SCROLL FOR MORE" hint-size="100%,100%"></dc-import>
+
+  <!-- HERO -->
+  <section style="min-height:calc(100vh - 76px); display:flex; align-items:center; justify-content:center; padding:0 clamp(20px,6vw,64px);">
+    <div style="max-width:780px; margin:0 auto; text-align:center;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.14em; color:#5B8DEF; margin-bottom:16px;">PRODUCTIONS · BROADCAST SOFTWARE</div>
+      <h1 style="font-family:'Anton',sans-serif; font-size:clamp(34px,5.5vw,58px); line-height:1.02; text-transform:uppercase; color:#fff; margin:0 0 18px;">Tracker Suite</h1>
+      <p style="font-size:16px; line-height:1.7; color:#b8b8b4; max-width:620px; margin:0 auto;">Four tools, one login, running the daily show. A shift-operations platform I designed and built for a broadcast master control room — Show Builder, Live Tracker, Shift Tracker, and DR Editor, unified behind a single sign-on.</p>
+      <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:28px;">
+        <a href="Tracker Suite Tour.html" style="text-decoration:none; padding:13px 24px; background:#5B8DEF; color:#0a0a0c; font-weight:800; font-size:13px; letter-spacing:0.05em; border-radius:2px;" style-hover="background:#7aa3f3;">LAUNCH THE GUIDED DEMO →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGN-ON -->
+  <section style="max-width:900px; margin:0 auto; padding:clamp(60px,8vw,100px) clamp(20px,6vw,64px) clamp(40px,6vw,60px); text-align:center;">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.12em; color:#5B8DEF; margin-bottom:14px;">ONE LOGIN, EVERY APP IN THE SUITE</div>
+    <h2 style="font-family:'Anton',sans-serif; font-size:clamp(22px,3vw,32px); text-transform:uppercase; color:#fff; margin:0 0 14px;">Unified access</h2>
+    <p style="font-size:14px; line-height:1.7; color:#b0b0ad; max-width:560px; margin:0 auto 40px;">Every app in the suite reads and writes the same live record under one operator account — no exporting a file from one tool to hand-carry into the next.</p>
+    <div style="max-width:440px; margin:0 auto;">
+      <div style="background:#0f172a; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:clamp(28px,4vw,36px) clamp(24px,3vw,30px); box-shadow:0 30px 80px rgba(0,0,0,0.55); text-align:left;">
+        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:24px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:18px; letter-spacing:0.02em; color:#e2e8f0;">TRACKER SUITE</div>
+          <div style="font-size:11px; letter-spacing:0.14em; color:#5B8DEF; margin-top:4px;">UNIFIED ACCESS</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; color:#8a94a6; margin-bottom:6px;">OPERATOR ID</div>
+            <div style="border:1px solid rgba(255,255,255,0.14); border-radius:4px; padding:10px 13px; font-size:14px; color:#e2e8f0; background:#0a0f1f;">r.wilson</div>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; color:#8a94a6; margin-bottom:6px;">PASSWORD</div>
+            <div style="border:1px solid rgba(255,255,255,0.14); border-radius:4px; padding:10px 13px; font-size:14px; color:#e2e8f0; background:#0a0f1f; letter-spacing:0.2em;">••••••••••</div>
+          </div>
+          <div style="text-align:center; padding:11px; margin-top:4px; background:#5B8DEF; color:#0a0a0c; font-weight:700; font-size:13px; letter-spacing:0.06em; border-radius:4px;">SIGN IN</div>
+        </div>
+        <div style="margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
+          <sc-for list="{{ apps }}" as="app" hint-placeholder-count="4">
+            <div style="border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; text-align:center; background:rgba(255,255,255,0.02);">
+              <div style="font-size:11px; font-weight:700; color:#e2e8f0;">{{ app.name }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP SECTIONS -->
+  <sc-for list="{{ appSections }}" as="sec" hint-placeholder-count="4">
+    <section style="max-width:1120px; margin:0 auto; padding:clamp(40px,6vw,72px) clamp(20px,6vw,64px); border-top:1px solid rgba(255,255,255,0.08);">
+      <div style="display:grid; grid-template-columns:{{ sec.cols }}; gap:clamp(28px,4vw,56px); align-items:center;">
+        <div style="order:{{ sec.textOrder }};">
+          <div style="font-size:12px; font-weight:700; letter-spacing:0.12em; color:#5B8DEF; margin-bottom:12px;">{{ sec.tag }}</div>
+          <h3 style="font-family:'Anton',sans-serif; font-size:clamp(24px,3vw,34px); text-transform:uppercase; color:#fff; margin:0 0 14px;">{{ sec.name }}</h3>
+          <p style="font-size:14px; line-height:1.75; color:#c7c7c4; margin:0;">{{ sec.body }}</p>
+        </div>
+        <div style="order:{{ sec.imgOrder }};">
+          <button type="button" onClick="{{ sec.open }}" aria-label="Enlarge {{ sec.placeholder }}" style="display:block; width:100%; padding:0; margin:0; border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; background:#0f172a; cursor:zoom-in; position:relative; box-shadow:0 24px 60px rgba(0,0,0,0.45); transition:transform 0.25s ease, border-color 0.25s ease;" style-hover="transform:translateY(-3px); border-color:rgba(91,141,239,0.6);">
+            <img src="{{ sec.src }}" alt="{{ sec.placeholder }}" style="display:block; width:100%; aspect-ratio:16/10; object-fit:cover;">
+            <span aria-hidden="true" style="position:absolute; right:10px; bottom:10px; padding:6px 10px; border-radius:4px; background:rgba(10,10,12,0.55); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.14); font-size:11px; font-weight:800; letter-spacing:0.1em; color:#fff;">⤢ EXPAND</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </sc-for>
+
+
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:clamp(32px,4vw,52px) clamp(20px,6vw,64px); max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="display:inline-flex; gap:2px;">
+        <span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0s;">‹</span>
+        <span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">‹</span>
+        <span style="display:inline-block; color:#5B8DEF; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">‹</span>
+      </span>
+      <a href="xRobot Design.dc.html" data-text="RETURN TO DESIGN" style="position:relative; display:inline-block; opacity:0; text-decoration:none; font-family:'Anton',sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:#5B8DEF; white-space:nowrap; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">RETURN TO DESIGN</a>
+    </div>
+    <div style="font-size:12px; color:#8a8a87; letter-spacing:0.06em;">© 2026 xROBOT.MEDIA · RYAN WILSON</div>
+    <a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a>
+  </footer>
+
+  <sc-if value="{{ zoomOpen }}" hint-placeholder-val="{{ false }}">
+    <div role="dialog" aria-modal="true" aria-label="{{ zoom.placeholder }}" onClick="{{ closeZoom }}" style="position:fixed; inset:0; z-index:200; background:rgba(5,6,10,0.92); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:clamp(12px,3vw,40px); box-sizing:border-box; cursor:zoom-out;">
+      <img src="{{ zoom.src }}" alt="{{ zoom.placeholder }}" style="display:block; max-width:100%; max-height:calc(100vh - 110px); width:auto; height:auto; object-fit:contain; border-radius:8px; border:1px solid rgba(255,255,255,0.12); box-shadow:0 30px 90px rgba(0,0,0,0.7);">
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:center;">
+        <button type="button" onClick="{{ prevZoom }}" aria-label="Previous screenshot" style="padding:10px 16px; border-radius:4px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.16); color:#fff; font:inherit; font-size:13px; font-weight:700; cursor:pointer;">‹</button>
+        <div style="font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.06em; text-transform:uppercase; color:#fff;">{{ zoom.name }} <span style="color:#8a8a87;">{{ zoomCount }}</span></div>
+        <button type="button" onClick="{{ nextZoom }}" aria-label="Next screenshot" style="padding:10px 16px; border-radius:4px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.16); color:#fff; font:inherit; font-size:13px; font-weight:700; cursor:pointer;">›</button>
+        <button type="button" onClick="{{ closeZoom }}" style="padding:10px 16px; border-radius:4px; background:#5B8DEF; border:none; color:#0a0a0c; font:inherit; font-size:12px; font-weight:800; letter-spacing:0.08em; cursor:pointer;">CLOSE ✕</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { zoom: null };
+  componentDidMount() {
+    this.onKey = (e) => {
+      if (this.state.zoom === null) return;
+      if (e.key === 'Escape') this.setState({ zoom: null });
+      if (e.key === 'ArrowRight') this.step(1);
+      if (e.key === 'ArrowLeft') this.step(-1);
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); document.body.style.overflow = ''; }
+  componentDidUpdate() { document.body.style.overflow = this.state.zoom === null ? '' : 'hidden'; }
+  step(d) { this.setState(s => ({ zoom: (s.zoom + d + 4) % 4 })); }
+  renderVals() {
+    const v = this.vals();
+    const z = this.state.zoom;
+    v.appSections = v.appSections.map((s, i) => ({ ...s, open: () => this.setState({ zoom: i }) }));
+    return { ...v,
+      zoomOpen: z !== null, zoom: z !== null ? v.appSections[z] : {},
+      zoomCount: z !== null ? (z + 1) + ' / ' + v.appSections.length : '',
+      closeZoom: (e) => { if (!e || e.target === e.currentTarget) this.setState({ zoom: null }); },
+      prevZoom: (e) => { e.stopPropagation(); this.step(-1); },
+      nextZoom: (e) => { e.stopPropagation(); this.step(1); } };
+  }
+  vals() {
+    return {
+      apps: [
+        { name: 'Show Builder' }, { name: 'Live Tracker' },
+        { name: 'Shift Tracker' }, { name: 'DR Editor' }
+      ],
+      appSections: [
+        {
+          tag: 'SHOW BUILDER', name: 'Show Builder',
+          body: 'Lays out the day\'s format before air — segments, timing, and breaks assembled into the show that Live Tracker runs against.',
+          slotId: 'show-builder-shot', src: 'assets/tracker/show-builder-shot.png', placeholder: 'Show Builder screenshot',
+          cols: 'repeat(auto-fit,minmax(280px,1fr))', textOrder: 1, imgOrder: 2
+        },
+        {
+          tag: 'LIVE TRACKER', name: 'Live Tracker',
+          body: 'The on-air operating view. Tracks the show in real time against the built format, keeping the desk a beat ahead of what\'s actually airing.',
+          slotId: 'live-tracker-shot', src: 'assets/tracker/live-tracker-shot.png', placeholder: 'Live Tracker screenshot',
+          cols: 'repeat(auto-fit,minmax(280px,1fr))', textOrder: 2, imgOrder: 1
+        },
+        {
+          tag: 'SHIFT TRACKER', name: 'Shift Tracker',
+          body: 'Turns what went wrong on air into filed discrepancy reports, then closes out the shift with a clean handoff: what ran, what changed, what the next operator needs to know.',
+          slotId: 'shift-tracker-shot', src: 'assets/tracker/shift-tracker-shot.png', placeholder: 'Shift Tracker screenshot',
+          cols: 'repeat(auto-fit,minmax(280px,1fr))', textOrder: 1, imgOrder: 2
+        },
+        {
+          tag: 'DR EDITOR', name: 'DR Editor',
+          body: 'The admin side of DR filing. Maintains the dictionary of discrepancy types and the wording Shift Tracker uses for each, so every report reads the same no matter who files it.',
+          slotId: 'dr-editor-shot', src: 'assets/tracker/dr-editor-shot.png', placeholder: 'DR Editor screenshot',
+          cols: 'repeat(auto-fit,minmax(280px,1fr))', textOrder: 2, imgOrder: 1
+        }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1089 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tracker Suite Tour</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: control-room tour. Header, app switcher, live clock ribbon, then either the
+   Live Tracker board or the Shift Tracker filing screen. A guide bar pinned to the bottom
+   carries the current step; a dialog explains each action after it happens. */
+:root {
+  /* deliberate single dark look: master control rooms run dark */
+  --bg: #0a0f1c;
+  --panel: #111a2b;
+  --panel-2: #0d1524;
+  --line: #22304a;
+  --fg: #e3e9f2;
+  --muted: #8794ab;
+  --dim: #5d6a82;
+  --accent: #f2a516;      /* tally amber: Live Tracker */
+  --st: #10b981;          /* Shift Tracker green */
+  --clock: #4cc3f5;
+  --ok: #34d399;
+  --pending: #f2a516;
+  --late: #f59e0b;
+  --miss: #ef4444;
+  --out: #8b5cf6;
+  --unsched: #14b8c4;
+  --early: #3b82f6;
+  --clocked: #22d3ee;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-body); font-size: 14px; line-height: 1.45; }
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+body.touring .wrap { padding-block-end: 190px; }
+button, input { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--clock); outline-offset: 2px; }
+
+/* header */
+.masthead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.eyebrow { font-family: var(--font-display); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-size: 13px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 40px; line-height: 1; margin: 4px 0 6px; letter-spacing: 0.01em; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 66ch; margin: 0; }
+.mast-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.chip { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 3px 7px; }
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 4px; padding: 7px 12px; cursor: pointer; font-weight: 500; font-size: 13px; }
+.btn:hover { border-color: var(--muted); }
+
+/* app switcher */
+.apps { display: flex; gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; align-self: flex-start; }
+.apps button { border: none; background: var(--panel-2); padding: 9px 16px; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
+.apps button + button { border-left: 1px solid var(--line); }
+.apps button[aria-selected="true"].lt { background: var(--accent); color: #1a1203; }
+.apps button[aria-selected="true"].stt { background: var(--st); color: #03170f; }
+.apps .count { font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 0 6px; }
+
+/* clock ribbon */
+.ribbon { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #050913; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.clk { padding: 10px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.clk:last-child { border-right: none; }
+.clk .z { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+.clk .t { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--clock); font-variant-numeric: tabular-nums; }
+.clk.hub .z { color: var(--accent); }
+.clk.hub .t { color: var(--fg); }
+
+.view { display: flex; flex-direction: column; gap: 16px; }
+
+/* coverage bar */
+.coverage { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--st); border-radius: 6px; padding: 14px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.coverage .cv-title { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.go { border: none; border-radius: 4px; padding: 12px 20px; cursor: pointer; background: var(--st); color: #03170f; font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; }
+.cv-stamps { display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.cv-stamps b { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.04em; margin-right: 4px; }
+.cv-stamps .tzs { color: var(--muted); font-size: 11px; margin-left: 2px; }
+
+/* legend */
+.remind { background: #1c1606; border: 1px solid #5a4410; border-left: 4px solid var(--pending); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.remind-head { display: flex; gap: 8px; align-items: center; font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pending); }
+.remind p { margin: 0; color: #d9c9a2; font-size: 13px; max-width: 80ch; }
+.remind ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.remind li { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; }
+.remind li b { min-width: 150px; }
+.remind .add { border: 1px solid #6b4e12; background: transparent; color: var(--pending); border-radius: 3px; padding: 3px 9px; cursor: pointer; font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+.remind .add:hover { background: #2a1f08; }
+.remind .add::after { content: "  ✓ added"; opacity: 0; }
+.remind .add:hover::after { opacity: 0.6; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; color: var(--muted); font-size: 12px; }
+.legend .k { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 4px; border-radius: 1px; display: inline-block; }
+.legend .sep { width: 1px; height: 14px; background: var(--line); }
+
+/* grid */
+.board { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.board-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.board-head h2, .panel h3, .st-sec h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin: 0; }
+.board-head h2 { font-size: 18px; }
+.board-head p { margin: 0; color: var(--muted); font-size: 12px; }
+.scroller { overflow-x: auto; overflow-y: hidden; }
+table.grid { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 860px; }
+.grid th, .grid td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); text-align: center; vertical-align: middle; }
+.grid th:last-child, .grid td:last-child { border-right: none; }
+.grid thead th { background: #17223a; padding: 10px 8px; font-weight: 500; }
+.grid .lab { position: sticky; left: 0; z-index: 2; background: var(--panel-2); width: 230px; min-width: 230px; text-align: left; padding: 10px 12px; border-right: 2px solid var(--line); }
+.grid thead .lab { background: #17223a; font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.st-call { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: 0.04em; }
+.st-meta { display: flex; justify-content: center; gap: 6px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.tz { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.feed { font-family: var(--font-display); font-weight: 600; font-size: 11px; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 3px; border: none; cursor: pointer; }
+.feed.live { background: var(--miss); color: #fff; }
+.feed.delayed { background: #3b475e; color: var(--fg); }
+.delay { font-family: var(--font-mono); font-size: 11px; color: var(--accent); border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; }
+
+.grid td.cell { padding: 10px 8px 26px; position: relative; min-width: 120px; background: var(--panel); }
+.row-label { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.row-type { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.row-type.hard { color: var(--clocked); }
+.master { font-family: var(--font-mono); font-size: 11.5px; margin-top: 6px; font-variant-numeric: tabular-nums; color: var(--dim); }
+.master.proj { color: var(--muted); font-style: italic; }
+.master.rolled { color: var(--fg); }
+.act { margin-top: 8px; width: 100%; padding: 7px 8px; border: none; border-radius: 4px; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--clock); color: #04121c; }
+.act.run { background: var(--miss); color: #fff; animation: blink 1s infinite; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.02em; }
+.act.done { background: transparent; color: var(--ok); border: 1px solid #1d4a3c; cursor: default; }
+@keyframes blink { 50% { opacity: 0.72; } }
+
+.grid tr.divider td { background: #0c1b2c; padding: 9px 12px; text-align: left; border-bottom: 1px solid #2c4a6e; }
+.grid tr.divider .lab { background: #0c1b2c; }
+.div-inner { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.div-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--clock); }
+.model { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.model button { border: none; background: transparent; padding: 3px 9px; font-family: var(--font-mono); font-size: 11px; cursor: pointer; color: var(--muted); }
+.model button[aria-pressed="true"] { background: var(--accent); color: #1a1203; font-weight: 600; }
+.model-note { color: var(--muted); font-size: 12px; }
+
+.time { font-family: var(--font-mono); font-size: 14px; font-variant-numeric: tabular-nums; color: var(--ok); }
+.time small { color: var(--muted); font-size: 10.5px; margin-left: 3px; }
+.sub { font-size: 10.5px; color: var(--muted); margin-top: 2px; font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; }
+.wait { color: var(--dim); font-family: var(--font-mono); }
+.pend .time { color: var(--pending); }
+.confirm { margin-top: 5px; border: 1px solid #6b4e12; background: transparent; color: var(--pending); border-radius: 3px; font-size: 11px; padding: 2px 8px; cursor: pointer; font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+.nat { font-family: var(--font-display); letter-spacing: 0.12em; font-size: 12px; color: var(--dim); text-transform: uppercase; }
+.hardcell { border: 1px dashed var(--clocked); border-radius: 4px; padding: 4px 6px; display: inline-block; }
+.hardcell .time { color: var(--clocked); }
+.missed { color: var(--miss); font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em; font-size: 14px; text-transform: uppercase; }
+.struck { text-decoration: line-through; color: var(--dim); font-family: var(--font-mono); font-size: 12px; }
+.tags { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin-top: 5px; }
+.tag { font-family: var(--font-display); font-weight: 700; font-size: 10px; letter-spacing: 0.08em; padding: 1px 5px; border-radius: 2px; color: #fff; }
+.undo { background: none; border: none; color: var(--muted); font-size: 11px; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 4px; }
+.flash { font-family: var(--font-mono); font-size: 11px; color: var(--fg); margin-top: 4px; }
+
+/* fast inject strip: wordless bars, hover grows by transform only (no reflow) */
+.strip { position: absolute; left: 10px; right: 10px; bottom: 7px; display: flex; justify-content: center; gap: 11px; }
+.bar { width: 18px; height: 4px; border: none; border-radius: 1px; padding: 0; cursor: pointer; opacity: 0.55; position: relative; transition: opacity .12s, transform .12s; }
+.bar::before { content: ""; position: absolute; left: -4px; right: -4px; top: -12px; bottom: -2px; }
+.bar:hover, .bar:focus-visible { opacity: 1; transform: scaleY(2.2); }
+.c-LATE { background: var(--late); } .c-MISS { background: var(--miss); } .c-OUT { background: var(--out); }
+.c-UNSCHED { background: var(--unsched); } .c-EARLY { background: var(--early); }
+
+tr.just-rolled td.cell { animation: rolled 1.4s ease-out; }
+@keyframes rolled { from { background: #12402f; } to { background: var(--panel); } }
+
+/* lower panels */
+.lower { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 820px) { .lower { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; display: flex; flex-direction: column; min-width: 0; }
+.panel-top { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; padding: 12px 14px 4px; }
+.panel h3 { font-size: 16px; display: flex; gap: 8px; align-items: center; }
+.panel .hint { margin: 0; padding: 0 14px 10px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
+.send { border: none; border-radius: 4px; padding: 7px 12px; cursor: pointer; background: var(--st); color: #03170f; font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; }
+.send:disabled { background: #1f2a3d; color: var(--dim); cursor: default; }
+.log { list-style: none; margin: 0; padding: 6px 0; max-height: 300px; overflow-y: auto; }
+.log li { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 8px 14px; border-bottom: 1px solid #1a2539; }
+.log li:last-child { border-bottom: none; }
+.log .stripe { width: 4px; height: 100%; min-height: 30px; border-radius: 2px; }
+.log .line { font-family: var(--font-mono); font-size: 12px; word-break: break-word; }
+.log .kv { color: var(--dim); }
+.log .sent { font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; color: var(--st); display: block; margin-top: 2px; }
+.log .rm { background: none; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); font-size: 11px; padding: 2px 8px; cursor: pointer; white-space: nowrap; }
+.log .rm.arm { border-color: var(--miss); color: var(--miss); }
+.empty { color: var(--dim); padding: 14px; font-size: 13px; }
+pre.mono { margin: 0; padding: 12px 14px; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; color: #9fd8f5; background: #050913; overflow-x: auto; white-space: pre; max-height: 340px; overflow-y: auto; }
+.copyrow { display: flex; justify-content: flex-end; padding: 8px 14px; border-top: 1px solid var(--line); gap: 8px; align-items: center; }
+.copyrow span { color: var(--muted); font-size: 12px; }
+
+/* Shift Tracker */
+.st-sec { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--st); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.step-label { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.16em; color: var(--st); text-transform: uppercase; }
+.st-sec h2 { font-size: 20px; }
+.st-sec .blurb { margin: 0; color: var(--muted); font-size: 13px; max-width: 70ch; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field .lbl, label.lbl { font-family: var(--font-display); font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.field .val { background: #1a2539; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; font-size: 13.5px; }
+.timeform { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.timeform .field { flex: 0 1 260px; }
+.timeform input { background: #050913; border: 1px solid #335a4b; border-radius: 4px; padding: 10px 12px; font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; width: 100%; }
+.stage-btn { border: none; border-radius: 4px; padding: 11px 18px; cursor: pointer; background: var(--st); color: #03170f; font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+.err { color: var(--miss); font-size: 12.5px; min-height: 18px; margin: 0; }
+.stamp-hint { color: var(--muted); font-size: 12.5px; margin: 0; }
+.stamp-hint b { color: var(--fg); font-family: var(--font-mono); font-weight: 500; }
+.preview { background: #050913; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 13px; color: #cfe3ef; }
+.preview .lbl { display: block; margin-bottom: 4px; }
+.st-empty { color: var(--muted); font-size: 13px; margin: 0; }
+.queue-note { color: var(--muted); font-size: 12px; margin: 0; }
+
+.staged { border: 1px solid #22573f; background: #0d1a17; border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.staged.enter { animation: stageIn .7s ease-out; }
+@keyframes stageIn { from { transform: translateY(-10px); opacity: 0; box-shadow: 0 0 0 3px var(--st); } to { transform: none; opacity: 1; box-shadow: 0 0 0 0 transparent; } }
+.staged-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: center; }
+.staged-head .ttl { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+.badge { font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em; padding: 2px 8px; border-radius: 3px; background: #3a2c07; color: var(--pending); text-transform: uppercase; }
+.copybox { text-align: left; background: #12302a; border: 1px solid #22573f; border-radius: 4px; padding: 8px 10px; cursor: copy; font-size: 13.5px; width: 100%; min-width: 0; word-break: break-word; }
+.copybox:hover { border-color: var(--st); }
+.copybox.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.copybox.copied { border-color: var(--st); background: #164536; }
+.dr-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; justify-content: space-between; }
+.dr-row .field { flex: 0 1 220px; }
+.dr-row input { background: #050913; border: 1px solid #6b4e12; border-radius: 4px; padding: 9px 12px; font-family: var(--font-mono); font-size: 16px; width: 100%; }
+.dr-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.discard { background: transparent; border: 1px solid #5b2330; color: #f19aa6; border-radius: 4px; padding: 9px 14px; cursor: pointer; font-size: 13px; }
+.commit-btn { border: none; border-radius: 4px; padding: 10px 16px; cursor: pointer; background: var(--st); color: #03170f; font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+.commit-btn:disabled { background: #1f2a3d; color: var(--dim); cursor: not-allowed; }
+.gate { color: var(--muted); font-size: 12px; margin: 0; }
+.report { border-radius: 4px; border: 1px solid var(--line); }
+.report.fresh { animation: reportIn 1s ease-out; }
+@keyframes reportIn { from { box-shadow: 0 0 0 3px var(--st); } to { box-shadow: 0 0 0 0 transparent; } }
+
+/* tour: pulsing target, guide bar, dialog */
+.coach { position: relative; z-index: 3; animation: coachPulse 2.2s ease-in-out infinite; }
+@keyframes coachPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(242, 165, 22, 0.0), 0 0 0 2px rgba(242, 165, 22, 0.9); }
+  50% { box-shadow: 0 0 0 9px rgba(242, 165, 22, 0.28), 0 0 0 2px rgba(242, 165, 22, 1); }
+}
+.bar.coach { opacity: 1; transform: scaleY(2.4); border-radius: 2px; }
+
+.guide { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: min(640px, calc(100% - 24px)); background: #0f1830; border: 1px solid #34466a; border-left: 4px solid var(--accent); border-radius: 8px; box-shadow: 0 14px 40px rgba(0,0,0,0.55); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.guide.st-step { border-left-color: var(--st); }
+.guide-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.guide .where { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.guide.st-step .where { color: var(--st); }
+.dots { display: flex; gap: 5px; }
+.dots i { width: 18px; height: 3px; border-radius: 2px; background: var(--line); display: block; }
+.dots i.on { background: var(--fg); }
+.guide p { margin: 0; font-size: 14.5px; line-height: 1.45; }
+.guide-actions { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.linkbtn { background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 12.5px; padding: 0; }
+.showme { background: transparent; border: 1px solid var(--line); border-radius: 4px; color: var(--fg); font-size: 12.5px; padding: 4px 10px; cursor: pointer; }
+
+.scrim { position: fixed; inset: 0; z-index: 40; background: rgba(4, 8, 18, 0.72); display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.dialog { background: var(--panel); border: 1px solid #34466a; border-top: 4px solid var(--accent); border-radius: 8px; max-width: 560px; width: 100%; max-height: 100%; overflow-y: auto; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+.dialog.st-step { border-top-color: var(--st); }
+.dialog .kicker { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.dialog.st-step .kicker { color: var(--st); }
+.dialog h2 { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1.1; margin: 0; text-wrap: balance; }
+.dialog p { margin: 0; color: #c7d1e0; max-width: 62ch; }
+.dialog table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.dialog td, .dialog th { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.dialog th { font-family: var(--font-display); font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.dialog td.m { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.dialog .tablewrap { overflow-x: auto; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.primary { border: none; border-radius: 4px; padding: 10px 18px; cursor: pointer; background: var(--accent); color: #1a1203; font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+.dialog.st-step .primary { background: var(--st); color: #03170f; }
+
+footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+footer strong { color: var(--fg); font-weight: 500; }
+
+@media (max-width: 560px) {
+  h1 { font-size: 32px; }
+  .ribbon { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clk:nth-child(2) { border-right: none; }
+  .clk:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .clk .t { font-size: 17px; }
+  .grid .lab { width: 160px; min-width: 160px; }
+  .guide p { font-size: 13.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach { animation: none; box-shadow: 0 0 0 3px var(--accent); }
+  tr.just-rolled td.cell, .act.run, .staged.enter, .report.fresh { animation: none; }
+  .bar { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Master control · guided demo</div>
+      <h1>Tracker Suite</h1>
+      <p class="lede">Two tools an operator uses on a live shift. Live Tracker runs the break schedule across five stations in three time zones and fires the hub gang roll. Shift Tracker turns what went wrong into a filed discrepancy report (DR). The tour walks through one missed break from start to finish.</p>
+    </div>
+    <div class="mast-actions">
+      <a class="btn" href="xRobot Media.dc.html" style="text-decoration:none;">← Back to the hub</a>
+      <a class="btn" href="xRobot Case Study - Tracker Suite.dc.html" style="text-decoration:none;">Case study</a>
+      <span class="chip">Demo · fictional stations</span>
+      <button class="btn" id="restartBtn" type="button">Restart tour</button>
+    </div>
+  </header>
+
+  <div class="apps" role="tablist" aria-label="Application">
+    <button type="button" role="tab" class="lt" id="tab-lt" data-view="lt" aria-selected="true">Live Tracker</button>
+    <button type="button" role="tab" class="stt" id="tab-st" data-view="st" aria-selected="false">Shift Tracker <span class="count" id="stCount" hidden>0</span></button>
+  </div>
+
+  <div class="ribbon" aria-label="Current time by zone">
+    <div class="clk"><span class="z">Eastern</span><span class="t" id="clk-ET">--:--:--</span></div>
+    <div class="clk"><span class="z">Central</span><span class="t" id="clk-CT">--:--:--</span></div>
+    <div class="clk hub"><span class="z">Mountain · Hub</span><span class="t" id="clk-MT">--:--:--</span></div>
+    <div class="clk"><span class="z">Pacific</span><span class="t" id="clk-PT">--:--:--</span></div>
+  </div>
+
+  <!-- ===================== LIVE TRACKER ===================== -->
+  <div class="view" id="view-lt">
+    <section class="coverage" id="coverage" aria-label="Event coverage"></section>
+
+    <div class="legend" aria-label="Legend">
+      <span class="k"><span class="sw c-LATE"></span>Late</span>
+      <span class="k"><span class="sw c-MISS"></span>Missed</span>
+      <span class="k"><span class="sw c-OUT"></span>Outage</span>
+      <span class="k"><span class="sw c-UNSCHED"></span>Unscheduled</span>
+      <span class="k"><span class="sw c-EARLY"></span>Early</span>
+      <span class="sep"></span>
+      <span>Tap a bar under any station to log that discrepancy</span>
+      <span class="sep"></span>
+      <span>Timers run at 10× speed</span>
+    </div>
+
+    <section class="remind" id="remind" aria-live="polite" hidden></section>
+
+    <section class="board" aria-labelledby="boardTitle">
+      <div class="board-head">
+        <h2 id="boardTitle">Morning block timeline</h2>
+        <p>Tap LIVE / DELAYED to flip a station's feed. Switch a programme's time model to see every stamp recompute.</p>
+      </div>
+      <div class="scroller">
+        <table class="grid">
+          <thead><tr id="gridHead"></tr></thead>
+          <tbody id="gridBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="lower">
+      <section class="panel" aria-labelledby="logTitle">
+        <div class="panel-top">
+          <h3 id="logTitle">Discrepancy log <span id="logCount" class="chip">0</span></h3>
+          <button type="button" class="send" id="sendBtn">Send to Shift Tracker →</button>
+        </div>
+        <p class="hint">Each entry carries the break's own time, not the moment someone tapped. The schedule is never edited to match what happened.</p>
+        <ul class="log" id="log"></ul>
+      </section>
+      <section class="panel" aria-labelledby="handoffTitle">
+        <div class="panel-top"><h3 id="handoffTitle">Shift handoff</h3></div>
+        <p class="hint">Generated live from the board, for the next operator.</p>
+        <pre class="mono" id="handoff"></pre>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== SHIFT TRACKER ===================== -->
+  <div class="view" id="view-st" hidden>
+    <section class="st-sec" aria-labelledby="st2Title">
+      <div class="step-label">Step 2</div>
+      <h2 id="st2Title">Classification, program &amp; timing</h2>
+      <div id="drForm"></div>
+    </section>
+
+    <section class="st-sec" aria-labelledby="st5Title">
+      <div class="step-label">Step 5</div>
+      <h2 id="st5Title">Final review &amp; iTracker staging</h2>
+      <p class="blurb">A staged DR is a draft. Click any green box to copy it into the matching iTracker field, then paste the DR number iTracker gives back. Commit is the point of no return.</p>
+      <div id="stagedList" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </section>
+
+    <section class="st-sec" aria-labelledby="st6Title">
+      <div class="step-label">Step 6</div>
+      <h2 id="st6Title">Final shift report</h2>
+      <pre class="mono report" id="report"></pre>
+      <div class="copyrow"><span id="copyStatus"></span><button class="btn" id="copyReport" type="button">Copy final report</button></div>
+    </section>
+  </div>
+
+  <footer>
+    <span><strong>Runs entirely in the browser.</strong> Static HTML and JavaScript, no server, no network calls.</span>
+    <span>Station call letters, programmes, times and DR numbers are invented for this demo.</span>
+    <span>The gang-roll connection is shown the way the suite was designed to work.</span>
+  </footer>
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; padding-top:8px;">
+    <a class="btn" href="xRobot Media.dc.html" style="text-decoration:none;">← Back to the hub</a>
+    <a class="btn" href="xRobot Case Study - Tracker Suite.dc.html" style="text-decoration:none;">Case study</a>
+  </div>
+</div>
+
+<div class="guide" id="guide" role="region" aria-label="Tour" aria-live="polite" hidden></div>
+<div class="scrim" id="scrim" hidden><div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle"></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ZONES = { ET: "America/New_York", CT: "America/Chicago", MT: "America/Denver", PT: "America/Los_Angeles" };
+  var HUB = "MT";
+  var SPEED = 10;
+  var DEMO_DR = "104582";
+  var TYPES = {
+    LATE:    { word: "LATE ROLL",          cls: "Commercial", cat: "Local Break", type: "Late Roll" },
+    MISS:    { word: "MISSED LOCAL BREAK", cls: "Commercial", cat: "Local Break", type: "Missed Break" },
+    OUT:     { word: "SIGNAL OUTAGE",      cls: "Technical",  cat: "Signal",      type: "Loss of Signal" },
+    UNSCHED: { word: "UNSCHEDULED BREAK",  cls: "Commercial", cat: "Local Break", type: "Unscheduled Break" },
+    EARLY:   { word: "EARLY ROLL",         cls: "Commercial", cat: "Local Break", type: "Early Roll" }
+  };
+  var BAR_ORDER = ["LATE", "MISS", "OUT", "UNSCHED", "EARLY"];
+
+  var fmtCache = {};
+  function fmt(ms, zone) {
+    var iana = ZONES[zone];
+    if (!fmtCache[iana]) fmtCache[iana] = new Intl.DateTimeFormat("en-GB", { timeZone: iana, hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
+    return fmtCache[iana].format(new Date(ms));
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function mmss(sec) { sec = Math.max(0, Math.ceil(sec)); return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0"); }
+  function shiftXX(target, minutes) {
+    var m = /^XX:(\d{2}):(\d{2})$/.exec(target);
+    if (!m || !minutes) return target;
+    var t = ((parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + minutes * 60) % 3600 + 3600) % 3600;
+    return "XX:" + String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0");
+  }
+  // Accepts 7:23, 07:23:41 or 072341. Returns "HH:MM:SS" or null.
+  function normTime(v) {
+    var s = String(v || "").trim();
+    var m = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(s) || /^(\d{2})(\d{2})(\d{2})?$/.exec(s);
+    if (!m) return null;
+    var h = +m[1], mi = +m[2], se = m[3] ? +m[3] : 0;
+    if (h > 23 || mi > 59 || se > 59) return null;
+    return [h, mi, se].map(function (n) { return String(n).padStart(2, "0"); }).join(":");
+  }
+  // iTracker rejects an incident whose start and end are identical, so a one-instant DR ends one second later.
+  function plusOneSecond(t) {
+    var p = t.split(":").map(Number), s = (p[0] * 3600 + p[1] * 60 + p[2] + 1) % 86400;
+    return [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(function (n) { return String(n).padStart(2, "0"); }).join(":");
+  }
+
+  var state, view = "lt";
+
+  function freshState() {
+    var stations = [
+      { id: "KWNJ", tz: "CT", feed: "LIVE",    delay: 0 },
+      { id: "KXHB", tz: "CT", feed: "LIVE",    delay: 0 },
+      { id: "KQRV", tz: "MT", feed: "DELAYED", delay: 0 },
+      { id: "KZDX", tz: "MT", feed: "DELAYED", delay: 0 },
+      { id: "KPLY", tz: "PT", feed: "DELAYED", delay: 30 }
+    ];
+    var rows = [
+      { id: "d1", type: "divider", label: "Sunrise Live", model: "LOCAL_CLOCK" },
+      { id: "r1", type: "timer", label: "Local weather insert", duration: 30 },
+      { id: "r2", type: "hard",  label: "Break 2 · station break", target: "XX:26:08" },
+      { id: "r3", type: "timer", label: "Break 3", duration: 210 },
+      { id: "r4", type: "info",  label: "Break 4" },
+      { id: "r5", type: "roll",  label: "Break 5 · local" },
+      { id: "r6", type: "hard",  label: "Break 6 · top of hour", target: "XX:58:56" },
+      { id: "d2", type: "divider", label: "Evening Derby pregame", model: "SIMULCAST" },
+      { id: "r7", type: "roll",  label: "Pregame break 1" },
+      { id: "r8", type: "timer", label: "Pregame break 2", duration: 120 }
+    ];
+    rows.forEach(function (r) { r.confirmed = {}; });
+    state = { stations: stations, rows: rows, logs: [], seq: 0, flashes: {}, justRolled: null, coverageAt: null, drs: [], drSeq: 0, newStaged: null, reportFresh: false };
+  }
+
+  function stationById(id) { return state.stations.filter(function (s) { return s.id === id; })[0]; }
+  function rowById(id) { return state.rows.filter(function (r) { return r.id === id; })[0]; }
+  function programFor(row) {
+    for (var i = state.rows.indexOf(row); i >= 0; i--) if (state.rows[i].type === "divider") return state.rows[i];
+    return { label: "Unassigned", model: "LOCAL_CLOCK" };
+  }
+  // LOCAL_CLOCK: the break airs at the same clock reading everywhere, read off the zone airing live.
+  function airingZone() {
+    var live = state.stations.filter(function (s) { return s.feed === "LIVE"; })[0];
+    return live ? live.tz : HUB;
+  }
+  function stationTime(row, st) {
+    if (!row.rolledAt) return null;
+    var zone = programFor(row).model === "SIMULCAST" ? st.tz : airingZone();
+    return fmt(row.rolledAt + st.delay * 60000, zone);
+  }
+  function logsFor(rowId, stId) { return state.logs.filter(function (l) { return l.rowId === rowId && l.st === stId; }); }
+
+  function addLog(rowId, stId, type) {
+    var row = rowById(rowId), st = stationById(stId), prog = programFor(row);
+    var time, basis, ref = "", t = stationTime(row, st);
+    if (t) { time = t; basis = (st.feed === "DELAYED" && !row.confirmed[stId]) ? "scheduled" : "rolled"; }
+    else if (row.type === "hard") { time = fmt(Date.now(), st.tz); basis = "tap"; ref = shiftXX(row.target, st.delay); }
+    else { time = fmt(Date.now(), st.tz); basis = "tap"; }
+    state.seq += 1;
+    var log = { id: state.seq, rowId: rowId, st: stId, type: type, time: time, tz: st.tz, basis: basis, ref: ref, program: prog.label, label: row.label };
+    state.logs.push(log);
+    state.flashes[rowId + "|" + stId] = { text: "✓ " + type + " @ " + time, until: Date.now() + 3000 };
+    return log;
+  }
+  function logLine(l) {
+    return { main: l.time + " " + l.tz + " — " + l.st + " — " + l.program + " — “" + l.label + "”: " + TYPES[l.type].word,
+             kv: "{basis=" + l.basis + (l.ref ? ";ref=" + l.ref : "") + "}" };
+  }
+  function isSent(logId) { return state.drs.some(function (d) { return d.logId === logId; }); }
+
+  /* ====================== LIVE TRACKER RENDER ====================== */
+  function renderCoverage() {
+    var el = document.getElementById("coverage");
+    if (!state.coverageAt) {
+      el.innerHTML = '<div><div class="cv-title">Sunrise Live · event coverage</div><div style="color:var(--muted); font-size:13px; margin-top:2px">Coverage has not started.</div></div>' +
+        '<button type="button" class="go" id="coverageBtn">Start event coverage</button>';
+      return;
+    }
+    var stamps = state.stations.map(function (st) {
+      return '<span><b>' + st.id + '</b>' + fmt(state.coverageAt + st.delay * 60000, st.tz) + '<span class="tzs">' + st.tz + '</span></span>';
+    }).join("");
+    el.innerHTML = '<div><div class="cv-title">Coverage started · ' + fmt(state.coverageAt, HUB) + ' ' + HUB + ' hub</div></div><div class="cv-stamps">' + stamps + '</div>';
+  }
+
+  function renderHead() {
+    var h = '<th class="lab" scope="col">Break</th>';
+    state.stations.forEach(function (s) {
+      h += '<th scope="col"><div class="st-call">' + s.id + '</div><div class="st-meta"><span class="tz">' + s.tz + '</span>' +
+        '<button type="button" class="feed ' + (s.feed === "LIVE" ? "live" : "delayed") + '" data-feed="' + s.id + '" aria-label="' + s.id + ' feed is ' + s.feed + ', tap to change">' + s.feed + '</button>' +
+        (s.delay ? '<span class="delay" title="Standing delay in minutes">+' + s.delay + '</span>' : "") + '</div></th>';
+    });
+    document.getElementById("gridHead").innerHTML = h;
+  }
+
+  function labelCell(r) {
+    var t = r.type === "timer" ? "Timer · " + mmss(r.duration) : r.type === "hard" ? "Hard hit · pre-clocked" : r.type === "info" ? "National only" : "Live roll";
+    var h = '<th class="lab" scope="row"><div class="row-label">' + esc(r.label) + '</div><div class="row-type' + (r.type === "hard" ? " hard" : "") + '">' + t + '</div>';
+    if (r.type === "timer") {
+      if (r.rolledAt) h += '<button type="button" class="act done" disabled>Gang rolled ✓</button>';
+      else if (r.endsAt) h += '<button type="button" class="act run" id="tbtn-' + r.id + '" data-cancel="' + r.id + '">T-' + mmss((r.endsAt - Date.now()) * SPEED / 1000) + '</button>';
+      else h += '<button type="button" class="act" data-start="' + r.id + '">Start ' + mmss(r.duration) + '</button>';
+    } else if (r.type === "roll") {
+      h += r.rolledAt ? '<button type="button" class="act done" disabled>Gang rolled ✓</button>' : '<button type="button" class="act" data-roll="' + r.id + '">Gang roll</button>';
+    }
+    if (r.type === "timer" || r.type === "roll") {
+      if (r.rolledAt) h += '<div class="master rolled">GANG ROLL ' + fmt(r.rolledAt, HUB) + ' ' + HUB + '</div>';
+      else if (r.endsAt) h += '<div class="master proj">PROJECTED ' + fmt(r.endsAt, HUB) + ' ' + HUB + '</div>';
+      else h += '<div class="master">not rolled</div>';
+    } else if (r.type === "hard") h += '<div class="master">target ' + r.target + '</div>';
+    return h + '</th>';
+  }
+
+  function stationCell(r, st) {
+    if (r.type === "info") return '<td class="cell"><span class="nat">National only</span></td>';
+    var logs = logsFor(r.id, st.id), missed = logs.some(function (l) { return l.type === "MISS"; });
+    var h = "", cls = "cell", t = stationTime(r, st);
+    if (r.type === "hard") {
+      var tg = shiftXX(r.target, st.delay);
+      h = missed ? '<div class="missed">✖ Missed</div><div class="struck">' + tg + '</div>' : '<div class="hardcell"><div class="time">' + tg + '</div></div>';
+    } else if (missed) {
+      h = '<div class="missed">✖ Missed</div>' + (t ? '<div class="struck">' + t + '</div>' : "");
+    } else if (!t) {
+      h = r.endsAt ? '<div class="wait">rolling…</div>' : '<div class="wait">—</div>';
+    } else if (st.feed === "LIVE" || r.confirmed[st.id]) {
+      h = '<div class="time">' + t + '<small>' + st.tz + '</small></div><div class="sub">' + (st.feed === "LIVE" ? "rolled on air" : "added to log") + '</div>';
+    } else {
+      cls += " pend";
+      h = '<div class="time">' + t + '<small>' + st.tz + '</small></div><div class="sub">add to log</div>' +
+          '<button type="button" class="confirm" data-confirm="' + r.id + '|' + st.id + '">Mark added</button>';
+    }
+    var others = logs.filter(function (l) { return l.type !== "MISS"; });
+    if (others.length) h += '<div class="tags">' + others.map(function (l) { return '<span class="tag c-' + l.type + '">' + l.type + '</span>'; }).join("") + '</div>';
+    var fk = r.id + "|" + st.id;
+    if (state.flashes[fk] && state.flashes[fk].until > Date.now()) h += '<div class="flash">' + esc(state.flashes[fk].text) + '</div>';
+    if (logs.length) h += '<div><button type="button" class="undo" data-undo="' + fk + '">undo last entry</button></div>';
+    h += '<div class="strip">' + BAR_ORDER.map(function (ty) {
+      return '<button type="button" class="bar c-' + ty + '" data-log="' + r.id + '|' + st.id + '|' + ty + '" aria-label="Log ' + TYPES[ty].word.toLowerCase() + ' for ' + st.id + ' on ' + esc(r.label) + '"></button>';
+    }).join("") + '</div>';
+    return '<td class="' + cls + '">' + h + '</td>';
+  }
+
+  function dividerRow(r) {
+    var simul = r.model === "SIMULCAST";
+    return '<tr class="divider"><th class="lab" scope="row"><span class="div-name">' + esc(r.label) + '</span></th>' +
+      '<td colspan="' + state.stations.length + '"><div class="div-inner"><span class="model" role="group" aria-label="Time model for ' + esc(r.label) + '">' +
+      '<button type="button" data-model="' + r.id + '|LOCAL_CLOCK" aria-pressed="' + (!simul) + '">LOCAL_CLOCK</button>' +
+      '<button type="button" data-model="' + r.id + '|SIMULCAST" aria-pressed="' + simul + '">SIMULCAST</button></span>' +
+      '<span class="model-note">' + (simul ? "One real instant, converted into each station's zone." : "Same clock reading on every station's own clock; delayed zones air it later.") + '</span></div></td></tr>';
+  }
+
+  function renderBody() {
+    var h = "";
+    state.rows.forEach(function (r) {
+      if (r.type === "divider") { h += dividerRow(r); return; }
+      h += '<tr' + (state.justRolled === r.id ? ' class="just-rolled"' : "") + '>' + labelCell(r);
+      state.stations.forEach(function (st) { h += stationCell(r, st); });
+      h += '</tr>';
+    });
+    document.getElementById("gridBody").innerHTML = h;
+    state.justRolled = null;
+  }
+
+  var armedRemove = null;
+  function renderLog() {
+    var el = document.getElementById("log");
+    document.getElementById("logCount").textContent = state.logs.length;
+    var unsent = state.logs.filter(function (l) { return !isSent(l.id); }).length;
+    var send = document.getElementById("sendBtn");
+    send.disabled = unsent === 0;
+    send.textContent = unsent > 1 ? "Send " + unsent + " to Shift Tracker →" : "Send to Shift Tracker →";
+    if (!state.logs.length) { el.innerHTML = '<li class="empty" style="display:block">No discrepancies logged yet.</li>'; return; }
+    el.innerHTML = state.logs.slice().reverse().map(function (l) {
+      var ln = logLine(l), armed = armedRemove === l.id, sent = isSent(l.id);
+      return '<li><span class="stripe c-' + l.type + '"></span><div class="line">' + esc(ln.main) + ' <span class="kv">' + esc(ln.kv) + '</span>' +
+        (sent ? '<span class="sent">Sent to Shift Tracker</span>' : "") + '</div>' +
+        (sent ? '<span></span>' : '<button type="button" class="rm' + (armed ? ' arm' : '') + '" data-rm="' + l.id + '">' + (armed ? 'Confirm remove' : 'Remove') + '</button>') + '</li>';
+    }).join("");
+  }
+
+  function handoffText() {
+    var out = ["SHIFT HANDOFF — DEMO HUB (" + HUB + ")   generated " + fmt(Date.now(), HUB) + " " + HUB];
+    out.push("Stations: " + state.stations.map(function (s) { return s.id + " " + s.tz + " " + s.feed + (s.delay ? " +" + s.delay : ""); }).join(" · "));
+    out.push(state.coverageAt ? "START OF COVERAGE " + fmt(state.coverageAt, HUB) + " " + HUB : "Coverage not started");
+    state.rows.forEach(function (r) {
+      if (r.type === "divider") { out.push(""); out.push("== " + r.label.toUpperCase() + " [" + r.model + "] =="); return; }
+      if (r.type === "info") { out.push("---- NATIONAL ONLY ---- " + r.label); return; }
+      if (r.type === "hard") { out.push("---- PRE-CLOCKED ---- " + r.label + " @ " + r.target); return; }
+      if (!r.rolledAt) { out.push("[ ] " + r.label + "  (not rolled)"); return; }
+      out.push("[X] " + r.label);
+      out.push("      " + state.stations.map(function (st) {
+        if (logsFor(r.id, st.id).some(function (l) { return l.type === "MISS"; })) return st.id + " MISSED";
+        var t = stationTime(r, st);
+        return st.id + (st.feed === "DELAYED" && !r.confirmed[st.id] ? " ADD TO LOG " : " ") + t;
+      }).join(" · "));
+    });
+    out.push(""); out.push("DISCREPANCIES (" + state.logs.length + ")");
+    if (!state.logs.length) out.push("  none");
+    state.logs.forEach(function (l) { var ln = logLine(l); out.push("  " + ln.main + " " + ln.kv); });
+    return out.join("\n");
+  }
+
+  function renderReminders() {
+    var el = document.getElementById("remind");
+    var items = [];
+    state.rows.forEach(function (r) {
+      if (!r.rolledAt) return;
+      var due = state.stations.filter(function (st) {
+        return st.feed === "DELAYED" && !r.confirmed[st.id] && !logsFor(r.id, st.id).some(function (l) { return l.type === "MISS"; });
+      });
+      if (due.length) items.push({ r: r, due: due });
+    });
+    var n = items.reduce(function (a, i) { return a + i.due.length; }, 0);
+    if (!n) { el.hidden = true; el.innerHTML = ""; return; }
+    el.hidden = false;
+    el.innerHTML = '<div class="remind-head">Add the roll time to your other logs <span class="chip">' + n + '</span></div>' +
+      '<p>The gang roll fired for the stations airing live. These stations air the break later, so their logs still need the roll time. Click a time once it is in that station\u2019s log.</p><ul>' +
+      items.map(function (i) {
+        return '<li><b>' + esc(i.r.label) + '</b>' + i.due.map(function (st) {
+          return '<button type="button" class="add" data-confirm="' + i.r.id + '|' + st.id + '" aria-label="Mark ' + stationTime(i.r, st) + ' added to the ' + st.id + ' log">' + st.id + ' ' + stationTime(i.r, st) + ' ' + st.tz + '</button>';
+        }).join("") + '</li>';
+      }).join("") + '</ul>';
+  }
+
+  function renderLT() {
+    renderCoverage(); renderHead(); renderBody(); renderLog();
+    document.getElementById("handoff").textContent = handoffText();
+    renderReminders();
+    applyCoach();
+  }
+
+  /* ====================== SHIFT TRACKER RENDER ====================== */
+  function describe(d, time) {
+    var t = time ? time + " " + d.tz : "[time]";
+    var lead = d.station + ", " + d.program + ": ";
+    switch (d.type) {
+      case "MISS": return lead + "the local break “" + d.label + "” was scheduled at " + t + " and did not air. Network programming continued through the break and nothing replaced it.";
+      case "LATE": return lead + "the local break “" + d.label + "” rolled late against its scheduled time of " + t + ".";
+      case "EARLY": return lead + "the local break “" + d.label + "” rolled early, ahead of its scheduled time of " + t + ".";
+      case "OUT": return lead + "signal was lost during “" + d.label + "” at " + t + ".";
+      default: return lead + "an unscheduled break aired before “" + d.label + "” at " + t + ".";
+    }
+  }
+  function currentDraft() { return state.drs.filter(function (d) { return d.status === "draft"; })[0]; }
+
+  function renderForm() {
+    var el = document.getElementById("drForm"), d = currentDraft();
+    if (!d) {
+      el.innerHTML = '<p class="st-empty">' + (state.drs.length ? "Every discrepancy sent from Live Tracker has been staged." :
+        "Nothing to file yet. Log a discrepancy in Live Tracker, then use <b>Send to Shift Tracker</b>.") + '</p>';
+      return;
+    }
+    var waiting = state.drs.filter(function (x) { return x.status === "draft"; }).length - 1;
+    var T = TYPES[d.type];
+    el.innerHTML =
+      '<p class="blurb">Imported from Live Tracker. Station, programme and classification are filled in for you; the time comes from the station log.</p>' +
+      '<div class="fields">' +
+        '<div class="field"><span class="lbl">Station</span><span class="val">' + d.station + ' (' + d.tz + ')</span></div>' +
+        '<div class="field"><span class="lbl">Program</span><span class="val">' + esc(d.program) + '</span></div>' +
+        '<div class="field"><span class="lbl">Break</span><span class="val">' + esc(d.label) + '</span></div>' +
+        '<div class="field"><span class="lbl">Class · category · type</span><span class="val">' + T.cls + ' · ' + T.cat + ' · ' + T.type + '</span></div>' +
+      '</div>' +
+      '<form class="timeform" id="timeForm" novalidate>' +
+        '<div class="field"><label class="lbl" for="drTime">' + (d.type === "MISS" ? "Scheduled time" : "Incident time") + ', ' + d.tz + '</label>' +
+        '<input id="drTime" inputmode="numeric" autocomplete="off" placeholder="HH:MM:SS" aria-describedby="stampHint drErr"></div>' +
+        '<button type="submit" class="stage-btn">Stage DR</button>' +
+      '</form>' +
+      '<p class="stamp-hint" id="stampHint">Live Tracker stamped this break at <b>' + d.logTime + ' ' + d.tz + '</b>. Type it and press Enter.</p>' +
+      '<p class="err" id="drErr"></p>' +
+      '<div class="preview"><span class="lbl">Live preview</span><span id="drPreview">' + esc(describe(d, null)) + '</span></div>' +
+      (waiting > 0 ? '<p class="queue-note">' + waiting + ' more waiting after this one.</p>' : "");
+  }
+
+  function copyBox(label, value, mono) {
+    return '<div class="field"><span class="lbl">' + label + '</span><button type="button" class="copybox' + (mono ? " mono" : "") + '" data-copy="' + esc(value) + '" title="Click to copy">' + esc(value) + '</button></div>';
+  }
+
+  function renderStaged() {
+    var el = document.getElementById("stagedList");
+    var staged = state.drs.filter(function (d) { return d.status === "staged"; });
+    if (!staged.length) { el.innerHTML = '<p class="st-empty">Nothing staged.</p>'; return; }
+    el.innerHTML = staged.map(function (d) {
+      var T = TYPES[d.type], ok = /^\d{4,}$/.test(d.drNumber);
+      return '<div class="staged' + (state.newStaged === d.id ? " enter" : "") + '" id="staged-' + d.id + '">' +
+        '<div class="staged-head"><span class="ttl">' + d.station + ' · ' + T.type + '</span><span class="badge">Staged · not filed</span></div>' +
+        '<div class="fields">' + copyBox("Station name", d.station) + copyBox("Program name", d.program) +
+          copyBox("Time in", d.time + " " + d.tz, true) + copyBox("Time out", d.end + " " + d.tz, true) +
+          copyBox("Classification", T.cls + " / " + T.cat + " / " + T.type) + '</div>' +
+        copyBox("Incident details", describe(d, d.time)) +
+        '<div class="dr-row"><div class="field"><label class="lbl" for="drnum-' + d.id + '">DR number</label>' +
+          '<input class="drnum-input" id="drnum-' + d.id + '" data-drnum="' + d.id + '" inputmode="numeric" autocomplete="off" placeholder="from iTracker" value="' + esc(d.drNumber) + '"></div>' +
+          '<div class="dr-actions"><button type="button" class="discard" data-discard="' + d.id + '">Discard</button>' +
+          '<button type="button" class="commit-btn" data-commit="' + d.id + '"' + (ok ? "" : " disabled") + '>Commit to final report</button></div></div>' +
+        '<p class="gate" id="gate-' + d.id + '">' + (ok ? "Ready to commit." : "Commit unlocks once the DR number from iTracker is entered.") + '</p></div>';
+    }).join("");
+    state.newStaged = null;
+  }
+
+  function reportText() {
+    var now = new Date();
+    var date = new Intl.DateTimeFormat("en-US", { timeZone: ZONES[HUB], weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(now);
+    var out = ["END OF SHIFT REPORT — 1st Shift", "Operator: Demo Operator · Demo Hub (" + HUB + ")", "Date: " + date, ""];
+    var committed = state.drs.filter(function (d) { return d.status === "committed"; });
+    out.push("DISCREPANCY REPORTS (" + committed.length + ")");
+    if (!committed.length) out.push("  No DRs committed yet.");
+    var byStation = {};
+    committed.forEach(function (d) { (byStation[d.station] = byStation[d.station] || []).push(d); });
+    Object.keys(byStation).forEach(function (stn) {
+      out.push(""); out.push(stn);
+      byStation[stn].forEach(function (d) {
+        var T = TYPES[d.type];
+        out.push("  DR# " + d.drNumber + " · " + T.cls + " / " + T.cat + " / " + T.type);
+        out.push("  " + d.program + " · " + d.time + " – " + d.end + " " + d.tz);
+        out.push("  " + describe(d, d.time));
+      });
+    });
+    var staged = state.drs.filter(function (d) { return d.status === "staged"; }).length;
+    if (staged) { out.push(""); out.push("! " + staged + " DR" + (staged > 1 ? "s" : "") + " still staged and NOT in this report."); }
+    out.push(""); out.push("COVERAGE");
+    out.push(state.coverageAt ? "  Sunrise Live coverage started " + fmt(state.coverageAt, HUB) + " " + HUB : "  Coverage not started.");
+    var rolled = state.rows.filter(function (r) { return r.rolledAt; }).length;
+    out.push("  Breaks rolled: " + rolled + " · Discrepancies logged in Live Tracker: " + state.logs.length);
+    return out.join("\n");
+  }
+
+  function renderST() {
+    renderForm(); renderStaged();
+    var rep = document.getElementById("report");
+    rep.textContent = reportText();
+    rep.classList.toggle("fresh", state.reportFresh);
+    state.reportFresh = false;
+    var pending = state.drs.filter(function (d) { return d.status !== "committed"; }).length;
+    var c = document.getElementById("stCount");
+    c.hidden = pending === 0; c.textContent = pending;
+    applyCoach();
+  }
+
+  function setView(v) {
+    view = v;
+    document.getElementById("view-lt").hidden = v !== "lt";
+    document.getElementById("view-st").hidden = v !== "st";
+    document.getElementById("tab-lt").setAttribute("aria-selected", v === "lt");
+    document.getElementById("tab-st").setAttribute("aria-selected", v === "st");
+    if (v === "st") renderST(); else renderLT();
+  }
+
+  /* ====================== TOUR ====================== */
+  var STEPS = [
+    { key: "coverage", app: "Live Tracker", view: "lt", target: "#coverageBtn",
+      text: function () { return 'The show is about to start. Click <b>Start event coverage</b>.'; } },
+    { key: "timer", app: "Live Tracker", view: "lt", target: '[data-start="r1"]',
+      text: function () { return 'First break: click <b>Start 0:30</b> on <b>Local weather insert</b>. At zero it fires the hub gang roll (about 3 seconds here).'; } },
+    { key: "miss", app: "Live Tracker", view: "lt", target: '[data-log="r1|KXHB|MISS"]',
+      text: function () { return 'KXHB never took that break. Tap the pulsing <b>red bar</b> under KXHB on the weather insert row to log it as missed.'; } },
+    { key: "export", app: "Live Tracker", view: "lt", target: "#sendBtn",
+      text: function () { return 'Send the log to Shift Tracker, where it becomes a discrepancy report. Click <b>Send to Shift Tracker</b>.'; } },
+    { key: "time", app: "Shift Tracker", view: "st", target: "#drTime",
+      text: function () { var d = tourDr(); return 'Type the scheduled time, <b>' + (d ? d.logTime : "") + '</b>, into the time box and press <b>Enter</b>.'; } },
+    { key: "drnum", app: "Shift Tracker", view: "st", target: ".drnum-input",
+      text: function () { return 'You would now file the DR in iTracker, which hands back a DR number. Pretend it gave you <b>' + DEMO_DR + '</b>. Type it into <b>DR number</b>.'; } },
+    { key: "commit", app: "Shift Tracker", view: "st", target: ".commit-btn",
+      text: function () { return 'The DR is filed and numbered. Click <b>Commit to final report</b> to lock it in.'; } }
+  ];
+  var tour = { active: false, i: 0, logId: null, drId: null };
+  function step() { return tour.active ? STEPS[tour.i] : null; }
+  function tourDr() { return state.drs.filter(function (d) { return d.id === tour.drId; })[0] || currentDraft(); }
+
+  function applyCoach() {
+    document.querySelectorAll(".coach").forEach(function (n) { n.classList.remove("coach"); });
+    var s = step();
+    if (!s || s.view !== view || !document.getElementById("scrim").hidden) return;
+    var t = document.querySelector(s.target);
+    if (t) t.classList.add("coach");
+  }
+  function focusTarget() {
+    var s = step(); if (!s) return;
+    if (view !== s.view) setView(s.view);
+    var t = document.querySelector(s.target);
+    if (!t) return;
+    t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center", inline: "center" });
+    if (t.tagName === "INPUT") setTimeout(function () { t.focus({ preventScroll: true }); }, 350);
+  }
+  function renderGuide() {
+    var g = document.getElementById("guide"), s = step();
+    document.body.classList.toggle("touring", !!s);
+    if (!s) { g.hidden = true; return; }
+    g.hidden = false;
+    g.classList.toggle("st-step", s.view === "st");
+    var dots = STEPS.map(function (_, i) { return '<i class="' + (i <= tour.i ? "on" : "") + '"></i>'; }).join("");
+    g.innerHTML = '<div class="guide-top"><span class="where">Step ' + (tour.i + 1) + ' of ' + STEPS.length + ' · ' + s.app + '</span><span class="dots" aria-hidden="true">' + dots + '</span></div>' +
+      '<p>' + s.text() + '</p><div class="guide-actions"><button type="button" class="linkbtn" id="skipTour">Skip tour and explore</button>' +
+      '<button type="button" class="showme" id="showMe">Show me</button></div>';
+  }
+  function goStep(i) {
+    tour.i = i;
+    if (i >= STEPS.length) { tour.active = false; renderGuide(); applyCoach(); return; }
+    renderGuide();
+    var s = STEPS[i];
+    if (view !== s.view) setView(s.view); else if (s.view === "lt") renderLT(); else renderST();
+    setTimeout(focusTarget, 60);
+  }
+  function startTour() {
+    freshState();
+    tour = { active: true, i: 0, logId: null, drId: null };
+    setView("lt");
+    goStep(0);
+    window.scrollTo({ top: 0 });
+  }
+
+  // Dialog: explains what just happened. Next advances the tour.
+  var onDialogClose = null;
+  function openDialog(kicker, title, bodyHtml, btn, isST, then, extra) {
+    var d = document.getElementById("dialog");
+    d.classList.toggle("st-step", !!isST);
+    d.innerHTML = '<div class="kicker">' + kicker + '</div><h2 id="dlgTitle">' + title + '</h2>' + bodyHtml +
+      '<div class="dialog-actions">' + (extra || "") + '<button type="button" class="primary" id="dlgNext">' + btn + '</button></div>';
+    document.getElementById("scrim").hidden = false;
+    onDialogClose = then;
+    applyCoach();
+    setTimeout(function () { var b = document.getElementById("dlgNext"); if (b) b.focus(); }, 30);
+  }
+  function closeDialog() {
+    document.getElementById("scrim").hidden = true;
+    var f = onDialogClose; onDialogClose = null;
+    if (f) f(); else applyCoach();
+  }
+  function stationTable(rows) {
+    return '<div class="tablewrap"><table><thead><tr><th>Station</th><th>Zone</th><th>Time</th><th>Status</th></tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td class="m">' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join("") + '</tbody></table></div>';
+  }
+  function next() { goStep(tour.i + 1); }
+
+  function afterCoverage() {
+    var rows = state.stations.map(function (st) {
+      return [st.id, st.tz, fmt(state.coverageAt + st.delay * 60000, st.tz), st.delay ? "+" + st.delay + " min standing delay" : ""];
+    });
+    openDialog("What that button did", "Coverage start, stamped five ways",
+      '<p>One click recorded the moment coverage began, ' + fmt(state.coverageAt, HUB) + ' on the hub clock, and wrote it into every station’s own time zone. KPLY runs a standing 30-minute delay, so that is folded in too.</p>' +
+      stationTable(rows) +
+      '<p>Without the tool an operator does this conversion in their head for every station, every break, at speed. This line now heads the handoff and the shift report.</p>',
+      "Next", false, next);
+  }
+  function afterRoll(r) {
+    var live = state.stations.filter(function (st) { return st.feed === "LIVE"; });
+    var later = state.stations.filter(function (st) { return st.feed !== "LIVE"; });
+    var rows = state.stations.map(function (st) {
+      return [st.id, st.tz, stationTime(r, st), st.feed === "LIVE" ? "Rolled on air" : "Add to log"];
+    });
+    var adds = later.map(function (st) { return '<b>' + stationTime(r, st) + '</b> to the ' + st.id + ' log'; });
+    openDialog("What the timer did", "Gang roll fired",
+      '<p>When you started the timer it showed a projected roll time. At zero, Live Tracker fired the hub gang roll at ' + fmt(r.rolledAt, HUB) + ' hub time.</p>' +
+      '<p>' + live.map(function (s) { return s.id; }).join(" and ") + ' were being tracked live, so their local break actually rolled on air and the tracker logged the time for each.</p>' +
+      stationTable(rows) +
+      '<p>This programme is <b>LOCAL_CLOCK</b>: it airs at the same local time everywhere, so every station uses the <b>same clock reading</b>. ' +
+      later.map(function (s) { return s.id; }).join(", ") + ' air the show later, so the gang roll did not fire for them.</p>' +
+      '<p><b>Reminder:</b> add ' + adds.join(", ") + '. KPLY\u2019s time includes its standing 30-minute delay. The reminder stays above the timeline until each one is marked added.</p>',
+      "Next", false, next);
+  }
+  function afterMiss(log) {
+    openDialog("What the bar did", "Missed break, recorded",
+      '<p>The entry is stamped <b>' + log.time + ' ' + log.tz + '</b>, the break’s own time, not the moment you tapped. That matters when an operator logs it a few minutes later.</p>' +
+      '<p>The schedule row was not changed. The red ✖ sits on top of the original time instead of replacing it, because the gap between plan and air is exactly what traffic needs to see.</p>' +
+      '<p class="stamp-hint" style="font-family:var(--font-mono)">' + esc(logLine(log).main) + '</p>',
+      "Next", false, next);
+  }
+  function afterExport() {
+    var d = tourDr();
+    openDialog("What sending did", "Now in Shift Tracker",
+      '<p>Shift Tracker read the log and opened a DR with the station, programme, break and classification already filled in.</p>' +
+      '<p>One thing it can’t know for certain is the scheduled time on the station’s log, so the operator confirms it. Live Tracker’s stamp, <b>' + (d ? d.logTime : "") + '</b>, is shown as a hint.</p>',
+      "Next", true, next);
+  }
+  function afterStage(d) {
+    openDialog("What Enter did", "DR staged",
+      '<p>Shift Tracker wrote the incident description from the fields and put the DR in Step 5 as a staged draft. Every green box copies with one click for pasting into iTracker.</p>' +
+      '<p>Time out is <b>' + d.end + '</b>, one second after time in. iTracker rejects an incident whose start and end are identical, so the app handles that automatically.</p>' +
+      '<p>A staged DR can still be edited or discarded. Nothing is final yet.</p>',
+      "Next", true, next);
+  }
+  function afterCommit() {
+    openDialog("What commit did", "Locked into the shift report",
+      '<p>DR# ' + esc(tourDr().drNumber) + ' moved out of staging and into the final shift report below, grouped under its station. Committing is the point of no return, which is why it stayed locked until the DR number was entered.</p>' +
+      '<p>That is the whole path: a break missed on air becomes a numbered, filed report with the right time in the right zone, without retyping anything.</p>',
+      "See the shift report", true, function () {
+        tour.active = false; renderGuide(); applyCoach();
+        var rep = document.getElementById("report");
+        rep.scrollIntoView({ behavior: "smooth", block: "center" });
+      },
+      '<button type="button" class="btn" id="dlgRestart">Restart tour</button>');
+  }
+
+  /* ====================== ACTIONS ====================== */
+  function roll(r, at) {
+    r.rolledAt = at || Date.now(); r.endsAt = null; state.justRolled = r.id;
+    var s = step();
+    if (s && s.key === "timer" && r.id === "r1") { renderLT(); afterRoll(r); return true; }
+    return false;
+  }
+
+  function sendToST() {
+    var unsent = state.logs.filter(function (l) { return !isSent(l.id); });
+    if (tour.active && tour.logId) unsent.sort(function (a, b) { return (b.id === tour.logId) - (a.id === tour.logId); });
+    unsent.forEach(function (l) {
+      state.drSeq += 1;
+      var st = stationById(l.st);
+      var dr = { id: state.drSeq, logId: l.id, station: l.st, tz: st.tz, program: l.program, label: l.label, type: l.type, logTime: l.time, time: null, end: null, drNumber: "", status: "draft" };
+      state.drs.push(dr);
+      if (tour.active && l.id === tour.logId) tour.drId = dr.id;
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    var d = b.dataset, parts, s = step();
+
+    if (b.id === "dlgNext") { closeDialog(); return; }
+    if (b.id === "dlgRestart") { document.getElementById("scrim").hidden = true; onDialogClose = null; startTour(); return; }
+    if (b.id === "restartBtn") { startTour(); return; }
+    if (b.id === "skipTour") { tour.active = false; renderGuide(); applyCoach(); return; }
+    if (b.id === "showMe") { focusTarget(); return; }
+    if (d.view) { setView(d.view); return; }
+
+    if (b.id === "coverageBtn") {
+      state.coverageAt = Date.now(); renderLT();
+      if (s && s.key === "coverage") afterCoverage();
+    } else if (d.start) {
+      var r = rowById(d.start); r.endsAt = Date.now() + r.duration * 1000 / SPEED; renderLT();
+    } else if (d.cancel) { rowById(d.cancel).endsAt = null; renderLT(); }
+    else if (d.roll) { if (!roll(rowById(d.roll))) renderLT(); }
+    else if (d.feed) { var st = stationById(d.feed); st.feed = st.feed === "LIVE" ? "DELAYED" : "LIVE"; renderLT(); }
+    else if (d.model) { parts = d.model.split("|"); rowById(parts[0]).model = parts[1]; renderLT(); }
+    else if (d.confirm) { parts = d.confirm.split("|"); rowById(parts[0]).confirmed[parts[1]] = true; renderLT(); }
+    else if (d.log) {
+      parts = d.log.split("|");
+      var log = addLog(parts[0], parts[1], parts[2]); renderLT();
+      if (s && s.key === "miss" && parts[2] === "MISS" && rowById(parts[0]).rolledAt) { tour.logId = log.id; afterMiss(log); }
+    } else if (d.undo) {
+      parts = d.undo.split("|");
+      for (var i = state.logs.length - 1; i >= 0; i--) {
+        var L = state.logs[i];
+        if (L.rowId === parts[0] && L.st === parts[1] && !isSent(L.id)) { state.logs.splice(i, 1); break; }
+      }
+      renderLT();
+    } else if (d.rm) {
+      var id = Number(d.rm);
+      if (armedRemove === id) { state.logs = state.logs.filter(function (l) { return l.id !== id; }); armedRemove = null; }
+      else { armedRemove = id; setTimeout(function () { if (armedRemove === id) { armedRemove = null; renderLog(); } }, 4000); }
+      renderLT();
+    } else if (b.id === "sendBtn") {
+      sendToST(); setView("st");
+      if (s && s.key === "export") afterExport();
+    } else if (d.copy !== undefined) {
+      var val = d.copy;
+      try { navigator.clipboard.writeText(val).catch(function () {}); } catch (err) {}
+      b.classList.add("copied"); var old = b.textContent; b.textContent = "Copied";
+      setTimeout(function () { b.classList.remove("copied"); b.textContent = old; }, 900);
+    } else if (d.discard) {
+      var dr = state.drs.filter(function (x) { return x.id === Number(d.discard); })[0];
+      dr.status = "draft"; dr.time = null; dr.end = null; dr.drNumber = "";
+      if (tour.active && dr.id === tour.drId) goStep(4); else renderST();
+    } else if (d.commit) {
+      var c = state.drs.filter(function (x) { return x.id === Number(d.commit); })[0];
+      if (!/^\d{4,}$/.test(c.drNumber)) return;
+      c.status = "committed"; state.reportFresh = true; renderST();
+      if (s && (s.key === "commit" || s.key === "drnum") && c.id === tour.drId) afterCommit();
+    } else if (b.id === "copyReport") {
+      var status = document.getElementById("copyStatus");
+      try {
+        navigator.clipboard.writeText(document.getElementById("report").textContent)
+          .then(function () { status.textContent = "Copied."; }, function () { status.textContent = "Select the report text to copy it."; });
+      } catch (err) { status.textContent = "Select the report text to copy it."; }
+    }
+  });
+
+  document.addEventListener("submit", function (e) {
+    if (e.target.id !== "timeForm") return;
+    e.preventDefault();
+    var d = currentDraft(), input = document.getElementById("drTime"), t = normTime(input.value);
+    if (!d) return;
+    if (!t) {
+      document.getElementById("drErr").textContent = "Enter a time like " + d.logTime + " (hours:minutes:seconds, 24-hour).";
+      input.focus(); return;
+    }
+    d.time = t; d.end = plusOneSecond(t); d.status = "staged"; state.newStaged = d.id;
+    renderST();
+    var s = step();
+    if (s && s.key === "time" && d.id === tour.drId) afterStage(d);
+    else { var card = document.getElementById("staged-" + d.id); if (card) card.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target;
+    if (t.id === "drTime") {
+      var d = currentDraft(); if (!d) return;
+      document.getElementById("drErr").textContent = "";
+      document.getElementById("drPreview").textContent = describe(d, normTime(t.value));
+    } else if (t.dataset && t.dataset.drnum) {
+      var dr = state.drs.filter(function (x) { return x.id === Number(t.dataset.drnum); })[0];
+      dr.drNumber = t.value.replace(/\D/g, "");
+      if (t.value !== dr.drNumber) t.value = dr.drNumber;
+      var ok = /^\d{4,}$/.test(dr.drNumber);
+      var btn = document.querySelector('[data-commit="' + dr.id + '"]');
+      btn.disabled = !ok;
+      document.getElementById("gate-" + dr.id).textContent = ok ? "Ready to commit." : "Commit unlocks once the DR number from iTracker is entered.";
+      var s = step();
+      if (s && s.key === "drnum" && dr.id === tour.drId && dr.drNumber === DEMO_DR) goStep(6);
+    }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("scrim").hidden) closeDialog();
+    if (e.key === "Enter" && e.target.dataset && e.target.dataset.drnum) {
+      var b = document.querySelector('[data-commit="' + e.target.dataset.drnum + '"]');
+      var s = step();
+      if (b && !b.disabled) {
+        if (s && s.key === "drnum" && Number(e.target.dataset.drnum) === tour.drId) goStep(6);
+        else b.focus();
+      }
+    }
+  });
+
+  /* ====================== TICK ====================== */
+  function tick() {
+    var now = Date.now();
+    ["ET", "CT", "MT", "PT"].forEach(function (z) { document.getElementById("clk-" + z).textContent = fmt(now, z); });
+    var dirty = false, handled = false;
+    state.rows.forEach(function (r) {
+      if (!r.endsAt) return;
+      if (now >= r.endsAt) { if (roll(r, now)) handled = true; else dirty = true; return; }
+      var btn = document.getElementById("tbtn-" + r.id);
+      if (btn) btn.textContent = "T-" + mmss((r.endsAt - now) * SPEED / 1000);
+    });
+    Object.keys(state.flashes).forEach(function (k) { if (state.flashes[k].until <= now) { delete state.flashes[k]; dirty = true; } });
+    if (dirty && !handled && view === "lt") renderLT();
+  }
+
+  startTour();
+  tick();
+  setInterval(tick, 200);
+})();
+</script>
+
+</body></html>

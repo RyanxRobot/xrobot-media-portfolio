@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0a0a0c; }
+    a { color: #39FF14; }
+    a:hover { color: #A66BFF; }
+    @media (max-width: 680px) { [data-back-cue] { display: none; } }
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(57,255,20,0.35), 0 0 30px rgba(138,43,255,0.30); }
+      50% { text-shadow: 0 0 16px rgba(57,255,20,0.5), 0 0 48px rgba(138,43,255,0.42); }
+    }
+    @keyframes titleGlitch {
+      0%, 89%, 100% { opacity:0; transform:translate(0,0); }
+      90% { opacity:0.85; transform:translate(-3px,1px); } 91.5% { opacity:0.85; transform:translate(3px,-1px); }
+      93% { opacity:0; transform:translate(0,0); } 94.5% { opacity:0.7; transform:translate(-2px,1px); } 96% { opacity:0; transform:translate(0,0); }
+    }
+    @keyframes backChevFade { 0%, 4% { opacity:0; } 9%, 45% { opacity:1; } 49%, 100% { opacity:0; } }
+    @keyframes backLabel { 0%, 8% { opacity:0; } 11%, 45% { opacity:1; } 49%, 100% { opacity:0; } }
+    @keyframes backLabelGlitch {
+      0%, 10%, 12%, 14%, 16%, 18%, 100% { opacity:0; transform:translate(0,0); }
+      11% { opacity:1; transform:translate(-4px,1px); } 13% { opacity:1; transform:translate(4px,-1px); }
+      15% { opacity:1; transform:translate(-3px,1px); } 17% { opacity:1; transform:translate(3px,-1px); }
+    }
+  </style>
+  <script src="./image-slot.js"></script>
+  <script src="./xr-edit.js"></script>
+</helmet>
+
+<div style="background:#0a0a0c; color:#f2f2f0; font-family:'Inter',sans-serif; min-height:100vh;">
+
+  <header style="position:fixed; top:0; left:0; right:0; z-index:60; height:76px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; padding:0 clamp(20px,4vw,48px); background:#0a0a0c;">
+    <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+      <div style="position:relative; display:inline-flex; align-items:center;">
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; right:100%; margin-right:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#39FF14; pointer-events:none;"><span data-text="BACK TO RAVERS" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO RAVERS</span><span style="display:inline-flex; gap:2px;"><span style="color:#39FF14; animation:backChevFade 15s linear infinite;">›</span><span style="color:#39FF14; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">›</span><span style="color:#39FF14; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">›</span></span></span>
+        <a href="xRobot Ravers.dc.html" aria-label="Back to Colorado Ravers" style="font-family:'Anton',sans-serif; font-size:clamp(18px,2.4vw,24px); line-height:1; letter-spacing:0.04em; color:#fff; text-decoration:none;">xROBOT<span style="color:#39FF14;">.</span>MEDIA</a>
+        <span aria-hidden="true" data-back-cue="1" style="position:absolute; left:100%; margin-left:14px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Anton',sans-serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:0.12em; color:#39FF14; pointer-events:none;"><span style="display:inline-flex; gap:2px;"><span style="color:#39FF14; animation:backChevFade 15s linear infinite;">‹</span><span style="color:#39FF14; animation:backChevFade 15s linear infinite; animation-delay:0.35s;">‹</span><span style="color:#39FF14; animation:backChevFade 15s linear infinite; animation-delay:0.7s;">‹</span></span><span data-text="BACK TO RAVERS" style="position:relative; opacity:0; animation:backLabel 15s linear infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:0.1s;">BACK TO RAVERS</span></span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="height:4px; flex-shrink:0; background:linear-gradient(90deg,#ff2ec4,#2b46ff,#39FF14,#8A2BFF,#a51cff,#FF7A18,#ff1436,#8A94A6,#1F3A93,#fff200);"></div>
+  </header>
+  <div style="height:76px;"></div>
+  <nav aria-label="Productions" style="position:sticky; top:76px; z-index:50; background:rgba(10,10,12,0.28); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.7); border-bottom:1px solid rgba(0,0,0,0.7);">
+    <div style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px); display:flex; align-items:center; gap:clamp(14px,2.4vw,28px); overflow-x:auto; scrollbar-width:none;">
+      <a href="xRobot Media.dc.html#productions" style="flex-shrink:0; font-size:10px; font-weight:800; letter-spacing:0.16em; color:#6e6e6b; text-decoration:none; padding:14px 0 13px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);" style-hover="color:#fff;">PRODUCTIONS</a>
+      <div aria-hidden="true" style="flex-shrink:0; width:1px; height:16px; background:rgba(255,255,255,0.14);"></div>
+      <a href="xRobot Tech Room.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Tech Room</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#ff2ec4,#2b46ff); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Video.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Video Production</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#a51cff,#FF7A18); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Design.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Web, UI &amp; Apps</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#2b46ff,#5B8DEF); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Print.dc.html" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;" style-hover="opacity:1;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#9a9a97;">Static &amp; Print</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#FF7A18,#fff200); opacity:0.3;"></span>
+      </a>
+      <a href="xRobot Ravers.dc.html" aria-current="page" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; text-decoration:none; white-space:nowrap;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); color:#fff;">Colorado Ravers</span>
+        <span aria-hidden="true" style="height:3px; background:linear-gradient(90deg,#39FF14,#8A2BFF,#ff2ec4); opacity:1;"></span>
+      </a>
+    </div>
+  </nav>
+
+  <section style="max-width:1000px; margin:0 auto; padding:clamp(48px,7vw,80px) clamp(20px,6vw,64px) clamp(28px,4vw,40px);">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.14em; color:#39FF14; margin-bottom:14px;">FESTIVAL GALLERY</div>
+    <h1 data-text="Decadence 25-26" style="position:relative; font-family:'Anton',sans-serif; font-size:clamp(34px,6vw,64px); line-height:0.95; text-transform:uppercase; color:#fff; margin:0 0 16px; animation:titleGlow 5.5s ease-in-out infinite;" style-before="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#39FF14; clip-path:inset(0 0 56% 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite;" style-after="content:attr(data-text); position:absolute; left:0; top:0; width:100%; color:#8A2BFF; clip-path:inset(56% 0 0 0); opacity:0; text-shadow:none; pointer-events:none; animation:titleGlitch 7s steps(1) infinite; animation-delay:0.14s;">Decadence 25-26</h1>
+    <p style="max-width:640px; font-size:15px; line-height:1.75; color:#c7c7c4; margin:0 0 22px;">Frames from Decadence 25-26 — shot by the community and posted here. Click any photo for the full view and photo credit. Have photos from this show? Send them in and they'll be added to the gallery.</p>
+    <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="text-decoration:none; padding:12px 22px; border:1px dashed rgba(57,255,20,0.5); color:#39FF14; font-weight:700; font-size:13px; letter-spacing:0.02em; display:inline-block;">Have your own photos of this festival? Send them to us at Colorado Ravers →</a>
+  </section>
+
+  <section style="max-width:1200px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(56px,7vw,84px);">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px;">
+      <sc-for list="{{ photos }}" as="p" hint-placeholder-count="17">
+        <div onClick="{{ p.open }}" style="cursor:pointer; overflow:hidden; border:1px solid rgba(57,255,20,0.2);">
+          <img src="{{ p.src }}" alt="Decadence 25-26 photo" style="width:100%; aspect-ratio:4/5; object-fit:cover; display:block; transition:transform 0.3s ease;" style-hover="transform:scale(1.04);">
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeLightbox }}" style="position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.94); display:flex; align-items:center; justify-content:center; padding:clamp(16px,4vw,40px);">
+    <button onClick="{{ closeLightbox }}" style="position:absolute; top:20px; right:24px; background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:18px; width:36px; height:36px; border-radius:50%; cursor:pointer;">×</button>
+    <button onClick="{{ prevPhoto }}" style="position:absolute; left:clamp(8px,2vw,28px); top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:22px; width:44px; height:44px; border-radius:50%; cursor:pointer;">‹</button>
+    <button onClick="{{ nextPhoto }}" style="position:absolute; right:clamp(8px,2vw,28px); top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:22px; width:44px; height:44px; border-radius:50%; cursor:pointer;">›</button>
+
+    <div onClick="{{ stopClick }}" style="max-width:1000px; width:100%;">
+      <img src="{{ currentSrc }}" alt="Decadence 25-26 photo, expanded" style="width:100%; max-height:70vh; object-fit:contain; display:block; margin:0 auto; background:#000;">
+      <div style="background:#141416; border:1px solid rgba(57,255,20,0.25); border-top:none; padding:16px 22px;">
+        <sc-if value="{{ is0 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is1 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is2 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is3 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is4 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is5 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is6 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is7 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is8 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is9 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is10 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is11 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is12 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is13 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is14 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is15 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+        <sc-if value="{{ is16 }}"><div style="font-size:14px; color:#e8e8e6;">Taken by <strong>Ryan Wilson</strong> · <a href="https://www.facebook.com/groups/coloradoravers" target="_blank" rel="noopener" style="font-weight:700;">Colorado Ravers</a></div></sc-if>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:clamp(32px,4vw,52px) clamp(20px,6vw,64px); max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;">
+    <div style="font-size:12px; color:#6e6e6b; letter-spacing:0.06em;">© 2026 xROBOT.MEDIA · RYAN WILSON</div>
+    <a href="xRobot Ravers.dc.html" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-decoration:none;">← ALL FESTIVALS</a>
+    <a href="xRobot Admin.dc.html" style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-decoration:none; color:#4a4a48;" style-hover="color:#9a9a97;">ADMIN</a>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PHOTO_COUNT = 17;
+
+class Component extends DCLogic {
+  state = { idx: null };
+  open = (i) => this.setState({ idx: i });
+  close = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ idx: null }); };
+  prev = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState(s => ({ idx: (s.idx + PHOTO_COUNT - 1) % PHOTO_COUNT })); };
+  next = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState(s => ({ idx: (s.idx + 1) % PHOTO_COUNT })); };
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+
+  renderVals() {
+    const idx = this.state.idx;
+    const photos = Array.from({ length: PHOTO_COUNT }, (_, i) => ({
+      src: 'assets/decadence/' + String(i + 1).padStart(2, '0') + '.jpg',
+      open: () => this.open(i)
+    }));
+    const vals = {
+      photos,
+      lightboxOpen: idx !== null,
+      currentSrc: idx !== null ? photos[idx].src : '',
+      closeLightbox: this.close,
+      prevPhoto: this.prev,
+      nextPhoto: this.next,
+      stopClick: this.stop
+    };
+    for (let i = 0; i < PHOTO_COUNT; i++) vals['is' + i] = idx === i;
+    return vals;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:45;">
+  <div style="position:absolute; left:50%; bottom:clamp(20px,3vw,36px); transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px;">
+    <sc-if value="{{ showAnimatedLabel }}" hint-placeholder-val="{{ true }}">
+      <span data-text="{{ label }}" style="position:relative; display:inline-block; opacity:0; font-family:'Anton',sans-serif; font-size:10px; letter-spacing:0.14em; color:#5B8DEF; white-space:nowrap; animation:backLabel 15s linear infinite; animation-delay:2s;" style-before="content:attr(data-text); position:absolute; left:0; top:0; color:#6fe8ff; clip-path:inset(0 0 55% 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:2s;" style-after="content:attr(data-text); position:absolute; left:0; top:0; color:#fff; clip-path:inset(55% 0 0 0); opacity:0; animation:backLabelGlitch 15s steps(1) infinite; animation-delay:2.1s;">{{ label }}</span>
+    </sc-if>
+    <sc-if value="{{ showStaticLabel }}" hint-placeholder-val="{{ false }}">
+      <span style="font-family:'Anton',sans-serif; font-size:10px; letter-spacing:0.14em; color:#5B8DEF; white-space:nowrap; opacity:0.8;">{{ label }}</span>
+    </sc-if>
+    <div style="{{ chevWrapStyle }}">
+      <span style="{{ chev0 }}">⌄</span>
+      <span style="{{ chev1 }}">⌄</span>
+      <span style="{{ chev2 }}">⌄</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:300},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SCROLL FOR MORE&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { atBottom: false };
+  componentDidMount() {
+    this._onScroll = () => {
+      const atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 40;
+      if (atBottom !== this.state.atBottom) this.setState({ atBottom });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onScroll();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+  }
+  renderVals() {
+    const label = this.props.label || 'SCROLL FOR MORE';
+    const reduced = typeof document !== 'undefined' && document.documentElement.getAttribute('data-xr-motion') === 'reduced';
+    const atBottom = this.state.atBottom;
+    const chevWrapStyle = {
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px',
+      opacity: atBottom ? 0 : 1, transition: 'opacity .5s ease'
+    };
+    const chev = (delay) => ({
+      display: 'block', fontSize: '13px', lineHeight: 1, color: '#5B8DEF',
+      animation: 'backChevFade 15s linear infinite', animationDelay: delay,
+      animationPlayState: atBottom ? 'paused' : 'running'
+    });
+    return {
+      label, atBottom, notAtBottom: !atBottom,
+      showAnimatedLabel: !reduced && !atBottom,
+      showStaticLabel: reduced && !atBottom,
+      chevWrapStyle, chev0: chev('2s'), chev1: chev('2.35s'), chev2: chev('2.7s')
+    };
+  }
+}
+
+</script>
+</body>
+</html>
