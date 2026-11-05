@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./data/design.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -11,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* keep image-slot placeholders sized even if the image-slot script hasn't loaded */
+    image-slot { display: block; }
     html { scroll-behavior: smooth; }
     body { margin: 0; background: #0a0a0c; }
     a { color: #5B8DEF; }
@@ -39,7 +42,9 @@
     }
   </style>
   <script src="./xr-transition.js"></script>
+  <script src="./xr-notify.js"></script>
   <script src="./xr-edit.js"></script>
+  <script src="./xr-cms.js" data-xr-page="design"></script>
   <script src="./image-slot.js"></script>
 </helmet>
 
@@ -112,7 +117,7 @@
   <section style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(70px,9vw,120px);">
     <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr)); gap:clamp(18px,2.4vw,28px);">
       <sc-for list="{{ items }}" as="item" hint-placeholder-count="6">
-        <article style="{{ item.cardStyle }}">
+        <article data-xr-ref="{{ item.xrRef }}" style="{{ item.cardStyle }}">
           <div style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);">
             <sc-if value="{{ item.hasVideo }}" hint-placeholder-val="{{ false }}">
               <div style="position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
@@ -120,9 +125,14 @@
               </div>
             </sc-if>
             <sc-if value="{{ item.hasImage }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ item.link }}" aria-label="Open the {{ item.title }} guided demo" style="display:block; position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
+              <a href="{{ item.link }}" aria-label="Open {{ item.title }}" style="display:block; position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
                 <img src="{{ item.image }}" alt="{{ item.title }} interface" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
               </a>
+            </sc-if>
+            <sc-if value="{{ item.hasImageNoLink }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative; aspect-ratio:1280/504; overflow:hidden; background:#000;">
+                <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
+              </div>
             </sc-if>
             <sc-if value="{{ item.noVideo }}" hint-placeholder-val="{{ true }}">
               <div style="aspect-ratio:4/3;">
@@ -169,21 +179,14 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { format: 'All', context: 'All' };
+  componentDidMount() { this.onData = () => this.forceUpdate(); window.addEventListener('xr-data-change', this.onData); }
+  componentWillUnmount() { window.removeEventListener('xr-data-change', this.onData); }
 
-  data() {
-    return [
-      { title: 'Tracker Suite', format: 'UI / App', context: 'Professional', year: '',
-        blurb: 'A four-app shift-operations suite for broadcast master control — break scheduling, live tracking and discrepancy reporting. Try the guided demo.',
-        roles: ['UI Design', 'Front-end', 'Workflow'], wide: true,
-        link: 'Tracker Suite Tour.html', linkLabel: 'TRY THE GUIDED DEMO →', image: 'assets/tracker-suite-card.png' },
-      { title: 'Denver Hard Dance', subtitle: 'DHD.com', format: 'Web', context: 'Client', year: '2012',
-        blurb: 'Site for a Denver DJ collective — animated intro and navigation, a booking calendar and a profile page for each DJ. Mostly complete before the group dissolved.',
-        roles: ['Web Design', 'Animation', 'Adobe Animate', 'Dreamweaver', 'Fireworks'], video: 'assets/dhd-home-nav.mp4' },
-      { title: 'College Web Project', format: 'Web', context: 'College', year: '',
-        blurb: 'Placeholder — site build. Add course, brief and what you built.',
-        roles: ['Web Design', 'HTML / CSS'] }
-    ];
-  }
+  // Content lives in data/design.js (edited on the live site in edit mode via xr-cms.js).
+  content() { return (window.XR_DATA && window.XR_DATA['design']) || { items: [], formats: [], contexts: [] }; }
+  data() { return this.content().items || []; }
+  // Not-yet-published uploads preview through window.XR_PREVIEW while editing.
+  pv(src) { return (src && window.XR_PREVIEW && window.XR_PREVIEW[src]) || src || ''; }
 
   chip(label, active, onClick) {
     return {
@@ -201,21 +204,25 @@ class Component extends DCLogic {
 
   renderVals() {
     const all = this.data();
-    const formats = ['All', 'UI / App', 'Web'];
-    const contexts = ['All', 'Professional', 'Client', 'College', 'Independent'];
+    const formats = ['All', ...(this.content().formats || [])];
+    const contexts = ['All', ...(this.content().contexts || [])];
     const { format, context } = this.state;
     const filtered = all.filter(d => (format === 'All' || d.format === format) && (context === 'All' || d.context === context));
     const unfiltered = format === 'All' && context === 'All';
     const items = filtered.map((d, i) => ({
       ...d,
-      slotId: 'des-' + d.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      xrRef: 'items/' + all.indexOf(d),
+      slotId: 'des-' + (d.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       slotHint: d.title + ' — screenshot or flat export',
-      eyebrow: d.format.toUpperCase() + (d.year ? ' · ' + d.year : ''),
+      eyebrow: (d.format || '').toUpperCase() + (d.year ? ' · ' + d.year : ''),
       hasLink: !!d.link,
       hasVideo: !!d.video,
       hasSubtitle: !!d.subtitle,
       noVideo: !d.video && !d.image,
-      hasImage: !d.video && !!d.image,
+      hasImage: !d.video && !!d.image && !!d.link,
+      hasImageNoLink: !d.video && !!d.image && !d.link,
+      image: this.pv(d.image),
+      roles: d.roles || [],
       cardStyle: {
         gridColumn: d.wide && unfiltered ? '1 / -1' : 'auto',
         display: 'flex', flexDirection: 'column',

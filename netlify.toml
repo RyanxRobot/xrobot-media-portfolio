@@ -1,0 +1,24 @@
+# xRobot.media is a static site served from the repo root; the on-site editor's
+# backend lives in netlify/functions (see netlify/functions/publish.mts).
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Don't serve the function source or tooling files as static assets.
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404"
+  status = 404
+  force = true
+
+# Content files change on every publish; always revalidate.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

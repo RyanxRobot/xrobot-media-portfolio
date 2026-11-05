@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./data/techroom.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -11,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* keep image-slot placeholders sized even if the image-slot script hasn't loaded */
+    image-slot { display: block; }
     html { scroll-behavior: smooth; }
     body { margin: 0; background: #0a0a0c; }
     a { color: #ff2ec4; }
@@ -88,7 +91,9 @@
     @keyframes driftD { 0% { transform: scale(1.06) translate(0, 1.2%); } 100% { transform: scale(1.06) translate(0, -1.2%); } }
   </style>
   <script src="./xr-transition.js"></script>
+  <script src="./xr-notify.js"></script>
   <script src="./xr-edit.js"></script>
+  <script src="./xr-cms.js" data-xr-page="techroom"></script>
   <script src="./image-slot.js"></script>
 </helmet>
 
@@ -197,7 +202,7 @@
       </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:clamp(18px,2.4vw,28px);">
         <sc-for list="{{ episodes }}" as="ep" hint-placeholder-count="6">
-          <div style="border:1px solid rgba(255,255,255,0.1); background:#0d0d10; display:flex; flex-direction:column; height:auto; align-self:start;">
+          <div data-xr-ref="{{ ep.xrRef }}" style="border:1px solid rgba(255,255,255,0.1); background:#0d0d10; display:flex; flex-direction:column; height:auto; align-self:start;">
             <div style="position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; flex:0 0 auto; background:#000;">
               <sc-if value="{{ ep.hasVideo }}" hint-placeholder-val="{{ false }}">
                 <button onClick="{{ ep.play }}" aria-label="{{ ep.playLabel }}" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:#000; cursor:pointer; display:block;" style-hover="filter:brightness(1.12);">
@@ -271,8 +276,10 @@ class Component extends DCLogic {
   componentDidMount() {
     this.onKey = e => { if (e.key === 'Escape' && this.state.video) this.setState({ video: null }); };
     window.addEventListener('keydown', this.onKey);
+    this.onData = () => this.forceUpdate();
+    window.addEventListener('xr-data-change', this.onData);
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); window.removeEventListener('xr-data-change', this.onData); }
   setVideo = (el) => {
     if (!el) return;
     el.muted = true; el.defaultMuted = true; el.volume = 0; el.loop = true; el.playbackRate = 0.6;
@@ -282,19 +289,13 @@ class Component extends DCLogic {
     el.play().catch(() => {});
   };
   renderVals() {
-    const eps = [
-      { tag: 'HISTORY', title: 'History of the iPod Classic', yt: 'VuC_rkLJJqY' },
-      { tag: 'PODCAST', title: 'About This Mac — A Robot\u2019s Tech Room Podcast', yt: 'BaReC2pDC-E' },
-      { tag: 'UNBOXING · CINEMATIC', title: 'MacBook Pro M1 Pro Series', yt: '8-PeKU6YDkc' },
-      { tag: 'UNBOXING · RETRO', title: 'Unboxing an Early 2000s-Era Mac', yt: 'KamjhZk26_E' },
-      { tag: 'TECH BYTES', title: 'Retro Computer News — Feb. 28, 1984', yt: '6pcAa9UE5WY' },
-      { tag: 'REVIEW', title: 'First review in the works', soon: true }
-    ];
+    const d = (window.XR_DATA && window.XR_DATA.techroom) || {};
+    const eps = d.episodes || [];
     const v = this.state.video;
     return {
       setVideo: this.setVideo,
-      latestSrc: 'https://www.youtube.com/embed/videoseries?list=UUI8bhEE7C6AtP-nhv8Zj8wQ&rel=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin),
-      episodes: eps.map((e, i) => ({ ...e, slotId: 'rtr-ep-' + i, alt: e.title + ' — Robot\u2019s Tech Room video thumbnail',
+      latestSrc: 'https://www.youtube.com/embed/videoseries?list=' + encodeURIComponent(d.latestPlaylist || 'UUI8bhEE7C6AtP-nhv8Zj8wQ') + '&rel=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin),
+      episodes: eps.map((e, i) => ({ ...e, xrRef: 'episodes/' + i, slotId: 'rtr-ep-' + i, alt: e.title + ' — Robot\u2019s Tech Room video thumbnail',
         hasVideo: !!e.yt, noVideo: !e.yt && !e.soon, isSoon: !!e.soon,
         thumb: e.yt ? 'https://i.ytimg.com/vi/' + e.yt + '/hqdefault.jpg' : '',
         playLabel: 'Play ' + e.title,

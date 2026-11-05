@@ -1,0 +1,8 @@
+{
+  "name": "xrobot-media-portfolio",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@netlify/functions": "^6.0.0"
+  }
+}

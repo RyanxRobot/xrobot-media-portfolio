@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* keep image-slot placeholders sized even if the image-slot script hasn't loaded */
+    image-slot { display: block; }
     html { scroll-behavior: smooth; }
     body { margin: 0; background: #0a0a0c; }
     a { color: #5B8DEF; }
@@ -36,6 +38,7 @@
     }
   </style>
   <script src="./xr-transition.js"></script>
+  <script src="./xr-notify.js"></script>
   <script src="./xr-edit.js"></script>
   <script src="./image-slot.js"></script>
 </helmet>
@@ -137,7 +140,7 @@
         </div>
       </a>
       <a href="xRobot Photography.dc.html#onset/duffle-bag-boy" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
-        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-dbb" shape="rect" role="img" aria-label="Duffle Bag Boy" placeholder="Duffle Bag Boy" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.06);"><image-slot data-xr-ph="self" id="about-proj-dbb" shape="rect" role="img" aria-label="Duffle Bag Boy" placeholder="Duffle Bag Boy" style="width:100%; height:100%; display:block;"></image-slot></div>
         <div style="padding:16px 18px;">
           <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">Duffle Bag Boy — Feature Film</div>
           <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">2nd Assistant Camera, 1st AD, Sound Recordist, Production Assistant.</div>
@@ -145,7 +148,7 @@
         </div>
       </a>
       <a href="xRobot Photography.dc.html#onset/jmp-studios" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
-        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-tss" shape="rect" role="img" aria-label="The Solution Studio" placeholder="The Solution Studio" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.06);"><image-slot data-xr-ph="self" id="about-proj-tss" shape="rect" role="img" aria-label="The Solution Studio" placeholder="The Solution Studio" style="width:100%; height:100%; display:block;"></image-slot></div>
         <div style="padding:16px 18px;">
           <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">The Solution Studio — Educational Series</div>
           <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">1st AC, 1st AD, Master Control Operator, Post-Production Editor.</div>
@@ -153,7 +156,7 @@
         </div>
       </a>
       <a href="xRobot Photography.dc.html#onset/pillowfight" style="text-decoration:none; color:inherit; border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; display:block; background:#141416;">
-        <div style="width:100%; aspect-ratio:4/3; overflow:hidden;"><image-slot id="about-proj-pf" shape="rect" role="img" aria-label="PillowFight" placeholder="PillowFight" style="width:100%; height:100%; display:block;"></image-slot></div>
+        <div style="width:100%; aspect-ratio:4/3; overflow:hidden; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.06);"><image-slot data-xr-ph="self" id="about-proj-pf" shape="rect" role="img" aria-label="PillowFight" placeholder="PillowFight" style="width:100%; height:100%; display:block;"></image-slot></div>
         <div style="padding:16px 18px;">
           <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#f2f2f0;">PillowFight — Ad Campaign</div>
           <div style="font-size:12px; color:#999; line-height:1.5; margin-bottom:10px;">1st Assistant Director of Photography.</div>

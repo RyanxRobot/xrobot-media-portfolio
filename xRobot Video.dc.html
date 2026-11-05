@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./data/video.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -11,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* keep image-slot placeholders sized even if the image-slot script hasn't loaded */
+    image-slot { display: block; }
     html { scroll-behavior: smooth; }
     body { margin: 0; background: #0a0a0c; }
     a { color: #a51cff; }
@@ -39,7 +42,9 @@
     }
   </style>
   <script src="./xr-transition.js"></script>
+  <script src="./xr-notify.js"></script>
   <script src="./xr-edit.js"></script>
+  <script src="./xr-cms.js" data-xr-page="video"></script>
   <script src="./image-slot.js"></script>
 </helmet>
 
@@ -112,13 +117,16 @@
   <section style="max-width:1280px; margin:0 auto; padding:0 clamp(20px,6vw,64px) clamp(70px,9vw,120px);">
     <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr)); gap:clamp(18px,2.4vw,28px);">
       <sc-for list="{{ items }}" as="item" hint-placeholder-count="6">
-        <article style="{{ item.cardStyle }}">
+        <article data-xr-ref="{{ item.xrRef }}" style="{{ item.cardStyle }}">
           <div style="position:relative; aspect-ratio:16/9; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);">
             <sc-if value="{{ item.hasVideo }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ item.play }}" aria-label="{{ item.playLabel }}" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:#000; cursor:pointer; display:block;" style-hover="filter:brightness(1.12);">
                 <img src="{{ item.thumb }}" alt="" style="width:100%; height:100%; object-fit:cover; display:block;">
                 <span style="position:absolute; left:16px; bottom:16px; display:flex; align-items:center; gap:10px; padding:9px 14px 9px 12px; background:rgba(10,10,12,0.3); backdrop-filter:blur(8px); border:1px solid rgba(165,28,255,0.6); color:#fff; font-family:'Inter',sans-serif; font-size:12px; font-weight:800; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); letter-spacing:0.1em;"><span style="color:#a51cff; font-size:13px;">▶</span>PLAY</span>
               </button>
+            </sc-if>
+            <sc-if value="{{ item.hasImageOnly }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ item.thumb }}" alt="{{ item.title }}" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
             </sc-if>
             <sc-if value="{{ item.noVideo }}" hint-placeholder-val="{{ true }}">
               <image-slot id="{{ item.slotId }}" role="img" aria-label="{{ item.title }}" placeholder="{{ item.slotHint }}" style="width:100%; height:100%; display:block;"></image-slot>
@@ -189,43 +197,16 @@ class Component extends DCLogic {
   componentDidMount() {
     this.onKey = e => { if (e.key === 'Escape' && this.state.video) this.setState({ video: null }); };
     window.addEventListener('keydown', this.onKey);
+    this.onData = () => this.forceUpdate();
+    window.addEventListener('xr-data-change', this.onData);
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); window.removeEventListener('xr-data-change', this.onData); }
 
-  data() {
-    return [
-      { title: 'Solutions Studio', subtitle: 'Colorado Attorney General Phil Weiser Student Panel', client: 'JMP Studios', format: 'Studio', context: 'Professional', year: '',
-        blurb: 'Broadcast student panel with Weiser, produced in studio. Built the set and coordinated lighting and audio, ran the mixing board and VTR recording, then edited and animated the graphics in post.', broadcast: true,
-        roles: ['Studio Engineer', 'Set Build', 'Audio Mix', 'VTR Recording', 'Post Editor', 'Graphics / Animation'], yt: 'lH3i8vCVXNQ', wide: true,
-        link: 'xRobot Photography.dc.html#onset/jmp-studios', linkLabel: 'ON-SET PHOTOS →' },
-      { title: 'Building Bruce & Making Maurice', client: 'Duffle Bag Boy', format: 'Behind the Scenes', formats: ['Behind the Scenes', 'Documentary'], context: 'Independent', year: '',
-        blurb: 'Behind-the-scenes interview with the director and cinematographer of the independent feature Duffle Bag Boy. I conducted the interview and edited the piece, and held multiple crew credits on the film itself.',
-        roles: ['Interviewer', 'Post Editor', 'Film: 2nd AC', 'Film: 1st AD', 'Film: Sound'], yt: 'MzB27-UU1QU',
-        link: 'xRobot Photography.dc.html#onset/duffle-bag-boy', linkLabel: 'ON-SET PHOTOS →' },
-      { title: 'Fentanyl', subtitle: 'The Faces of Recovery', format: 'Documentary', formats: ['Documentary', 'Motion'], context: 'College', capstone: true, year: '',
-        blurb: 'Social documentary and college capstone on fentanyl recovery. Interviews were conducted by others; I cut the full piece in post and built all motion graphics.',
-        roles: ['Post Editor', 'Motion Graphics'], yt: 'tZhL0vzoHyg' },
-      { title: 'Invisibility Cloak', client: 'PillowFight', format: 'Commercial', context: 'Professional', year: '',
-        blurb: 'PillowFight spoof spot in the style of Mac vs. PC. Built and lit the set, ran audio and operated second camera.',
-        roles: ['Production Assistant', '2nd Camera', 'Set Build', 'Lighting', 'Audio'], yt: 'K2AO5BDujNE',
-        link: 'xRobot Photography.dc.html#onset/pillowfight', linkLabel: 'ON-SET PHOTOS →' },
-      { title: 'Overload Festival', subtitle: 'Aftermovie', client: 'Colorado Ravers', format: 'Aftermovie', formats: ['Aftermovie', 'Motion'], context: 'Independent', year: '',
-        blurb: 'Festival aftermovie cut from my own show footage and community-submitted phone clips. The challenge: mismatched, handheld phone video shaped into one cohesive, high-energy piece.',
-        roles: ['Camera', 'Post Editor', 'Color', 'Sound Edit'], yt: 'Aha9Fe_qQHg',
-        link: 'xRobot Ravers.dc.html', linkLabel: 'MORE AFTERMOVIES →' },
-      { title: 'HallowFreakinWeen', subtitle: 'Community Aftermovie', client: 'Colorado Ravers', format: 'Aftermovie', context: 'Independent', year: '2015',
-        blurb: 'Community aftermovie built from attendee-submitted phone footage — sorted, synced and cut into one cohesive recap of the night.',
-        roles: ['Post Editor', 'Color', 'Sound Edit'], yt: '8GURJU39970',
-        link: 'xRobot Ravers.dc.html', linkLabel: 'MORE AFTERMOVIES →' },
-      { title: 'Closed for COVID', format: 'Documentary', context: 'College', year: '',
-        blurb: 'Solo short documentary made for Advanced Video Production. Handled every element — interviews, camera and framing, sound, graphics and the final edit.',
-        roles: ['Solo Project', 'Interviewer', 'Camera', 'Sound', 'Graphics', 'Post Editor'], yt: 'nMXQsRxrPis' },
-      { title: 'History of the iPod Classic', client: 'Tech Room', format: 'Motion', formats: ['Motion', 'Documentary'], context: 'Independent', year: '',
-        blurb: 'Tech Room explainer told mostly through motion graphics. Solo production — research, animation, edit and sound design, opening on archival Steve Jobs audio.',
-        roles: ['Solo Project', 'Motion Graphics', 'Animation', 'Post Editor', 'Sound'], yt: 'VuC_rkLJJqY',
-        link: 'xRobot Tech Room.dc.html', linkLabel: 'TECH ROOM →' }
-    ];
-  }
+  // Content lives in data/video.js (edited on the live site in edit mode via xr-cms.js).
+  content() { return (window.XR_DATA && window.XR_DATA['video']) || { items: [], formats: [], contexts: [] }; }
+  data() { return this.content().items || []; }
+  // Not-yet-published uploads preview through window.XR_PREVIEW while editing.
+  pv(src) { return (src && window.XR_PREVIEW && window.XR_PREVIEW[src]) || src || ''; }
 
   chip(label, active, onClick) {
     const short = { 'Behind the Scenes': 'BTS', 'Documentary': 'Docs', 'Commercial': 'Commercials', 'Aftermovie': 'Aftermovies' };
@@ -244,21 +225,24 @@ class Component extends DCLogic {
 
   renderVals() {
     const all = this.data();
-    const formats = ['All', 'Documentary', 'Commercial', 'Studio', 'Behind the Scenes', 'Aftermovie', 'Motion'];
-    const contexts = ['All', 'Professional', 'Client', 'College', 'Independent'];
+    const formats = ['All', ...(this.content().formats || [])];
+    const contexts = ['All', ...(this.content().contexts || [])];
     const { format, context } = this.state;
     const filtered = all.filter(d => (format === 'All' || (d.formats || [d.format]).includes(format)) && (context === 'All' || d.context === context));
     const unfiltered = format === 'All' && context === 'All';
     const items = filtered.map((d, i) => ({
       ...d,
-      slotId: 'vid-' + d.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      xrRef: 'items/' + all.indexOf(d),
+      slotId: 'vid-' + (d.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       slotHint: d.title + ' — 16:9 frame grab',
-      eyebrow: (d.client ? d.client.toUpperCase() + ' · ' : '') + d.format.toUpperCase() + (d.broadcast ? ' · BROADCAST' : '') + (d.capstone ? ' · CAPSTONE' : '') + (d.year ? ' · ' + d.year : ''),
+      eyebrow: (d.client ? d.client.toUpperCase() + ' · ' : '') + (d.format || '').toUpperCase() + (d.broadcast ? ' · BROADCAST' : '') + (d.capstone ? ' · CAPSTONE' : '') + (d.year ? ' · ' + d.year : ''),
       hasLink: !!d.link,
+      roles: d.roles || [],
       hasVideo: !!d.yt,
       hasSubtitle: !!d.subtitle,
-      noVideo: !d.yt,
-      thumb: d.yt ? 'https://i.ytimg.com/vi/' + d.yt + '/hqdefault.jpg' : '',
+      noVideo: !d.yt && !d.thumbImage,
+      hasImageOnly: !d.yt && !!d.thumbImage,
+      thumb: d.thumbImage ? this.pv(d.thumbImage) : (d.yt ? 'https://i.ytimg.com/vi/' + d.yt + '/hqdefault.jpg' : ''),
       playLabel: 'Play ' + d.title,
       play: () => this.setState({ video: d }),
       cardStyle: {
@@ -281,9 +265,9 @@ class Component extends DCLogic {
       empty: items.length === 0,
       modalOpen: !!this.state.video,
       modalTitle: this.state.video ? this.state.video.title : '',
-      modalEyebrow: this.state.video ? ((this.state.video.client ? this.state.video.client.toUpperCase() + ' · ' : '') + this.state.video.format.toUpperCase() + (this.state.video.broadcast ? ' · BROADCAST' : '') + (this.state.video.capstone ? ' · CAPSTONE' : '')) : '',
+      modalEyebrow: this.state.video ? ((this.state.video.client ? this.state.video.client.toUpperCase() + ' · ' : '') + (this.state.video.format || '').toUpperCase() + (this.state.video.broadcast ? ' · BROADCAST' : '') + (this.state.video.capstone ? ' · CAPSTONE' : '')) : '',
       modalSubtitle: this.state.video ? (this.state.video.subtitle || '') : '',
-      modalRoles: this.state.video ? 'Role: ' + this.state.video.roles.join(' · ') : '',
+      modalRoles: this.state.video && (this.state.video.roles || []).length ? 'Role: ' + this.state.video.roles.join(' · ') : '',
       modalSrc: this.state.video ? 'https://www.youtube.com/embed/' + this.state.video.yt + '?autoplay=1&rel=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin) : '',
       modalYtUrl: this.state.video ? 'https://www.youtube.com/watch?v=' + this.state.video.yt : '',
       closeModal: () => this.setState({ video: null }),

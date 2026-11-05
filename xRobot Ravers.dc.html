@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* keep image-slot placeholders sized even if the image-slot script hasn't loaded */
+    image-slot { display: block; }
     html { scroll-behavior: smooth; }
     body { margin: 0; background: #0a0a0c; }
     a { color: #39FF14; }
@@ -48,6 +50,7 @@
     }
   </style>
   <script src="./xr-transition.js"></script>
+  <script src="./xr-notify.js"></script>
   <script src="./xr-edit.js"></script>
   <script src="./image-slot.js"></script>
 </helmet>
