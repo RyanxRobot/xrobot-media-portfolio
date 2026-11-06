@@ -75,7 +75,7 @@
     if (s === 503 && /XR_PUBLISH_KEY_HASH/.test(server)) return fail('Publishing isn\u2019t switched on yet', 'XR_PUBLISH_KEY_HASH isn\u2019t set in Netlify (Project configuration \u2192 Environment variables), or the site hasn\u2019t redeployed since it was added.', { status: s });
     if (s === 503 && /GITHUB_TOKEN/.test(server)) return fail('Publishing isn’t switched on yet', 'GITHUB_TOKEN isn’t set in Netlify (Project configuration → Environment variables), or the site hasn’t redeployed since it was added.', { status: s });
     if (s === 404 || s === 405 || !out) {
-      if (LOCAL) return fail('Publishing only works on the live site', 'This preview has no publish server. Open the page on xrobot.media to publish.', { status: s });
+      if (LOCAL) return fail('Publishing only works on the live site', 'This preview has no publish server. Open the live site to publish.', { status: s });
       return fail('Publish server not found', 'The live site doesn’t have the publish function. Make sure the latest code is pushed and the Netlify deploy finished (Netlify → Logs → Functions should list "publish").', { status: s, detail: (raw || '').slice(0, 400) });
     }
     if (s === 502 && /GitHub 401|Bad credentials/i.test(server)) return fail('GitHub rejected the token', 'GITHUB_TOKEN on Netlify is wrong or expired. Make a new fine-grained token (Contents: read & write on this repo) and update it in Netlify.', { status: s, detail: server });
@@ -204,7 +204,7 @@
     S.data = window.XR_DATA[PAGE];
     S.orig = clone(S.data);
     if (!window.crypto || !crypto.subtle) {
-      notify({ tone: 'warn', title: 'Publishing needs a secure page', msg: 'Open the site over https (xrobot.media) to publish.' });
+      notify({ tone: 'warn', title: 'Publishing needs a secure page', msg: 'Open the live site over https to publish.' });
       return true;
     }
     sha256(JSON.stringify(S.orig)).then(function (x) { S.baseHash = x; offerDraft(); });
@@ -959,7 +959,7 @@
   async function publish() {
     if (S.busy || !dirty()) return;
     if (!window.crypto || !crypto.subtle) {
-      notify({ id: 'xc-publish-failed', tone: 'err', title: 'Can\u2019t publish from this address', msg: 'Publishing needs a secure (https) page. Open the site at https://xrobot.media and try again. Your edits are backed up in this browser.' });
+      notify({ id: 'xc-publish-failed', tone: 'err', title: 'Can\u2019t publish from this address', msg: 'Publishing needs a secure (https) page. Open the live site (its https:// address) and try again. Your edits are backed up in this browser.' });
       return;
     }
     if (A.prePublish && !S.prePublishOk) {
@@ -1032,7 +1032,7 @@
         var live = i >= 0 ? JSON.parse(text.slice(i + 4).trim().replace(/;\s*$/, '')) : null;
         if (live && await sha256(JSON.stringify(live)) === hash) {
           say('Live. Visitors now see your changes.', 'ok');
-          notifyUpdate(NID, { tone: 'ok', title: 'Live on xrobot.media ✓', msg: 'Visitors now see your changes (' + secs + 's).', progress: undefined, dismissible: true, timeout: 9000, actions: links });
+          notifyUpdate(NID, { tone: 'ok', title: 'Live on the site ✓', msg: 'Visitors now see your changes (' + secs + 's).', progress: undefined, dismissible: true, timeout: 9000, actions: links });
           return;
         }
       } catch (e) { /* keep waiting; a deploy swap can briefly fail requests */ }

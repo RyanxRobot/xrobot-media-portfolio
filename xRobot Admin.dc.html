@@ -133,7 +133,7 @@ class Component extends DCLogic {
   }
   why(e) {
     if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no registered passkey for this site.';
-    if (e && (e.name === 'SecurityError' || /permission|feature/i.test(e.message || ''))) return 'Passkeys only work on the live site (https://xrobot.media), not in this preview.';
+    if (e && (e.name === 'SecurityError' || /permission|feature/i.test(e.message || ''))) return 'Passkeys only work on the live site (https), not in this preview.';
     return 'Passkey failed: ' + ((e && e.message) || 'unknown error');
   }
   async submitKey(ev) {
