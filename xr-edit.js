@@ -15,7 +15,7 @@
   var KEY = 'xr-edit';
   var ADMIN_HASH = '674c0863da3564da6fb404031c40771beec1cd3c718e7d9b002aa5e0ebf059d0';
   // Passkey IDs from the Admin screen's "Register this device" go here, one string per device.
-  var ADMIN_CREDS = [];
+  var ADMIN_CREDS = ['Z9LhBBQLSd6Tu4Iwp0Q6tw'];
   window.XR_ADMIN = { hash: ADMIN_HASH, creds: ADMIN_CREDS, storageKey: KEY };
   var params = new URLSearchParams(location.search);
   var q = params.get('edit');
