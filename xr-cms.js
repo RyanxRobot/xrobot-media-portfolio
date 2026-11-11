@@ -61,7 +61,7 @@
     });
   }
   // ---------- server calls: time limits, retries, and plain-English errors ----------
-  var TIMEOUTS = { check: 20000, upload: 90000, commit: 60000 };
+  var TIMEOUTS = { check: 20000, usage: 15000, upload: 90000, commit: 60000 };
   var LOCAL = !window.XR_CMS_FORCE_REMOTE && (/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === 'file:');
   function fail(title, msg, extra) { var e = new Error(msg); e.title = title; Object.assign(e, extra || {}); return e; }
   // Turns any failed request into { title, message, retryable, status }.
@@ -956,6 +956,34 @@
     catch (e) { if (e.status === 401) setKey(''); throw e; }
   }
   var NETLIFY_DEPLOYS = 'https://app.netlify.com/projects/xrobot-media/deploys';
+  var NETLIFY_USAGE = 'https://app.netlify.com/teams/ryanxrobot';
+  // Monthly deploy estimate from the server (each publish = one Netlify deploy = 15 of 300 credits).
+  var USAGE_WARN = 3;
+  function shortDate(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+  function usageText(u) {
+    if (!u) return '';
+    return 'This month: about ' + u.deploys + ' of ' + Math.floor(u.budget / u.perDeploy) + ' deploys used, ~' + u.left + ' left (resets ' + shortDate(u.resetsOn) + ').';
+  }
+  async function loadUsage() {
+    if (!getKey() || LOCAL) return S.usage || null;
+    try { S.usage = await apiOnce({ action: 'usage' }); refreshBar(); }
+    catch (e) { /* the estimate is a nice-to-have; never block publishing on it */ }
+    return S.usage || null;
+  }
+  // Returns false if you'd rather hold off and batch more edits first.
+  async function usageOk() {
+    say('Checking this month’s deploys…');
+    var u = await loadUsage();
+    say('');
+    if (!u || u.left > USAGE_WARN) return true;
+    var msg = u.left <= 0
+      ? 'Netlify’s free credits for this month look used up: about ' + u.deploys + ' deploys since ' + shortDate(u.cycleStart) + ' (15 credits each, 300 a month). If they run out, Netlify pauses the whole site until ' + shortDate(u.resetsOn) + '.'
+      : 'Only about ' + u.left + ' publish' + (u.left === 1 ? '' : 'es') + ' left this month (resets ' + shortDate(u.resetsOn) + '). Each publish is one Netlify deploy: 15 of your 300 monthly credits.';
+    if (confirm(msg + '\n\nPublish now?\n\nChoose Cancel to keep editing and publish more changes together later. Your edits stay saved in this browser.')) return true;
+    notify({ id: 'xc-usage', tone: 'warn', title: 'Publish held', msg: 'Your edits are saved in this browser. Publish when you’ve batched everything for this page.',
+      actions: [{ label: 'Open Netlify (Usage)', plain: true, fn: function () { window.open(NETLIFY_USAGE, '_blank', 'noopener'); } }] });
+    return false;
+  }
   async function publish() {
     if (S.busy || !dirty()) return;
     if (!window.crypto || !crypto.subtle) {
@@ -974,6 +1002,7 @@
     }
     if (!getKey()) { S.prePublishOk = true; go({ name: 'unlock', then: 'publish' }); return; }
     S.prePublishOk = false;
+    if (!(await usageOk())) return;
     if (!S.baseHash) S.baseHash = await sha256(JSON.stringify(S.orig));
     S.busy = true;
     window.XR_NOTIFY && window.XR_NOTIFY.dismiss('xc-publish-failed');
@@ -997,6 +1026,7 @@
       S.baseHash = (out.hashes && out.hashes[PAGE]) || await sha256(JSON.stringify(S.orig));
       S.pending = {};
       S.busy = false;
+      if (S.usage) { S.usage.deploys++; S.usage.creditsUsed += S.usage.perDeploy; S.usage.left = Math.max(0, S.usage.left - 1); }
       clearDraft();
       say('Published. Waiting for the live site to update…', 'ok');
       watchDeploy(S.baseHash, out.url);
@@ -1032,7 +1062,7 @@
         var live = i >= 0 ? JSON.parse(text.slice(i + 4).trim().replace(/;\s*$/, '')) : null;
         if (live && await sha256(JSON.stringify(live)) === hash) {
           say('Live. Visitors now see your changes.', 'ok');
-          notifyUpdate(NID, { tone: 'ok', title: 'Live on the site ✓', msg: 'Visitors now see your changes (' + secs + 's).', progress: undefined, dismissible: true, timeout: 9000, actions: links });
+          notifyUpdate(NID, { tone: 'ok', title: 'Live on the site ✓', msg: 'Visitors now see your changes (' + secs + 's).' + (S.usage ? ' About ' + S.usage.left + ' publish' + (S.usage.left === 1 ? '' : 'es') + ' left this month.' : ''), progress: undefined, dismissible: true, timeout: 9000, actions: links });
           return;
         }
       } catch (e) { /* keep waiting; a deploy swap can briefly fail requests */ }
@@ -1096,6 +1126,7 @@
     '#xr-cms .xc-bar{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:9px;background:rgba(0,0,0,.25)}',
     '#xr-cms .xc-status{font-size:12px;color:#b9b9b6;min-height:1em}',
     '#xr-cms .xc-status.err{color:#ff6b81}#xr-cms .xc-status.ok{color:#7dff9b}',
+    '#xr-cms .xc-usage{font-size:11px;color:#8a8a87;margin-top:8px}#xr-cms .xc-usage.low{color:#ffd166}',
     '#xr-cms .xc-row-btns{display:flex;gap:8px;flex-wrap:wrap}',
     '#xr-cms button{font-family:inherit;color:inherit}',
     '#xr-cms .xc-btn{padding:10px 14px;border-radius:4px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);font-size:12px;font-weight:700;letter-spacing:.04em;cursor:pointer}',
@@ -1162,6 +1193,7 @@
     panel.setAttribute('aria-hidden', on ? 'false' : 'true');
     document.documentElement.classList.toggle('xr-cms-picking', on);
     render();
+    if (on && !S.usage) loadUsage();
   }
   function refreshBar() {
     if (!barEl) return;
@@ -1175,6 +1207,7 @@
     barEl.appendChild(h('div', { class: 'xc-row-btns' },
       h('button', { type: 'button', class: 'xc-btn xc-pri', disabled: !d || S.busy, onclick: publish }, S.busy ? 'Publishing…' : 'Publish'),
       h('button', { type: 'button', class: 'xc-btn', disabled: !d || S.busy, onclick: discard }, 'Discard changes')));
+    if (S.usage) barEl.appendChild(h('div', { class: 'xc-usage' + (S.usage.left <= USAGE_WARN ? ' low' : ''), title: 'Estimated from GitHub pushes. Manual Netlify redeploys and bandwidth aren’t counted; Netlify’s Usage page has the exact figure.', text: usageText(S.usage) }));
   }
   function render() {
     if (!panel.isConnected) return;

@@ -2,6 +2,8 @@
 # backend lives in netlify/functions (see netlify/functions/publish.mts).
 [build]
   publish = "."
+  # Stamps data/site.json with the deployed commit's date for the footer's "Site last updated".
+  command = "node netlify/site-info.mjs"
   functions = "netlify/functions"
 
 # Don't serve the function source or tooling files as static assets.

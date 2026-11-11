@@ -59,6 +59,28 @@
     'html[data-xr-edit] #xr-edit-pill i{background:#ff2ec4;box-shadow:0 0 10px #ff2ec4}';
   (document.head || root).appendChild(css);
 
+  // Footer "Site last updated": data/site.json is written by Netlify on each deploy (netlify/site-info.mjs).
+  // Locally the file doesn't exist, so the line just stays hidden.
+  (function () {
+    var hide = document.createElement('style');
+    hide.textContent = '[data-xr-updated]:empty{display:none !important}';
+    (document.head || root).appendChild(hide);
+    var label = '';
+    function fill() {
+      if (!label) return;
+      var els = document.querySelectorAll('[data-xr-updated]');
+      for (var i = 0; i < els.length; i++) if (els[i].textContent !== label) els[i].textContent = label;
+    }
+    fetch('data/site.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var d = j && j.updated ? new Date(j.updated) : null;
+      if (!d || isNaN(d)) return;
+      label = 'Site last updated ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      fill();
+      // Pages render their footer after this script runs, so fill it in whenever it appears.
+      if (window.MutationObserver) new MutationObserver(fill).observe(root, { childList: true, subtree: true });
+    }).catch(function () {});
+  })();
+
   function cardFor(slot) {
     if (slot.getAttribute('data-xr-ph') === 'self') return null;
     var el = slot;

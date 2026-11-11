@@ -7,6 +7,7 @@
 //   GITHUB_TOKEN   required. Fine-grained token with "Contents: Read and write" on the repo only.
 //   GITHUB_REPO    optional, default "RyanxRobot/xrobot-media-portfolio".
 //   GITHUB_BRANCH  optional, default "main".
+//   XR_CREDIT_RESET_DAY  optional, default 10. Day of the month Netlify grants the free credits (for the usage estimate).
 //   XR_PUBLISH_KEY_HASH  required. SHA-256 (hex) of the publish key. This is deliberately NOT the
 //                  edit-mode key: that one's hash is public in xr-edit.js, so it could be cracked
 //                  offline. Without this variable, publishing stays off.
@@ -16,6 +17,7 @@
 //
 // Actions (JSON body):
 //   { action: "check" }                          → { ok: true } when the key is right.
+//   { action: "usage" }                          → estimated Netlify deploys this month (see usage()).
 //   { action: "upload", path, data }             → stores one image (base64) as a git blob → { sha }.
 //   { action: "commit", message, pages, uploads, base }
 //       pages:   { [page]: <content object> }    rewritten as data/<page>.js
@@ -206,6 +208,60 @@ async function commit(body: any) {
   return json({ error: "The repo kept changing during publish. Try again." }, 409);
 }
 
+// ---- monthly deploy estimate ----
+// Netlify's free plan has 300 credits a month and each production deploy costs 15, so ~20 deploys.
+// Netlify doesn't expose credit usage to this function, so we estimate deploys from GitHub:
+// every push to main = one deploy. A commit counts if it was pushed on its own (a push "head"),
+// came from this editor (always its own push), or is newer than GitHub's push history (which lags).
+// Manual "Trigger deploy" clicks on Netlify and bandwidth use aren't counted.
+const EDITOR_MARK = "Published from the xrobot.media on-site editor.";
+const CREDITS = { budget: 300, perDeploy: 15 };
+
+function cycleStart(now: Date, day: number) {
+  const clamp = (y: number, m: number) => Math.min(day, new Date(Date.UTC(y, m + 1, 0)).getUTCDate());
+  let y = now.getUTCFullYear(), m = now.getUTCMonth();
+  if (now.getUTCDate() < clamp(y, m)) { m -= 1; if (m < 0) { m = 11; y -= 1; } }
+  const start = new Date(Date.UTC(y, m, clamp(y, m)));
+  const ny = m === 11 ? y + 1 : y, nm = (m + 1) % 12;
+  return { start, next: new Date(Date.UTC(ny, nm, clamp(ny, nm))) };
+}
+
+async function usage() {
+  const day = Math.min(28, Math.max(1, parseInt(env("XR_CREDIT_RESET_DAY") || "10", 10) || 10));
+  const { start, next } = cycleStart(new Date(), day);
+  const commits: any[] = [];
+  for (let page = 1; page <= 3; page++) {
+    const batch = await gh(`/commits?sha=${encodeURIComponent(branch())}&since=${start.toISOString()}&per_page=100&page=${page}`);
+    commits.push(...batch);
+    if (batch.length < 100) break;
+  }
+  const heads = new Set<string>();
+  let newestPush = 0;
+  try {
+    for (let page = 1; page <= 3; page++) {
+      const events = await gh(`/events?per_page=100&page=${page}`);
+      for (const e of events) {
+        if (e.type !== "PushEvent" || e.payload?.ref !== `refs/heads/${branch()}`) continue;
+        if (e.payload.head) heads.add(e.payload.head);
+        newestPush = Math.max(newestPush, Date.parse(e.created_at) || 0);
+      }
+      if (events.length < 100) break;
+    }
+  } catch { /* push history unavailable: fall back to counting every commit */ }
+  let deploys = 0;
+  for (const c of commits) {
+    const when = Date.parse(c.commit?.committer?.date || "") || 0;
+    const fromEditor = String(c.commit?.message || "").includes(EDITOR_MARK);
+    if (fromEditor || heads.has(c.sha) || when > newestPush) deploys++;
+  }
+  const used = deploys * CREDITS.perDeploy;
+  return json({
+    ok: true, deploys, creditsUsed: used, budget: CREDITS.budget, perDeploy: CREDITS.perDeploy,
+    left: Math.max(0, Math.floor((CREDITS.budget - used) / CREDITS.perDeploy)),
+    cycleStart: start.toISOString(), resetsOn: next.toISOString(),
+  });
+}
+
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") return json({ error: "POST only." }, 405);
   if (!/^[0-9a-f]{64}$/.test(publishHash())) return json({ error: "XR_PUBLISH_KEY_HASH isn't set on Netlify yet, so publishing is off." }, 503);
@@ -217,6 +273,7 @@ export default async (req: Request, _context: Context) => {
     if (body.action === "check") return json({ ok: true, repo: repo(), branch: branch() });
     if (body.action === "upload") return await upload(body);
     if (body.action === "commit") return await commit(body);
+    if (body.action === "usage") return await usage();
     return json({ error: "Unknown action." }, 400);
   } catch (e: any) {
     console.error(e);
