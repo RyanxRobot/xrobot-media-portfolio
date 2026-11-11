@@ -33,7 +33,8 @@ window.XR_DATA["home"] = {
       "altHref": "https://www.youtube.com/@xrobotproductions",
       "altCta": "WATCH THE REEL ↗",
       "ext": true,
-      "ctaInk": "#fff"
+      "ctaInk": "#fff",
+      "card": "assets/home/video-card.jpg"
     },
     {
       "key": "design",
