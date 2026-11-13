@@ -60,6 +60,115 @@ window.XR_DATA["photography"] = {
       ],
       "photos": [
         {
+          "src": "assets/photos/concerts/a61f3aff-4cd4-4bbd-8dc4-7a1b9cc181b2.jpg",
+          "title": "A61F3AFF 4CD4 4BBD 8DC4 7A1B9CC181B2",
+          "caption": "A61F3AFF 4CD4 4BBD 8DC4 7A1B9CC181B2"
+        },
+        {
+          "src": "assets/photos/concerts/e9b309b6-a62a-468c-9025-cb205a7a2f13.jpg",
+          "title": "E9B309B6 A62A 468C 9025 CB205A7A2F13",
+          "caption": "E9B309B6 A62A 468C 9025 CB205A7A2F13",
+          "date": "Jul 11, 2023 · 8:07 PM",
+          "gps": {
+            "lat": 39.66538,
+            "lon": -105.20516
+          },
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 13 Pro Max",
+            "fnum": 2.8,
+            "exp": 0.0167,
+            "iso": 25,
+            "focal": 9,
+            "focal35": 163,
+            "lens": "iPhone 13 Pro Max back triple camera 9mm f/2.8"
+          }
+        },
+        {
+          "src": "assets/photos/concerts/9a782812-a06b-4a75-84db-2a53dc564441.jpg",
+          "place": "Empower Field",
+          "event": "Eras Tour",
+          "title": "Guitar Solo "
+        },
+        {
+          "src": "assets/photos/concerts/img-9482.jpg",
+          "title": "IMG 9482",
+          "caption": "IMG 9482",
+          "date": "Mar 21, 2026 · 9:47 PM"
+        },
+        {
+          "src": "assets/photos/concerts/f65fe75e-bd22-49de-ba7e-ab94cf6d5534.jpg",
+          "title": "F65FE75E BD22 49DE BA7E AB94CF6D5534",
+          "caption": "F65FE75E BD22 49DE BA7E AB94CF6D5534",
+          "date": "Jul 15, 2023 · 9:00 PM",
+          "gps": {
+            "lat": 39.7439,
+            "lon": -105.01997
+          },
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 13 Pro Max",
+            "fnum": 2.8,
+            "exp": 0.0167,
+            "iso": 160,
+            "focal": 9,
+            "focal35": 319,
+            "lens": "iPhone 13 Pro Max back triple camera 9mm f/2.8"
+          },
+          "event": "Eras tour"
+        },
+        {
+          "src": "assets/photos/concerts/9978a732-fe1d-4ff6-940e-948582eb2edb.jpg",
+          "title": "9978A732 FE1D 4FF6 940E 948582EB2EDB",
+          "caption": "9978A732 FE1D 4FF6 940E 948582EB2EDB",
+          "date": "Jul 15, 2023 · 8:00 PM",
+          "gps": {
+            "lat": 39.74387,
+            "lon": -105.01997
+          },
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 13 Pro Max",
+            "fnum": 2.8,
+            "exp": 0.0167,
+            "iso": 40,
+            "focal": 9,
+            "focal35": 161,
+            "lens": "iPhone 13 Pro Max back triple camera 9mm f/2.8"
+          }
+        },
+        {
+          "src": "assets/photos/concerts/3591c400-467b-42d7-b6ea-fc057dffbd0c.jpg",
+          "title": "3591C400 467B 42D7 B6EA FC057DFFBD0C",
+          "caption": "3591C400 467B 42D7 B6EA FC057DFFBD0C"
+        },
+        {
+          "src": "assets/photos/concerts/img-7458.jpg",
+          "title": "IMG 7458",
+          "caption": "IMG 7458",
+          "date": "Dec 31, 2023 · 11:26 PM"
+        },
+        {
+          "src": "assets/photos/concerts/3823ba2e-802f-4b3a-95d9-6672c59958e3.jpg",
+          "title": "3823BA2E 802F 4B3A 95D9 6672C59958E3",
+          "caption": "3823BA2E 802F 4B3A 95D9 6672C59958E3",
+          "date": "Jan 1, 2026 · 12:57 AM",
+          "gps": {
+            "lat": 39.74153,
+            "lon": -104.99618
+          },
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 17 Pro Max",
+            "fnum": 2.7988,
+            "exp": 0.0167,
+            "iso": 250,
+            "focal": 16.8906,
+            "focal35": 192,
+            "lens": "iPhone 17 Pro Max back triple camera 16.891mm f/2.8"
+          }
+        },
+        {
           "src": "assets/photos/concerts/all-time-low-red-rocks-2025/atl-red-rocks-04.jpg",
           "event": "All Time Low · Everyone’s Talking Tour",
           "date": "Oct 12, 2025 · 9:08 PM",
@@ -74,14 +183,6 @@ window.XR_DATA["photography"] = {
           "title": "Low End",
           "caption": "Low End",
           "description": "Pink bass up front, Jack locked in behind."
-        },
-        {
-          "src": "assets/photos/concerts/all-time-low-red-rocks-2025/atl-red-rocks-08.jpg",
-          "event": "All Time Low · Everyone’s Talking Tour",
-          "date": "Oct 12, 2025 · 9:11 PM",
-          "title": "Mid-Air",
-          "caption": "Mid-Air",
-          "description": "Caught mid-jump on the light-up stage."
         },
         {
           "src": "assets/photos/concerts/all-time-low-red-rocks-2025/atl-red-rocks-01.jpg",
@@ -119,14 +220,6 @@ window.XR_DATA["photography"] = {
           "title": "Arms Out",
           "caption": "Arms Out",
           "description": "Alex opening up to the Rocks."
-        },
-        {
-          "src": "assets/photos/concerts/all-time-low-red-rocks-2025/atl-red-rocks-20.jpg",
-          "event": "All Time Low · Everyone’s Talking Tour",
-          "date": "Oct 12, 2025 · 9:33 PM",
-          "title": "The Hug",
-          "caption": "The Hug",
-          "description": "A hug on stage, the last frame of the night."
         },
         {
           "src": "assets/photos/concerts/all-time-low-forever-2024/atl-forever-01.jpg",
@@ -434,6 +527,24 @@ window.XR_DATA["photography"] = {
               "src": "assets/photos/onset/jmp-haze-light.jpg",
               "caption": "Haze Check",
               "description": "Hazer and a fixture up close while building the look on the light board."
+            },
+            {
+              "src": "assets/photos/onset/jmp-studios/img-0489.jpg",
+              "title": "IMG 0489",
+              "caption": "IMG 0489",
+              "date": "Mar 26, 2024 · 5:43 PM"
+            },
+            {
+              "src": "assets/photos/onset/jmp-studios/a6602659.jpg",
+              "title": "A6602659",
+              "caption": "A6602659",
+              "date": "Apr 26, 2024 · 9:41 AM"
+            },
+            {
+              "src": "assets/photos/onset/jmp-studios/a6602653.jpg",
+              "title": "A6602653",
+              "caption": "A6602653",
+              "date": "Apr 26, 2024 · 9:16 AM"
             }
           ]
         },
@@ -458,26 +569,6 @@ window.XR_DATA["photography"] = {
             {
               "id": "dbb-4",
               "caption": "Duffle Bag Boy 04"
-            }
-          ]
-        },
-        {
-          "id": "pillowfight",
-          "name": "PillowFight",
-          "date": "Ad Campaign",
-          "blurb": "First Assistant Director of Photography on the campaign shoot.",
-          "frames": [
-            {
-              "id": "pf-1",
-              "caption": "PillowFight 01"
-            },
-            {
-              "id": "pf-2",
-              "caption": "PillowFight 02"
-            },
-            {
-              "id": "pf-3",
-              "caption": "PillowFight 03"
             }
           ]
         }
@@ -916,6 +1007,109 @@ window.XR_DATA["photography"] = {
       ],
       "photos": [
         {
+          "src": "assets/photos/land/mobile-uploads.jpg",
+          "title": "Mobile Uploads",
+          "caption": "Mobile Uploads",
+          "date": "Nov 27, 2015 · 3:00 PM"
+        },
+        {
+          "src": "assets/photos/land/66057202-074f-477b-8a1a-3d485a576ee0.jpg",
+          "title": "66057202 074F 477B 8A1A 3D485A576EE0",
+          "caption": "66057202 074F 477B 8A1A 3D485A576EE0",
+          "date": "May 31, 2017 · 2:00 PM",
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 6s Plus",
+            "fnum": 2.2,
+            "exp": 0.0006,
+            "iso": 25,
+            "focal": 4.15,
+            "focal35": 29,
+            "lens": "iPhone 6s Plus back camera 4.15mm f/2.2"
+          }
+        },
+        {
+          "src": "assets/photos/land/f21e7974-d71a-47b8-8b86-6a74cadcac50.jpg",
+          "title": "F21E7974 D71A 47B8 8B86 6A74CADCAC50",
+          "caption": "F21E7974 D71A 47B8 8B86 6A74CADCAC50"
+        },
+        {
+          "src": "assets/photos/land/img-0348.jpg",
+          "title": "IMG 0348",
+          "caption": "IMG 0348",
+          "date": "Nov 24, 2015 · 8:55 AM"
+        },
+        {
+          "src": "assets/photos/land/a10736e3-d661-4312-9fc2-a408ce0bb4ac.jpg",
+          "title": "A10736E3 D661 4312 9FC2 A408CE0BB4AC",
+          "caption": "A10736E3 D661 4312 9FC2 A408CE0BB4AC",
+          "date": "Oct 28, 2022 · 1:16 PM",
+          "gps": {
+            "lat": 39.87746,
+            "lon": -105.44951
+          },
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 13 Pro Max",
+            "fnum": 1.5,
+            "exp": 0.0003,
+            "iso": 50,
+            "focal": 5.7,
+            "focal35": 26,
+            "lens": "iPhone 13 Pro Max back triple camera 5.7mm f/1.5"
+          }
+        },
+        {
+          "src": "assets/photos/land/como-colorado-2009-snowboard-jump-restored.jpg",
+          "title": "Como Colorado 2009 Snowboard Jump Restored",
+          "caption": "Como Colorado 2009 Snowboard Jump Restored",
+          "date": "Mar 28, 2009 · 9:47 PM"
+        },
+        {
+          "src": "assets/photos/land/img-3937.jpg",
+          "title": "IMG 3937",
+          "caption": "IMG 3937",
+          "date": "Oct 2, 2015 · 10:12 AM"
+        },
+        {
+          "src": "assets/photos/land/8e2d7c17-69c3-437a-8dc2-df90577bf1c7.jpg",
+          "title": "8E2D7C17 69C3 437A 8DC2 DF90577BF1C7",
+          "caption": "8E2D7C17 69C3 437A 8DC2 DF90577BF1C7"
+        },
+        {
+          "src": "assets/photos/land/img-0270.jpg",
+          "title": "IMG 0270",
+          "caption": "IMG 0270",
+          "date": "Nov 13, 2015 · 9:41 AM"
+        },
+        {
+          "src": "assets/photos/land/2626550f-759e-475a-854c-9b9aabfba5b1.jpg",
+          "title": "2626550F 759E 475A 854C 9B9AABFBA5B1",
+          "caption": "2626550F 759E 475A 854C 9B9AABFBA5B1",
+          "date": "Feb 4, 2015 · 11:40 PM",
+          "camera": {
+            "make": "Apple",
+            "model": "iPhone 6",
+            "fnum": 2.2,
+            "exp": 0.0667,
+            "iso": 1000,
+            "focal": 4.15,
+            "focal35": 29,
+            "lens": "iPhone 6 back camera 4.15mm f/2.2"
+          }
+        },
+        {
+          "src": "assets/photos/land/f08a1fe0-caf0-40ae-a1f2-2706284c7645.jpg",
+          "title": "F08A1FE0 CAF0 40AE A1F2 2706284C7645",
+          "caption": "F08A1FE0 CAF0 40AE A1F2 2706284C7645"
+        },
+        {
+          "src": "assets/photos/land/como-colorado-2009-restored.jpg",
+          "title": "Como Colorado 2009 Restored",
+          "caption": "Como Colorado 2009 Restored",
+          "date": "Mar 28, 2009 · 9:47 PM"
+        },
+        {
           "src": "assets/photos/land/bw-mountain-lake.jpg",
           "date": "Sep 9, 2024 · 1:17 PM",
           "title": "Arms Open",
@@ -1061,6 +1255,28 @@ window.XR_DATA["photography"] = {
       ],
       "photos": [
         {
+          "src": "assets/photos/tech/mobile-uploads.jpg",
+          "title": "Mobile Uploads",
+          "caption": "Mobile Uploads",
+          "date": "May 19, 2023 · 6:44 AM"
+        },
+        {
+          "src": "assets/photos/tech/4780e268-cc4a-4396-85aa-8d9e28360bee.jpg",
+          "title": "4780E268 CC4A 4396 85AA 8D9E28360BEE",
+          "caption": "4780E268 CC4A 4396 85AA 8D9E28360BEE"
+        },
+        {
+          "src": "assets/photos/tech/img-7594.jpg",
+          "title": "IMG 7594",
+          "caption": "IMG 7594",
+          "date": "Jan 17, 2024 · 2:51 PM"
+        },
+        {
+          "src": "assets/photos/tech/0b4e977a-c752-4104-a466-ed80c3e54048.jpg",
+          "title": "0B4E977A C752 4104 A466 ED80C3E54048",
+          "caption": "0B4E977A C752 4104 A466 ED80C3E54048"
+        },
+        {
           "src": "assets/photos/tech/tech-room-set.jpg",
           "date": "Feb 17, 2022 · 2:13 PM",
           "noMap": true,
@@ -1172,6 +1388,34 @@ window.XR_DATA["photography"] = {
     "assets/photos/tech/tech-room-set.jpg",
     "assets/photos/tech/mixer-ddr.jpg",
     "assets/photos/tech/ipod-collection.jpg",
-    "assets/jmp-studios-team.jpg"
+    "assets/jmp-studios-team.jpg",
+    "assets/photos/concerts/a61f3aff-4cd4-4bbd-8dc4-7a1b9cc181b2.jpg",
+    "assets/photos/concerts/e9b309b6-a62a-468c-9025-cb205a7a2f13.jpg",
+    "assets/photos/concerts/9a782812-a06b-4a75-84db-2a53dc564441.jpg",
+    "assets/photos/concerts/img-9482.jpg",
+    "assets/photos/concerts/f65fe75e-bd22-49de-ba7e-ab94cf6d5534.jpg",
+    "assets/photos/concerts/9978a732-fe1d-4ff6-940e-948582eb2edb.jpg",
+    "assets/photos/concerts/3591c400-467b-42d7-b6ea-fc057dffbd0c.jpg",
+    "assets/photos/concerts/img-7458.jpg",
+    "assets/photos/concerts/3823ba2e-802f-4b3a-95d9-6672c59958e3.jpg",
+    "assets/photos/onset/jmp-studios/img-0489.jpg",
+    "assets/photos/onset/jmp-studios/a6602659.jpg",
+    "assets/photos/onset/jmp-studios/a6602653.jpg",
+    "assets/photos/land/mobile-uploads.jpg",
+    "assets/photos/land/66057202-074f-477b-8a1a-3d485a576ee0.jpg",
+    "assets/photos/land/f21e7974-d71a-47b8-8b86-6a74cadcac50.jpg",
+    "assets/photos/land/img-0348.jpg",
+    "assets/photos/land/a10736e3-d661-4312-9fc2-a408ce0bb4ac.jpg",
+    "assets/photos/land/como-colorado-2009-snowboard-jump-restored.jpg",
+    "assets/photos/land/img-3937.jpg",
+    "assets/photos/land/8e2d7c17-69c3-437a-8dc2-df90577bf1c7.jpg",
+    "assets/photos/land/img-0270.jpg",
+    "assets/photos/land/2626550f-759e-475a-854c-9b9aabfba5b1.jpg",
+    "assets/photos/land/f08a1fe0-caf0-40ae-a1f2-2706284c7645.jpg",
+    "assets/photos/land/como-colorado-2009-restored.jpg",
+    "assets/photos/tech/mobile-uploads.jpg",
+    "assets/photos/tech/4780e268-cc4a-4396-85aa-8d9e28360bee.jpg",
+    "assets/photos/tech/img-7594.jpg",
+    "assets/photos/tech/0b4e977a-c752-4104-a466-ed80c3e54048.jpg"
   ]
 };
