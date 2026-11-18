@@ -144,10 +144,10 @@
       <div style="flex-shrink:0; font-size:10px; font-weight:800; letter-spacing:0.16em; color:#6e6e6b; padding:14px 0 13px; text-shadow:0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);">COLLECTIONS</div>
       <div aria-hidden="true" style="flex-shrink:0; width:1px; height:16px; background:rgba(255,255,255,0.14);"></div>
       <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="7">
-        <button onClick="{{ cat.select }}" aria-pressed="{{ cat.on }}" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; background:none; border:0; cursor:pointer; white-space:nowrap; font-family:'Inter',sans-serif;">
+        <a href="{{ cat.href }}" onClick="{{ cat.select }}" aria-current="{{ cat.on }}" style="flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:13px 0 0; background:none; border:0; cursor:pointer; white-space:nowrap; font-family:'Inter',sans-serif; text-decoration:none;">
           <span style="{{ cat.labelStyle }}">{{ cat.name }}</span>
           <span aria-hidden="true" style="{{ cat.barStyle }}"></span>
-        </button>
+        </a>
       </sc-for>
     </div>
   </nav>
@@ -360,7 +360,11 @@ class Component extends DCLogic {
   state = { active: 0, lb: null, event: 'all', tx: null, txTo: null };
   componentDidMount() {
     this.fromHash = (initial) => {
-      const [k, ev] = decodeURIComponent((window.location.hash || '').slice(1)).split('/');
+      // Collections have their own addresses: ?c=street (and &e=<event>), so links, bookmarks and the
+      // Internet Archive can reach each one. Older #street/#onset/event links still work.
+      const q = new URLSearchParams(window.location.search);
+      const fromQuery = q.get('c') ? q.get('c') + (q.get('e') ? '/' + q.get('e') : '') : '';
+      const [k, ev] = decodeURIComponent((window.location.hash || '').slice(1) || fromQuery).split('/');
       const i = this.cats().findIndex(c => c.key === k);
       if (i >= 0) {
         this.setState({ active: i, lb: null, event: ev || 'all' });
@@ -403,8 +407,16 @@ class Component extends DCLogic {
     document.body.style.overflow = '';
   }
   setGrid = el => { this.gridEl = el; };
+  // Keep the address bar on the current collection (and event) without adding history entries.
+  syncUrl(i, ev) {
+    const c = this.cats()[i];
+    if (!c || c.key === 'empty') return;
+    const q = '?c=' + encodeURIComponent(c.key) + (ev && ev !== 'all' ? '&e=' + encodeURIComponent(ev) : '');
+    try { history.replaceState(null, '', window.location.pathname + q); } catch (e) {}
+  }
   switchTo(i) {
     if (i === this.state.active || this.state.tx) return;
+    this.syncUrl(i);
     const reduced = document.documentElement.getAttribute('data-xr-motion') === 'reduced';
     const below = this.gridEl && this.gridEl.getBoundingClientRect().top < 76 + 52;
     if (below) this.scrollToGrid();
@@ -597,7 +609,7 @@ class Component extends DCLogic {
       events: (allPhotos.length || !active.placeholderEvents ? evList : [{ key: 'all', name: 'All ' + active.name, n: active.placeholderEvents.reduce((t, e) => t + e.frames.length, 0) }, ...active.placeholderEvents.map(e => ({ key: e.id, name: e.name, n: e.frames.length }))])
         .map(ev => ({ name: ev.name, count: String(ev.n), style: chip(this.state.event === ev.key),
         countStyle: { opacity: 0.7, fontWeight: 600 },
-        select: () => this.setState({ event: ev.key, lb: null }) })),
+        select: () => { this.setState({ event: ev.key, lb: null }); this.syncUrl(this.state.active, ev.key); } })),
       slotGroups: active.placeholderEvents
         ? active.placeholderEvents.filter(e => this.state.event === 'all' || this.state.event === e.id).map(e => ({
             name: e.name, date: e.date, blurb: e.blurb || '', hasBlurb: !!e.blurb, hasName: true,
@@ -663,7 +675,9 @@ class Component extends DCLogic {
       stopClick: e => e.stopPropagation(),
       cats: cats.map((c, i) => ({
         name: c.name,
-        select: () => this.switchTo(i),
+        href: '?c=' + encodeURIComponent(c.key),
+        // A real link (crawlers and new-tab clicks follow it); a normal click switches in place.
+        select: e => { if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; if (e && e.preventDefault) e.preventDefault(); this.switchTo(i); },
         on: i === this.state.active ? 'true' : 'false',
         labelStyle: { fontSize: '12px', fontWeight: 800, textShadow: '0 1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6)', letterSpacing: '0.06em', textTransform: 'uppercase', color: i === this.state.active ? '#fff' : '#9a9a97', transition: 'color 0.25s ease' },
         barStyle: { height: '3px', background: 'linear-gradient(90deg,' + c.color + ',' + c.color + '88)', opacity: i === this.state.active ? 1 : 0.5, transition: 'opacity 0.25s ease' },

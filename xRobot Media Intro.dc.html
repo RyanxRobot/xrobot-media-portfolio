@@ -14,6 +14,19 @@
   <script>window.OM_SCENES = '[{"name":"Reveal","dur":8}]';</script>
   <script>window.OM_PLAYBACK = '{"mode":"times","count":1}';</script>
   <script>window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"motionEditor":true}/*EDITMODE-END*/;</script>
+  <style>
+    /* Hide the animation player's controls (play bar, tweaks). visibility, not display, so the
+       layout and scale stay exactly the same and the hand-off to the home page still lines up. */
+    [data-omelette-chrome] { visibility: hidden !important; pointer-events: none !important; }
+    #xr-intro-close { position: fixed; top: clamp(14px, 2.4vw, 26px); right: clamp(14px, 2.4vw, 26px); z-index: 1000;
+      width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: rgba(10,10,12,0.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.22); color: #fff; font: 400 20px/1 system-ui, sans-serif; cursor: pointer;
+      opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+    #xr-intro-close.show { opacity: 1; pointer-events: auto; }
+    #xr-intro-close:hover { border-color: rgba(255,255,255,0.5); }
+  </style>
+  <script src="./xr-intro.js"></script>
 </helmet>
 <x-import component-from-global-scope="IntroPiece" from="./animations-v2.jsx ./tweaks-panel.jsx ./intro-scene.jsx" hint-size="100%,100%"></x-import>
 
