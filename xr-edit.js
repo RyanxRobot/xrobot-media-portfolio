@@ -194,7 +194,12 @@
   // Locally the file doesn't exist, so the line just stays hidden.
   (function () {
     var hide = document.createElement('style');
-    hide.textContent = '[data-xr-updated]:empty{display:none !important}';
+    // The original Robots Tech Room logo beside the copyright: a few shades darker than whatever is
+    // behind it (a darkening tint through the logo's shape), so it reads as a faint debossed mark.
+    // It does nothing when clicked; the © next to it is the hidden sign-in.
+    hide.textContent = '[data-xr-updated]:empty{display:none !important}' +
+      '[data-xr-logo]{display:inline-block;width:33px;height:34px;margin-right:12px;vertical-align:middle;background-color:rgba(0,0,0,0.42);' +
+      '-webkit-mask:url(assets/rtr-mark.png) center/contain no-repeat;mask:url(assets/rtr-mark.png) center/contain no-repeat;pointer-events:auto}';
     (document.head || root).appendChild(hide);
     var label = '';
     function fill() {
