@@ -106,9 +106,19 @@ class Component extends DCLogic {
     // Arrived from the footer's sign-in box with a checked publish key: setup is ready.
     this.setupKey = this.x.takeSetupKey ? this.x.takeSetupKey() : '';
     if (this.setupKey) this.setState({ keyReady: true, msg: 'Publish key accepted. Name this device, then tap Create passkey.', tone: 'ok' });
+    // Safari needs the passkey prompt to start right in the tap, so get the server's challenge ready
+    // now: for setup when a publish key is known (typed or handed over), for sign-in otherwise.
+    this.onKeyInput = (e) => {
+      if (!e.target || e.target.name !== 'key') return;
+      clearTimeout(this.keyT);
+      const k = e.target.value;
+      if (k.length >= 8) this.keyT = setTimeout(() => this.x.prefetchRegister(k).catch(() => {}), 500);
+    };
+    document.addEventListener('input', this.onKeyInput);
+    if (this.setupKey) this.x.prefetchRegister(this.setupKey).catch(() => {});
     this.refresh(true);
   }
-  componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onEdit); window.removeEventListener('xr-auth-change', this.onAuth); }
+  componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onEdit); window.removeEventListener('xr-auth-change', this.onAuth); document.removeEventListener('input', this.onKeyInput); }
   say(msg, tone) { this.setState({ msg, tone: tone || 'info' }); }
   async refresh(first) {
     const a = await this.x.checkSession();
@@ -116,6 +126,7 @@ class Component extends DCLogic {
     if (first && a.error && !a.signedIn) st.msg = a.error, st.tone = 'err';
     this.setState(st);
     if (a.signedIn && !this.x.local) this.loadDevices();
+    if (!a.signedIn && st.hasDevices && this.x.prefetchLogin) this.x.prefetchLogin();
   }
   async loadDevices() {
     try { const j = await this.x.api('devices'); this.setState({ devices: j.devices || [], current: j.current, hasDevices: (j.devices || []).length > 0 }); }

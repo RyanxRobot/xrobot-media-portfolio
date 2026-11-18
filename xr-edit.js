@@ -58,54 +58,81 @@
     return authApi('status').then(function (j) { setAuth(!!j.signedIn, j.exp); auth.devices = j.devices; return auth; },
       function (e) { if (e.status) setAuth(false); auth.error = e.message; return auth; });
   }
+  // Safari only shows a passkey prompt if it starts right inside the click/tap. So the one-time
+  // server challenge is fetched ahead of time (prefetchLogin / prefetchRegister), and a click with
+  // a fresh one calls the browser's passkey prompt immediately. Without one it fetches first
+  // (fine in Chrome; Safari may cancel, and the retry then has a fresh challenge ready).
+  var FRESH_MS = 4 * 60000;   // server challenges last 5 minutes
+  var pre = { login: null, reg: null };
+  function fresh(x) { return x && Date.now() - x.at < FRESH_MS; }
+  function prefetchLogin() {
+    if (LOCAL || !window.PublicKeyCredential || fresh(pre.login) || pre.loginBusy) return;
+    pre.loginBusy = true;
+    authApi('login-options').then(function (o) { pre.loginBusy = false; pre.login = { o: o, at: Date.now() }; }, function () { pre.loginBusy = false; });
+  }
+  function prefetchRegister(publishKey) {
+    if (LOCAL || !window.PublicKeyCredential || (!publishKey && !auth.signedIn)) return Promise.resolve(null);
+    pre.reg = null;
+    return authApi('register-options', {}, publishKey).then(function (o) { pre.reg = { o: o, at: Date.now(), key: publishKey || '' }; return o; }, function (e) { return Promise.reject(e); });
+  }
+  function getWith(o) {
+    var opt = o.options;
+    return navigator.credentials.get({ publicKey: {
+      challenge: unb64u(opt.challenge), rpId: opt.rpId, timeout: opt.timeout, userVerification: opt.userVerification,
+      allowCredentials: (opt.allowCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
+    } }).then(function (cred) {
+      var r = cred.response;
+      return authApi('login', { token: o.token, response: {
+        id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
+        clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+        response: { clientDataJSON: b64u(r.clientDataJSON), authenticatorData: b64u(r.authenticatorData), signature: b64u(r.signature), userHandle: r.userHandle ? b64u(r.userHandle) : undefined }
+      } });
+    });
+  }
+  function createWith(o, name, publishKey) {
+    var opt = o.options;
+    return navigator.credentials.create({ publicKey: {
+      rp: opt.rp, challenge: unb64u(opt.challenge), timeout: opt.timeout, attestation: opt.attestation,
+      user: { id: unb64u(opt.user.id), name: opt.user.name, displayName: opt.user.displayName },
+      pubKeyCredParams: opt.pubKeyCredParams, authenticatorSelection: opt.authenticatorSelection,
+      excludeCredentials: (opt.excludeCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
+    } }).then(function (cred) {
+      var r = cred.response;
+      return authApi('register', { token: o.token, name: name, response: {
+        id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
+        clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+        response: { clientDataJSON: b64u(r.clientDataJSON), attestationObject: b64u(r.attestationObject), transports: r.getTransports ? r.getTransports() : [] }
+      } }, publishKey);
+    });
+  }
+  // Call these straight from a click handler, before any await.
   function passkeyLogin() {
     if (!window.PublicKeyCredential) return Promise.reject(new Error('This browser doesn\u2019t support passkeys.'));
-    return authApi('login-options').then(function (o) {
-      var opt = o.options;
-      return navigator.credentials.get({ publicKey: {
-        challenge: unb64u(opt.challenge), rpId: opt.rpId, timeout: opt.timeout, userVerification: opt.userVerification,
-        allowCredentials: (opt.allowCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
-      } }).then(function (cred) {
-        var r = cred.response;
-        return authApi('login', { token: o.token, response: {
-          id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
-          clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
-          response: { clientDataJSON: b64u(r.clientDataJSON), authenticatorData: b64u(r.authenticatorData), signature: b64u(r.signature), userHandle: r.userHandle ? b64u(r.userHandle) : undefined }
-        } });
-      });
-    }).then(function (j) { setAuth(true, j.exp); return j; });
+    var ready = fresh(pre.login) ? pre.login.o : null;
+    pre.login = null;   // a challenge can only be used once
+    var run = ready ? getWith(ready) : authApi('login-options').then(getWith);
+    return run.then(function (j) { setAuth(true, j.exp); return j; }, function (e) { prefetchLogin(); throw e; });
   }
   function passkeyRegister(name, publishKey) {
     if (!window.PublicKeyCredential) return Promise.reject(new Error('This browser doesn\u2019t support passkeys.'));
-    return authApi('register-options', { name: name }, publishKey).then(function (o) {
-      var opt = o.options;
-      return navigator.credentials.create({ publicKey: {
-        rp: opt.rp, challenge: unb64u(opt.challenge), timeout: opt.timeout, attestation: opt.attestation,
-        user: { id: unb64u(opt.user.id), name: opt.user.name, displayName: opt.user.displayName },
-        pubKeyCredParams: opt.pubKeyCredParams, authenticatorSelection: opt.authenticatorSelection,
-        excludeCredentials: (opt.excludeCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
-      } }).then(function (cred) {
-        var r = cred.response;
-        return authApi('register', { token: o.token, response: {
-          id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
-          clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
-          response: { clientDataJSON: b64u(r.clientDataJSON), attestationObject: b64u(r.attestationObject), transports: r.getTransports ? r.getTransports() : [] }
-        } }, publishKey);
-      });
-    }).then(function (j) { setAuth(true, j.exp); return j; });
+    var ready = fresh(pre.reg) && pre.reg.key === (publishKey || '') ? pre.reg.o : null;
+    pre.reg = null;
+    var run = ready ? createWith(ready, name, publishKey) : authApi('register-options', {}, publishKey).then(function (o) { return createWith(o, name, publishKey); });
+    return run.then(function (j) { setAuth(true, j.exp); return j; }, function (e) { if (e.status !== 401) prefetchRegister(publishKey).catch(function () {}); throw e; });
   }
   function signOut() {
     return (LOCAL ? Promise.resolve() : authApi('logout')).then(function () { setAuth(LOCAL); if (on) setEdit(false); }, function () { setAuth(LOCAL); if (on) setEdit(false); });
   }
   function passkeyError(e) {
-    if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no passkey for this site.';
+    if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no passkey for this site. (If the prompt never appeared, tap the button again.)';
     if (e && e.name === 'InvalidStateError') return 'This device already has a passkey for this site. Use "Sign in with passkey".';
     if (e && e.name === 'SecurityError') return 'Passkeys only work on the live site over https.';
     if (e && e.code === 'no-devices') return 'No passkeys are set up for this address yet. Set up this device below.';
     return (e && e.message) || 'Something went wrong.';
   }
   window.XR_ADMIN = { storageKey: KEY, adminPage: ADMIN_PAGE, local: LOCAL, auth: auth, api: authApi, checkSession: checkSession,
-    login: passkeyLogin, register: passkeyRegister, signOut: signOut, passkeyError: passkeyError };
+    login: passkeyLogin, register: passkeyRegister, signOut: signOut, passkeyError: passkeyError,
+    prefetchLogin: prefetchLogin, prefetchRegister: prefetchRegister };
 
   // ---------- hidden sign-in: the © in every footer ----------
   // Looks like plain text. Click it for a small sign-in box: passkey, or the publish key, which
@@ -140,6 +167,7 @@
       '#xr-signin .xs-x{position:absolute;top:8px;right:10px;background:none;border:0;color:#8a8a87;font-size:22px;line-height:1;cursor:pointer;padding:4px}';
     wrap.appendChild(st);
     document.body.appendChild(wrap);
+    prefetchLogin();
     var form = wrap.querySelector('form'), msg = wrap.querySelector('.xs-msg'), input = form.elements.key;
     var buttons = wrap.querySelectorAll('.xs-btn');
     function say(t, tone) { msg.textContent = t; msg.className = 'xs-msg' + (tone ? ' ' + tone : ''); }
@@ -201,7 +229,8 @@
     hide.textContent = '[data-xr-updated]:empty{display:none !important}' +
       '[data-xr-logo]{display:inline-block;width:33px;height:34px;margin-right:12px;vertical-align:middle;background-color:rgba(255,255,255,0.103);' +
       '-webkit-mask:url(assets/rtr-mark.png) center/contain no-repeat;mask:url(assets/rtr-mark.png) center/contain no-repeat}' +
-      '[data-xr-admin]{display:inline-block;padding:10px 6px;margin:-10px -6px}';
+      '[data-xr-admin]{display:inline-block;padding:10px 6px;margin:-10px -6px}' +
+      '@media (hover:none){[data-xr-admin]{cursor:pointer;-webkit-tap-highlight-color:transparent}}';
     (document.head || root).appendChild(hide);
     var label = '';
     function fill() {

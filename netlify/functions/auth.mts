@@ -13,7 +13,7 @@
 //   { action: "status" }                                  → { signedIn, exp?, devices }
 //   { action: "check-key" }                 [key]         → { ok } if the publish key is right
 //   { action: "register-options", name? }  [key|session]  → { options, token }
-//   { action: "register", token, response } [key|session] → saves the passkey and signs in
+//   { action: "register", token, response, name? } [key|session] → saves the passkey and signs in
 //   { action: "login-options" }                           → { options, token }
 //   { action: "login", token, response }                  → signs in
 //   { action: "logout" }                                  → signs out
@@ -88,7 +88,8 @@ export default async (req: Request, _context: Context) => {
         const all = (await storage.get()).filter((d) => d.id !== c.id);
         if (all.length >= MAX_DEVICES) return json({ error: `There are already ${MAX_DEVICES} passkeys. Remove one first.` }, 400);
         const now = new Date().toISOString();
-        all.push({ id: c.id, publicKey: b64u(c.publicKey), counter: c.counter, transports: c.transports, rpID: site.rpID, name: ch.name || "Passkey", created: now, lastUsed: now });
+        const name = String(body.name || ch.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 40) || "Passkey";
+        all.push({ id: c.id, publicKey: b64u(c.publicKey), counter: c.counter, transports: c.transports, rpID: site.rpID, name, created: now, lastUsed: now });
         await storage.set(all);
         const cookie = await sessionCookie(site.rpID, c.id);
         return json({ ok: true, signedIn: true, exp: cookie.exp }, 200, { "set-cookie": cookie.header });

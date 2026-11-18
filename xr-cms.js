@@ -1095,6 +1095,7 @@
     changed();
   }
   function unlockView(v) {
+    if (window.XR_ADMIN && window.XR_ADMIN.prefetchLogin && !window.XR_ADMIN.local) window.XR_ADMIN.prefetchLogin();
     var input = h('input', { type: 'password', autocomplete: 'current-password', placeholder: 'Publish key', 'aria-label': 'Publish key' });
     var form = h('form', { class: 'xc-sec', onsubmit: async function (e) {
       e.preventDefault();
