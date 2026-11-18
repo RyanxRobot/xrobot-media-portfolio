@@ -84,7 +84,7 @@
           <form onSubmit="{{ register }}" style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
             <p style="margin:0 0 4px; font-size:13px; line-height:1.55; color:#a9a9a6;">Creates a passkey on this device (Touch ID, Face ID or your phone). Needs your publish key once; after that you just sign in.</p>
             <input type="text" name="name" maxlength="40" aria-label="Device name" placeholder="Device name, e.g. MacBook" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
-            <input type="password" name="key" autocomplete="current-password" aria-label="Publish key" placeholder="Publish key" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
+            <input type="password" name="key" autocomplete="current-password" aria-label="Publish key" placeholder="{{ keyPlaceholder }}" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
             <button type="submit" disabled="{{ busy }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:rgba(255,255,255,0.5);">CREATE PASSKEY</button>
           </form>
         </details>
@@ -103,6 +103,9 @@ class Component extends DCLogic {
     window.addEventListener('xr-edit-change', this.onEdit);
     window.addEventListener('xr-auth-change', this.onAuth);
     if (!this.x) { this.setState({ checking: false, msg: 'The sign-in script didn’t load. Reload the page.', tone: 'err' }); return; }
+    // Arrived from the footer's sign-in box with a checked publish key: setup is ready.
+    this.setupKey = this.x.takeSetupKey ? this.x.takeSetupKey() : '';
+    if (this.setupKey) this.setState({ keyReady: true, msg: 'Publish key accepted. Name this device, then tap Create passkey.', tone: 'ok' });
     this.refresh(true);
   }
   componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onEdit); window.removeEventListener('xr-auth-change', this.onAuth); }
@@ -130,12 +133,12 @@ class Component extends DCLogic {
   }
   async register(ev) {
     ev.preventDefault();
-    const f = ev.currentTarget.elements, key = f.key.value, name = f.name.value;
+    const f = ev.currentTarget.elements, key = f.key.value || this.setupKey || '', name = f.name.value;
     if (!key && !this.state.signedIn) { this.say('Enter your publish key to set up a new device.', 'err'); return; }
     this.setState({ busy: true }); this.say('Follow your device’s prompt…');
     try {
       await this.x.register(name, key);
-      f.key.value = '';
+      f.key.value = ''; this.setupKey = ''; this.setState({ keyReady: false });
       if (!document.documentElement.hasAttribute('data-xr-edit')) this.x.setEdit(true);
       this.say('Passkey created and signed in. Next time, just tap “Sign in with passkey”.', 'ok');
       await this.refresh();
@@ -162,14 +165,15 @@ class Component extends DCLogic {
   }
   fmt(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
   renderVals() {
-    const { checking, signedIn, exp, on, devices, hasDevices, msg, tone, busy, current } = this.state;
+    const { checking, signedIn, exp, on, devices, hasDevices, msg, tone, busy, current, keyReady } = this.state;
     const tc = { info: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.16)', '#d6d6d3'], ok: ['rgba(57,255,20,0.08)', 'rgba(57,255,20,0.35)', '#b9ffa8'], err: ['rgba(255,46,196,0.1)', 'rgba(255,46,196,0.4)', '#ffc2ec'] }[tone];
     const until = exp ? new Date(exp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     return {
       checking, signedIn, busy,
       showSignIn: !checking && !signedIn && hasDevices,
       showSetup: !checking && !signedIn,
-      setupOpen: !hasDevices,
+      setupOpen: !hasDevices || !!keyReady,
+      keyPlaceholder: keyReady ? 'Publish key ✓ (already entered)' : 'Publish key',
       statusLabel: checking ? 'CHECKING…' : signedIn ? (on ? 'SIGNED IN · EDIT MODE ON' : 'SIGNED IN · EDIT MODE OFF') : 'SIGNED OUT · PUBLISHED VIEW',
       dotStyle: { width: '8px', height: '8px', borderRadius: '50%', background: signedIn && on ? '#ff2ec4' : signedIn ? '#6fe8ff' : '#6a6a68', boxShadow: signedIn && on ? '0 0 10px #ff2ec4' : 'none' },
       signedInText: (this.x && this.x.local) ? 'Local preview: edit mode is a plain switch here, and publishing only works on the live site.'

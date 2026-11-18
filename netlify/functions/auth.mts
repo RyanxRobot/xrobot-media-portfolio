@@ -11,6 +11,7 @@
 //
 // Actions (JSON body):
 //   { action: "status" }                                  → { signedIn, exp?, devices }
+//   { action: "check-key" }                 [key]         → { ok } if the publish key is right
 //   { action: "register-options", name? }  [key|session]  → { options, token }
 //   { action: "register", token, response } [key|session] → saves the passkey and signs in
 //   { action: "login-options" }                           → { options, token }
@@ -53,6 +54,11 @@ export default async (req: Request, _context: Context) => {
         const devices = (await storage.get()).filter((d) => d.rpID === site.rpID).length;
         return json({ ok: true, signedIn: !!session, exp: session?.exp || null, devices, site: site.rpID });
       }
+
+      // The footer's hidden sign-in box checks the publish key before sending you to passkey setup.
+      case "check-key":
+        if (!(await keyOk(req))) return json({ error: "Wrong publish key." }, 401);
+        return json({ ok: true });
 
       case "register-options": {
         if (!session && !(await keyOk(req))) return json({ error: "Wrong publish key." }, 401);
