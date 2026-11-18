@@ -199,7 +199,7 @@
     // can't show on a background that's already almost black). It does nothing when clicked.
     // The © next to it is the hidden sign-in; its clickable area is padded out invisibly.
     hide.textContent = '[data-xr-updated]:empty{display:none !important}' +
-      '[data-xr-logo]{display:inline-block;width:33px;height:34px;margin-right:12px;vertical-align:middle;background-color:rgba(255,255,255,0.09);' +
+      '[data-xr-logo]{display:inline-block;width:33px;height:34px;margin-right:12px;vertical-align:middle;background-color:rgba(255,255,255,0.103);' +
       '-webkit-mask:url(assets/rtr-mark.png) center/contain no-repeat;mask:url(assets/rtr-mark.png) center/contain no-repeat}' +
       '[data-xr-admin]{display:inline-block;padding:10px 6px;margin:-10px -6px}';
     (document.head || root).appendChild(hide);
