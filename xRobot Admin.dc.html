@@ -40,18 +40,22 @@
         </div>
       </div>
 
-      <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ checking }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0; font-size:14px; color:#9a9a97;">Checking sign-in…</p>
+      </sc-if>
+
+      <sc-if value="{{ showSignIn }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <button type="button" onClick="{{ unlock }}" style="padding:15px 18px; border:none; border-radius:4px; background:#fff; color:#0a0a0c; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:0.08em; cursor:pointer;" style-hover="background:#6fe8ff;">UNLOCK WITH PASSKEY</button>
-          <button type="button" onClick="{{ register }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:rgba(255,255,255,0.5);">REGISTER THIS DEVICE</button>
+          <button type="button" onClick="{{ signIn }}" disabled="{{ busy }}" style="padding:15px 18px; border:none; border-radius:4px; background:#fff; color:#0a0a0c; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:0.08em; cursor:pointer;" style-hover="background:#6fe8ff;">SIGN IN WITH PASSKEY</button>
         </div>
       </sc-if>
 
-      <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <p style="margin:0; font-size:14px; line-height:1.6; color:#c7c7c4;">Edit mode is on for this browser. Empty image boxes and placeholders are visible across the site.</p>
+          <p style="margin:0; font-size:14px; line-height:1.6; color:#c7c7c4;">{{ signedInText }}</p>
           <a href="xRobot Media.dc.html" style="padding:15px 18px; border-radius:4px; background:#fff; color:#0a0a0c; text-align:center; text-decoration:none; font-size:13px; font-weight:800; letter-spacing:0.08em;" style-hover="background:#6fe8ff; color:#0a0a0c;">GO TO THE SITE →</a>
-          <button type="button" onClick="{{ lock }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:#ff2ec4;">TURN OFF EDIT MODE</button>
+          <button type="button" onClick="{{ toggleEdit }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:rgba(255,255,255,0.5);">{{ toggleLabel }}</button>
+          <button type="button" onClick="{{ signOut }}" disabled="{{ busy }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:#ff2ec4;">SIGN OUT</button>
         </div>
       </sc-if>
 
@@ -59,20 +63,29 @@
         <div role="status" style="{{ msgStyle }}">{{ msg }}</div>
       </sc-if>
 
-      <sc-if value="{{ hasNewCred }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex; flex-direction:column; gap:8px; padding:14px; border-radius:6px; background:rgba(111,232,255,0.08); border:1px solid rgba(111,232,255,0.35);">
-          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; color:#6fe8ff;">DEVICE ID · SEND THIS TO ADD IT</span>
-          <code style="font-family:ui-monospace,Menlo,monospace; font-size:12px; line-height:1.5; color:#fff; word-break:break-all;">{{ newCred }}</code>
-          <button type="button" onClick="{{ copyCred }}" style="align-self:flex-start; padding:8px 12px; border:none; border-radius:3px; background:#6fe8ff; color:#0a0a0c; font-family:inherit; font-size:11px; font-weight:800; letter-spacing:0.1em; cursor:pointer;">{{ copyLabel }}</button>
+      <sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
+          <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; color:#9a9a97;">PASSKEYS</span>
+          <sc-for list="{{ devices }}" as="d" hint-placeholder-count="2">
+            <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);">
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;">
+                <span style="font-size:13px; font-weight:700; color:#fff;">{{ d.name }}</span>
+                <span style="font-size:11px; color:#8a8a87;">{{ d.meta }}</span>
+              </div>
+              <button type="button" onClick="{{ d.remove }}" style="padding:7px 10px; border-radius:3px; background:transparent; border:1px solid rgba(255,46,196,0.45); color:#ffc2ec; font-family:inherit; font-size:10px; font-weight:800; letter-spacing:0.1em; cursor:pointer;">REMOVE</button>
+            </div>
+          </sc-for>
         </div>
       </sc-if>
 
-      <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
-        <details style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
-          <summary style="font-size:11px; font-weight:700; letter-spacing:0.12em; color:#9a9a97; cursor:pointer;">USE BACKUP KEY</summary>
-          <form onSubmit="{{ submitKey }}" style="display:flex; gap:8px; margin-top:12px;">
-            <input type="password" name="key" autocomplete="current-password" aria-label="Backup key" placeholder="Backup key" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
-            <button type="submit" style="padding:11px 14px; border-radius:4px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">ENTER</button>
+      <sc-if value="{{ showSetup }}" hint-placeholder-val="{{ true }}">
+        <details open="{{ setupOpen }}" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+          <summary style="font-size:11px; font-weight:800; letter-spacing:0.12em; color:#9a9a97; cursor:pointer;">SET UP THIS DEVICE</summary>
+          <form onSubmit="{{ register }}" style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+            <p style="margin:0 0 4px; font-size:13px; line-height:1.55; color:#a9a9a6;">Creates a passkey on this device (Touch ID, Face ID or your phone). Needs your publish key once; after that you just sign in.</p>
+            <input type="text" name="name" maxlength="40" aria-label="Device name" placeholder="Device name, e.g. MacBook" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
+            <input type="password" name="key" autocomplete="current-password" aria-label="Publish key" placeholder="Publish key" style="flex:1; min-width:0; padding:11px 12px; border-radius:4px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.18); color:#fff; font-family:inherit; font-size:14px;">
+            <button type="submit" disabled="{{ busy }}" style="padding:13px 18px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.22); color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;" style-hover="border-color:rgba(255,255,255,0.5);">CREATE PASSKEY</button>
           </form>
         </details>
       </sc-if>
@@ -82,84 +95,95 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { on: false, msg: '', tone: 'info', newCred: '', copied: false };
+  state = { checking: true, signedIn: false, exp: 0, on: false, devices: [], hasDevices: false, msg: '', tone: 'info', busy: false };
   componentDidMount() {
-    this.cfg = window.XR_ADMIN || { hash: '', creds: [], storageKey: 'xr-edit' };
-    const sync = () => this.setState({ on: this.cfg.isOn ? this.cfg.isOn() : document.documentElement.hasAttribute('data-xr-edit') });
-    this.onChange = (e) => this.setState({ on: e.detail.on });
-    window.addEventListener('xr-edit-change', this.onChange);
-    sync();
+    this.x = window.XR_ADMIN;
+    this.onEdit = (e) => this.setState({ on: e.detail.on });
+    this.onAuth = () => this.refresh();
+    window.addEventListener('xr-edit-change', this.onEdit);
+    window.addEventListener('xr-auth-change', this.onAuth);
+    if (!this.x) { this.setState({ checking: false, msg: 'The sign-in script didn’t load. Reload the page.', tone: 'err' }); return; }
+    this.refresh(true);
   }
-  componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onChange); }
-  rand(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }
-  b64u(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
-  unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
+  componentWillUnmount() { window.removeEventListener('xr-edit-change', this.onEdit); window.removeEventListener('xr-auth-change', this.onAuth); }
   say(msg, tone) { this.setState({ msg, tone: tone || 'info' }); }
-  setOn(on) {
-    if (this.cfg.setEdit) this.cfg.setEdit(on);
-    else { try { localStorage.setItem(this.cfg.storageKey, on ? '1' : '0'); } catch (e) {} document.documentElement.toggleAttribute('data-xr-edit', on); }
-    this.setState({ on, msg: on ? '' : 'Edit mode is off. The site shows the published view.', tone: 'info' });
+  async refresh(first) {
+    const a = await this.x.checkSession();
+    const st = { checking: false, signedIn: !!a.signedIn, exp: a.exp || 0, on: document.documentElement.hasAttribute('data-xr-edit'), hasDevices: (a.devices || 0) > 0 };
+    if (first && a.error && !a.signedIn) st.msg = a.error, st.tone = 'err';
+    this.setState(st);
+    if (a.signedIn && !this.x.local) this.loadDevices();
   }
-  supported() {
-    if (!window.PublicKeyCredential || !navigator.credentials) { this.say('This browser doesn’t support passkeys. Use the backup key.', 'err'); return false; }
-    return true;
+  async loadDevices() {
+    try { const j = await this.x.api('devices'); this.setState({ devices: j.devices || [], current: j.current, hasDevices: (j.devices || []).length > 0 }); }
+    catch (e) { /* list is optional */ }
   }
-  async unlock() {
-    if (!this.supported()) return;
-    const creds = this.cfg.creds || [];
-    if (!creds.length) { this.say('No passkeys are registered yet. Register this device first, then send the ID to be added.', 'err'); return; }
+  async signIn() {
+    this.setState({ busy: true }); this.say('Waiting for your passkey…');
     try {
-      this.say('Waiting for your passkey…');
-      await navigator.credentials.get({ publicKey: {
-        challenge: this.rand(32), timeout: 60000, userVerification: 'required',
-        allowCredentials: creds.map(id => ({ type: 'public-key', id: this.unb64u(id) }))
-      } });
-      this.setOn(true);
-    } catch (e) { this.say(this.why(e), 'err'); }
+      await this.x.login();
+      if (!document.documentElement.hasAttribute('data-xr-edit')) this.x.setEdit(true);
+      this.say('Signed in. Edit mode is on.', 'ok');
+      await this.refresh();
+    } catch (e) { this.say(this.x.passkeyError(e), 'err'); }
+    this.setState({ busy: false });
   }
-  async register() {
-    if (!this.supported()) return;
-    try {
-      this.say('Follow your device’s prompt…');
-      const c = await navigator.credentials.create({ publicKey: {
-        challenge: this.rand(32), timeout: 60000,
-        rp: { name: 'xRobot Media' },
-        user: { id: this.rand(16), name: 'admin@xrobot.media', displayName: 'xRobot Admin' },
-        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
-        authenticatorSelection: { residentKey: 'preferred', userVerification: 'required' }
-      } });
-      this.setState({ newCred: this.b64u(c.rawId), copied: false, msg: 'Passkey created. It unlocks once this ID is added to the site.', tone: 'ok' });
-    } catch (e) { this.say(this.why(e), 'err'); }
-  }
-  why(e) {
-    if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no registered passkey for this site.';
-    if (e && (e.name === 'SecurityError' || /permission|feature/i.test(e.message || ''))) return 'Passkeys only work on the live site (https), not in this preview.';
-    return 'Passkey failed: ' + ((e && e.message) || 'unknown error');
-  }
-  async submitKey(ev) {
+  async register(ev) {
     ev.preventDefault();
-    const k = ev.currentTarget.elements.key.value;
-    if (!k) return;
+    const f = ev.currentTarget.elements, key = f.key.value, name = f.name.value;
+    if (!key && !this.state.signedIn) { this.say('Enter your publish key to set up a new device.', 'err'); return; }
+    this.setState({ busy: true }); this.say('Follow your device’s prompt…');
     try {
-      const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(k));
-      const h = Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
-      if (h === this.cfg.hash) { ev.target.reset && ev.target.reset(); this.setOn(true); }
-      else this.say('That key didn’t match.', 'err');
-    } catch (e) { this.say('Backup key needs a secure (https) page.', 'err'); }
+      await this.x.register(name, key);
+      f.key.value = '';
+      if (!document.documentElement.hasAttribute('data-xr-edit')) this.x.setEdit(true);
+      this.say('Passkey created and signed in. Next time, just tap “Sign in with passkey”.', 'ok');
+      await this.refresh();
+    } catch (e) { this.say(e.status === 401 ? 'That publish key didn’t match.' : this.x.passkeyError(e), 'err'); }
+    this.setState({ busy: false });
   }
+  async signOut() {
+    this.setState({ busy: true });
+    await this.x.signOut();
+    this.say('Signed out. Edit mode is off on this browser.', 'info');
+    this.setState({ busy: false, devices: [] });
+    await this.refresh();
+  }
+  async remove(d) {
+    const mine = d.id === this.state.current;
+    if (!confirm('Remove the passkey "' + d.name + '"?' + (mine ? '\n\nThis is the one you signed in with, so you’ll be signed out.' : ''))) return;
+    try {
+      const j = await this.x.api('remove-device', { id: d.id });
+      if (j.signedOut) { await this.x.signOut(); this.say('Passkey removed. You’re signed out.', 'info'); }
+      else this.say('Passkey removed.', 'ok');
+      this.setState({ devices: j.devices || [] });
+      await this.refresh();
+    } catch (e) { this.say(e.message, 'err'); }
+  }
+  fmt(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
   renderVals() {
-    const { on, msg, tone, newCred, copied } = this.state;
+    const { checking, signedIn, exp, on, devices, hasDevices, msg, tone, busy, current } = this.state;
     const tc = { info: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.16)', '#d6d6d3'], ok: ['rgba(57,255,20,0.08)', 'rgba(57,255,20,0.35)', '#b9ffa8'], err: ['rgba(255,46,196,0.1)', 'rgba(255,46,196,0.4)', '#ffc2ec'] }[tone];
+    const until = exp ? new Date(exp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     return {
-      locked: !on, unlocked: on,
-      statusLabel: on ? 'EDIT MODE · ON' : 'LOCKED · PUBLISHED VIEW',
-      dotStyle: { width: '8px', height: '8px', borderRadius: '50%', background: on ? '#ff2ec4' : '#6a6a68', boxShadow: on ? '0 0 10px #ff2ec4' : 'none' },
+      checking, signedIn, busy,
+      showSignIn: !checking && !signedIn && hasDevices,
+      showSetup: !checking && !signedIn,
+      setupOpen: !hasDevices,
+      statusLabel: checking ? 'CHECKING…' : signedIn ? (on ? 'SIGNED IN · EDIT MODE ON' : 'SIGNED IN · EDIT MODE OFF') : 'SIGNED OUT · PUBLISHED VIEW',
+      dotStyle: { width: '8px', height: '8px', borderRadius: '50%', background: signedIn && on ? '#ff2ec4' : signedIn ? '#6fe8ff' : '#6a6a68', boxShadow: signedIn && on ? '0 0 10px #ff2ec4' : 'none' },
+      signedInText: (this.x && this.x.local) ? 'Local preview: edit mode is a plain switch here, and publishing only works on the live site.'
+        : 'You’re signed in on this browser' + (until ? ' until ' + until : '') + '. The editor and publishing work without your publish key.',
+      toggleLabel: on ? 'TURN OFF EDIT MODE' : 'TURN ON EDIT MODE',
+      toggleEdit: () => this.x.setEdit(!on),
       hasMsg: !!msg, msg,
       msgStyle: { padding: '11px 13px', borderRadius: '6px', background: tc[0], border: '1px solid ' + tc[1], color: tc[2], fontSize: '13px', lineHeight: 1.5 },
-      hasNewCred: !!newCred, newCred, copyLabel: copied ? 'COPIED ✓' : 'COPY ID',
-      copyCred: () => { navigator.clipboard && navigator.clipboard.writeText(newCred).then(() => this.setState({ copied: true })); },
-      unlock: () => this.unlock(), register: () => this.register(),
-      lock: () => this.setOn(false), submitKey: (e) => this.submitKey(e)
+      devices: devices.map(d => ({
+        name: d.name + (d.id === current ? ' (this sign-in)' : ''),
+        meta: d.site + ' · added ' + this.fmt(d.created) + (d.lastUsed ? ' · last used ' + this.fmt(d.lastUsed) : ''),
+        remove: () => this.remove(d)
+      })),
+      signIn: () => this.signIn(), register: (e) => this.register(e), signOut: () => this.signOut()
     };
   }
 }

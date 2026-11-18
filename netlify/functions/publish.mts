@@ -1,6 +1,6 @@
 // xRobot.media on-site editor backend.
-// The editor (xr-cms.js) calls POST /api/publish with the publish key in the
-// "x-xr-key" header. This function checks the key, then writes files to the
+// The editor (xr-cms.js) calls POST /api/publish, signed in with a passkey (session cookie from
+// /api/auth) or with the publish key in the "x-xr-key" header. This function checks that, then writes files to the
 // GitHub repo; Netlify redeploys the site from that commit automatically.
 //
 // Environment variables (Netlify → Project configuration → Environment variables, scope: Functions):
@@ -26,6 +26,7 @@
 //     → { ok: true, commit, hashes }
 
 import type { Config, Context } from "@netlify/functions";
+import { env, json, keyOk, publishingConfigured, readSession, sha256Hex } from "../lib/session.mts";
 
 const MAX_IMAGE_BYTES = 4_300_000;
 const PAGE_RE = /^[a-z0-9-]{1,40}$/;
@@ -33,31 +34,8 @@ const PAGE_RE = /^[a-z0-9-]{1,40}$/;
 // as plain lowercase-named jpg/webp/png files.
 const UPLOAD_RE = /^assets\/(?:[a-z0-9][a-z0-9-]{0,60}\/){1,4}[a-z0-9][a-z0-9-]{0,80}\.(?:jpg|webp|png)$/;
 
-const env = (k: string) => Netlify.env.get(k) || "";
 const repo = () => env("GITHUB_REPO") || "RyanxRobot/xrobot-media-portfolio";
 const branch = () => env("GITHUB_BRANCH") || "main";
-
-const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { "cache-control": "no-store" } });
-
-async function sha256Hex(text: string) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function sameHex(a: string, b: string) {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
-const publishHash = () => env("XR_PUBLISH_KEY_HASH").trim().toLowerCase();
-
-async function keyOk(req: Request) {
-  const key = req.headers.get("x-xr-key") || "";
-  if (!key || key.length > 512) return false;
-  return sameHex(await sha256Hex(key), publishHash());
-}
 
 // ---- content safety ----
 // Fields that become href/src attributes on the site.
@@ -264,8 +242,9 @@ async function usage() {
 
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") return json({ error: "POST only." }, 405);
-  if (!/^[0-9a-f]{64}$/.test(publishHash())) return json({ error: "XR_PUBLISH_KEY_HASH isn't set on Netlify yet, so publishing is off." }, 503);
-  if (!(await keyOk(req))) return json({ error: "Wrong publish key." }, 401);
+  if (!publishingConfigured()) return json({ error: "XR_PUBLISH_KEY_HASH isn't set on Netlify yet, so publishing is off." }, 503);
+  // Either a passkey sign-in (session cookie from /api/auth) or the publish key.
+  if (!(await readSession(req)) && !(await keyOk(req))) return json({ error: "Wrong publish key." }, 401);
   if (!env("GITHUB_TOKEN")) return json({ error: "GITHUB_TOKEN isn't set on Netlify yet, so publishing is off." }, 503);
   let body: any;
   try { body = await req.json(); } catch { return json({ error: "Body must be JSON." }, 400); }

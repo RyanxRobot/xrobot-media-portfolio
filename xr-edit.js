@@ -1,51 +1,111 @@
-/* xRobot edit mode.
+/* xRobot edit mode + passkey sign-in.
  * Published (default): empty <image-slot>s and anything marked data-xr-ph are hidden,
  *   along with the card that holds them. Empty grids/sections collapse.
- * Edit mode: everything visible + a glass "EDIT MODE" pill bottom-left.
- *   Turn on:  add ?edit=<admin key> to any page URL (remembered on this browser).
- *             Only the SHA-256 hash of the key is stored below; wrong keys do nothing.
- *   Turn off: ?edit=0, or tap the pill.
- *   Inside the design editor it defaults to ON.
+ * Edit mode: everything visible, the on-site editor (xr-cms.js), and a glass "EDIT MODE" pill bottom-left.
+ *   Edit mode needs a passkey sign-in, checked by the server (netlify/functions/auth.mts). Sign in on the
+ *   Admin page (bookmark it: xRobot Admin.dc.html). A sign-in lasts 12 hours.
+ *   Turn off: ?edit=0, tap the pill, or sign out on the Admin page.
+ *   On localhost (no server), edit mode is a plain on/off switch for previewing.
  * Markup hints:
  *   data-xr-ph            hide this element when published (dashed "add" buttons, coming-soon blocks)
  *   data-xr-ph="self"     on an <image-slot>: hide only the slot, keep its card
  */
 (function () {
   if (window.__xrEdit) return; window.__xrEdit = true;
-  var KEY = 'xr-edit';
-  var ADMIN_HASH = '674c0863da3564da6fb404031c40771beec1cd3c718e7d9b002aa5e0ebf059d0';
-  // Passkey IDs from the Admin screen's "Register this device" go here, one string per device.
-  var ADMIN_CREDS = ['Z9LhBBQLSd6Tu4Iwp0Q6tw'];
-  window.XR_ADMIN = { hash: ADMIN_HASH, creds: ADMIN_CREDS, storageKey: KEY };
+  var KEY = 'xr-edit';            // "1" = this browser wants edit mode when signed in
+  var EXP = 'xr-auth-exp';        // when the current sign-in ends (a hint only; the server decides)
+  var ADMIN_PAGE = 'xRobot Admin.dc.html';
+  var LOCAL = !window.XR_AUTH_FORCE_REMOTE && (/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === 'file:');
+  function ls(op, k, v) { try { return op === 'get' ? localStorage.getItem(k) : op === 'set' ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { return null; } }
+
   var params = new URLSearchParams(location.search);
-  var q = params.get('edit');
-  if (q !== null) {
+  if (params.has('edit')) {
+    if (params.get('edit') === '0') ls('set', KEY, '0');
     params.delete('edit');
     try { history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '') + location.hash); } catch (e) {}
   }
-  if (q === '0') { try { localStorage.setItem(KEY, '0'); } catch (e) {} }
-  else if (q && window.crypto && crypto.subtle) {
-    crypto.subtle.digest('SHA-256', new TextEncoder().encode(q)).then(function (b) {
-      var h = Array.prototype.map.call(new Uint8Array(b), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
-      if (h !== ADMIN_HASH) return;
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
-      setEdit(true);
-    });
-  }
-  var stored = null; try { stored = localStorage.getItem(KEY); } catch (e) {}
+  var stored = ls('get', KEY);
   var root = document.documentElement;
-  var isEditor = function () { return !!(window.omelette && window.omelette.writeFile); };
-  var inEditor = isEditor();
-  var on = stored !== null ? stored === '1' : inEditor;
-  var showPill = on || inEditor || stored !== null;
+  var auth = { signedIn: LOCAL, exp: 0, checked: LOCAL };
+  // Signed in recently on this browser? Show edit mode straight away, then confirm with the server.
+  var expHint = +ls('get', EXP) || 0;
+  if (!LOCAL && expHint > Date.now()) { auth.signedIn = true; auth.exp = expHint; }
+  var on = stored === '1' && auth.signedIn;
+  var showPill = stored !== null;
   root.toggleAttribute('data-xr-edit', on);
-  function recheckEditor() {
-    if (inEditor || !isEditor()) return;
-    inEditor = true; showPill = true;
-    if (stored === null) { on = true; root.toggleAttribute('data-xr-edit', true); }
-    mountPill(); refreshPill(); apply();
-    window.dispatchEvent(new CustomEvent('xr-edit-change', { detail: { on: on } }));
+
+  // ---------- passkeys (WebAuthn) ----------
+  function b64u(buf) { var s = '', a = new Uint8Array(buf); for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  function authApi(action, body, key) {
+    var headers = { 'content-type': 'application/json' };
+    if (key) headers['x-xr-key'] = key;
+    var ctl = new AbortController(), timer = setTimeout(function () { ctl.abort(); }, 20000);
+    return fetch('/api/auth', { method: 'POST', credentials: 'same-origin', signal: ctl.signal, headers: headers, body: JSON.stringify(Object.assign({ action: action }, body || {})) })
+      .then(function (r) { clearTimeout(timer); return r.text().then(function (t) { var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {} if (!r.ok || !j) { var err = new Error((j && (j.detail || j.error)) || (r.status === 404 && !j ? 'Sign-in server not found.' : 'Request failed (' + r.status + ').')); err.status = r.status; err.code = j && j.error; throw err; } return j; }); },
+        function (e) { clearTimeout(timer); var err = new Error(e.name === 'AbortError' ? 'The sign-in server didn\u2019t answer in time.' : 'Couldn\u2019t reach the sign-in server.'); err.status = 0; throw err; });
   }
+  function setAuth(signedIn, exp) {
+    var changed = auth.signedIn !== signedIn;
+    auth.signedIn = signedIn; auth.exp = signedIn ? exp || 0 : 0; auth.checked = true;
+    if (signedIn && exp) ls('set', EXP, String(exp)); else ls('remove', EXP);
+    if (!signedIn && on) setEdit(false, true);
+    if (signedIn && stored === '1' && !on) setEdit(true);
+    if (changed) window.dispatchEvent(new CustomEvent('xr-auth-change', { detail: { signedIn: signedIn, exp: auth.exp } }));
+  }
+  function checkSession() {
+    if (LOCAL) return Promise.resolve(auth);
+    return authApi('status').then(function (j) { setAuth(!!j.signedIn, j.exp); auth.devices = j.devices; return auth; },
+      function (e) { if (e.status) setAuth(false); auth.error = e.message; return auth; });
+  }
+  function passkeyLogin() {
+    if (!window.PublicKeyCredential) return Promise.reject(new Error('This browser doesn\u2019t support passkeys.'));
+    return authApi('login-options').then(function (o) {
+      var opt = o.options;
+      return navigator.credentials.get({ publicKey: {
+        challenge: unb64u(opt.challenge), rpId: opt.rpId, timeout: opt.timeout, userVerification: opt.userVerification,
+        allowCredentials: (opt.allowCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
+      } }).then(function (cred) {
+        var r = cred.response;
+        return authApi('login', { token: o.token, response: {
+          id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
+          clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+          response: { clientDataJSON: b64u(r.clientDataJSON), authenticatorData: b64u(r.authenticatorData), signature: b64u(r.signature), userHandle: r.userHandle ? b64u(r.userHandle) : undefined }
+        } });
+      });
+    }).then(function (j) { setAuth(true, j.exp); return j; });
+  }
+  function passkeyRegister(name, publishKey) {
+    if (!window.PublicKeyCredential) return Promise.reject(new Error('This browser doesn\u2019t support passkeys.'));
+    return authApi('register-options', { name: name }, publishKey).then(function (o) {
+      var opt = o.options;
+      return navigator.credentials.create({ publicKey: {
+        rp: opt.rp, challenge: unb64u(opt.challenge), timeout: opt.timeout, attestation: opt.attestation,
+        user: { id: unb64u(opt.user.id), name: opt.user.name, displayName: opt.user.displayName },
+        pubKeyCredParams: opt.pubKeyCredParams, authenticatorSelection: opt.authenticatorSelection,
+        excludeCredentials: (opt.excludeCredentials || []).map(function (c) { return { type: 'public-key', id: unb64u(c.id), transports: c.transports }; })
+      } }).then(function (cred) {
+        var r = cred.response;
+        return authApi('register', { token: o.token, response: {
+          id: cred.id, rawId: b64u(cred.rawId), type: cred.type, authenticatorAttachment: cred.authenticatorAttachment || undefined,
+          clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+          response: { clientDataJSON: b64u(r.clientDataJSON), attestationObject: b64u(r.attestationObject), transports: r.getTransports ? r.getTransports() : [] }
+        } }, publishKey);
+      });
+    }).then(function (j) { setAuth(true, j.exp); return j; });
+  }
+  function signOut() {
+    return (LOCAL ? Promise.resolve() : authApi('logout')).then(function () { setAuth(LOCAL); if (on) setEdit(false); }, function () { setAuth(LOCAL); if (on) setEdit(false); });
+  }
+  function passkeyError(e) {
+    if (e && e.name === 'NotAllowedError') return 'Cancelled, or this device has no passkey for this site.';
+    if (e && e.name === 'InvalidStateError') return 'This device already has a passkey for this site. Use "Sign in with passkey".';
+    if (e && e.name === 'SecurityError') return 'Passkeys only work on the live site over https.';
+    if (e && e.code === 'no-devices') return 'No passkeys are set up for this address yet. Set up this device below.';
+    return (e && e.message) || 'Something went wrong.';
+  }
+  window.XR_ADMIN = { storageKey: KEY, adminPage: ADMIN_PAGE, local: LOCAL, auth: auth, api: authApi, checkSession: checkSession,
+    login: passkeyLogin, register: passkeyRegister, signOut: signOut, passkeyError: passkeyError };
 
   var css = document.createElement('style');
   css.textContent =
@@ -135,7 +195,6 @@
     var b = document.createElement('button');
     b.id = 'xr-edit-pill'; b.type = 'button';
     b.innerHTML = '<i></i><span></span>';
-    b.innerHTML = '<i></i><span></span>';
     b.addEventListener('click', function () { setEdit(!on); });
     document.body.appendChild(b);
     refreshPill();
@@ -145,17 +204,20 @@
     b.querySelector('span').textContent = on ? 'EDIT MODE · ON' : 'EDIT MODE · OFF';
     b.setAttribute('aria-pressed', on);
   }
-  function setEdit(v) {
-    on = !!v; stored = on ? '1' : '0'; showPill = true;
+  // keepWish: turned off because the sign-in ended, so switch back on after the next sign-in.
+  function setEdit(v, keepWish) {
+    if (v && !auth.signedIn) { location.href = ADMIN_PAGE; return; }
+    on = !!v; showPill = true;
+    if (!keepWish) { stored = on ? '1' : '0'; ls('set', KEY, stored); }
     root.toggleAttribute('data-xr-edit', on);
-    try { localStorage.setItem(KEY, stored); } catch (e) {}
     mountPill(); refreshPill(); apply();
     window.dispatchEvent(new CustomEvent('xr-edit-change', { detail: { on: on } }));
   }
   window.XR_ADMIN.setEdit = setEdit;
   window.XR_ADMIN.isOn = function () { return on; };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { recheckEditor(); mountPill(); schedule(); });
-  else { recheckEditor(); mountPill(); schedule(); }
-  window.addEventListener('load', function () { recheckEditor(); schedule(); });
-  setTimeout(recheckEditor, 1500);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { mountPill(); schedule(); });
+  else { mountPill(); schedule(); }
+  window.addEventListener('load', schedule);
+  // Only browsers that have used edit mode ask the server; visitors never do.
+  if (stored !== null && !LOCAL) checkSession();
 })();

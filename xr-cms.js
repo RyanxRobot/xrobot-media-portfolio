@@ -51,6 +51,8 @@
   function store(kind) { try { return window[kind]; } catch (e) { return null; } }
   function getKey() { try { return store('sessionStorage').getItem(KEY_STORE) || ''; } catch (e) { return ''; } }
   function setKey(k) { try { k ? store('sessionStorage').setItem(KEY_STORE, k) : store('sessionStorage').removeItem(KEY_STORE); } catch (e) {} }
+  // Signed in with a passkey (xr-edit.js / Admin page)? Then the server accepts the session cookie and no key is needed.
+  function signedIn() { return !!(window.XR_ADMIN && window.XR_ADMIN.auth && window.XR_ADMIN.auth.signedIn && !window.XR_ADMIN.local); }
   function editOn() { return document.documentElement.hasAttribute('data-xr-edit'); }
   function blobToBase64(blob) {
     return new Promise(function (res, rej) {
@@ -89,7 +91,7 @@
     var ctl = new AbortController(), timer = setTimeout(function () { ctl.abort(); }, ms);
     var res;
     try {
-      res = await fetch(API, { method: 'POST', signal: ctl.signal, headers: { 'content-type': 'application/json', 'x-xr-key': getKey() }, body: JSON.stringify(body) });
+      res = await fetch(API, { method: 'POST', credentials: 'same-origin', signal: ctl.signal, headers: { 'content-type': 'application/json', 'x-xr-key': getKey() }, body: JSON.stringify(body) });
     } catch (e) {
       clearTimeout(timer);
       if (e.name === 'AbortError') throw fail('Timed out', 'No answer from the server after ' + Math.round(ms / 1000) + ' seconds.', { retryable: true });
@@ -965,7 +967,7 @@
     return 'This month: about ' + u.deploys + ' of ' + Math.floor(u.budget / u.perDeploy) + ' deploys used, ~' + u.left + ' left (resets ' + shortDate(u.resetsOn) + ').';
   }
   async function loadUsage() {
-    if (!getKey() || LOCAL) return S.usage || null;
+    if ((!getKey() && !signedIn()) || LOCAL) return S.usage || null;
     try { S.usage = await apiOnce({ action: 'usage' }); refreshBar(); }
     catch (e) { /* the estimate is a nice-to-have; never block publishing on it */ }
     return S.usage || null;
@@ -1000,7 +1002,7 @@
         return;
       }
     }
-    if (!getKey()) { S.prePublishOk = true; go({ name: 'unlock', then: 'publish' }); return; }
+    if (!getKey() && !signedIn()) { S.prePublishOk = true; go({ name: 'unlock', then: 'publish' }); return; }
     S.prePublishOk = false;
     if (!(await usageOk())) return;
     if (!S.baseHash) S.baseHash = await sha256(JSON.stringify(S.orig));
@@ -1033,7 +1035,13 @@
     } catch (e) {
       S.busy = false;
       window.XR_NOTIFY && window.XR_NOTIFY.dismiss(NID);
-      if (e.status === 401) { setKey(''); go({ name: 'unlock', then: 'publish', msg: 'That key was rejected. Enter it again.' }); return; }
+      if (e.status === 401) {
+        var hadSession = signedIn();
+        setKey('');
+        if (hadSession && window.XR_ADMIN.checkSession) window.XR_ADMIN.checkSession();
+        go({ name: 'unlock', then: 'publish', msg: hadSession ? 'Your passkey sign-in has ended. Sign in again, or use your publish key.' : 'That key was rejected. Enter it again.' });
+        return;
+      }
       say((e.title ? e.title + ': ' : '') + e.message, 'err');
       var acts = [];
       if (e.status !== 409) acts.push({ label: 'Try again', fn: publish });
@@ -1098,10 +1106,15 @@
         notify({ id: 'xc-unlock-failed', tone: 'err', title: 'Couldn’t check the key: ' + (err.title || 'error'), msg: err.message, detail: err.detail || '' });
       }
     } },
-      h('div', { class: 'xc-h' }, 'Publishing needs your publish key'),
-      h('p', { class: 'xc-note', text: v.msg || 'Your separate publish key, not the edit-mode key. It\u2019s kept only for this browser tab and forgotten when you close it.' }),
+      h('div', { class: 'xc-h' }, 'Sign in to publish'),
+      h('p', { class: 'xc-note', text: v.msg || 'Sign in with your passkey, or enter your publish key (kept only for this browser tab).' }),
+      window.XR_ADMIN && window.XR_ADMIN.login && !window.XR_ADMIN.local ? h('button', { type: 'button', class: 'xc-btn xc-pri', onclick: async function () {
+        say('Waiting for your passkey\u2026');
+        try { await window.XR_ADMIN.login(); S.view = { name: 'home' }; say('Signed in.', 'ok'); if (v.then === 'publish') publish(); }
+        catch (err) { say(window.XR_ADMIN.passkeyError(err), 'err'); }
+      } }, 'Sign in with passkey') : null,
       input,
-      h('div', { class: 'xc-row-btns' }, h('button', { type: 'submit', class: 'xc-btn xc-pri' }, 'Unlock & publish'), h('button', { type: 'button', class: 'xc-btn', onclick: function () { go({ name: 'home' }); } }, 'Cancel')));
+      h('div', { class: 'xc-row-btns' }, h('button', { type: 'submit', class: 'xc-btn' }, 'Use key & publish'), h('button', { type: 'button', class: 'xc-btn', onclick: function () { go({ name: 'home' }); } }, 'Cancel')));
     setTimeout(function () { input.focus(); }, 30);
     return [form];
   }

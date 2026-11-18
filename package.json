@@ -4,5 +4,9 @@
   "type": "module",
   "devDependencies": {
     "@netlify/functions": "^6.0.0"
+  },
+  "dependencies": {
+    "@netlify/blobs": "11.1.6",
+    "@simplewebauthn/server": "14.0.3"
   }
 }
